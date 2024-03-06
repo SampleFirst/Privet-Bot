@@ -21,13 +21,24 @@ class Database:
             ),
         )
 
-    async def get_verified(self, user_id, bot_name, now_status):
+    async def get_verified_dot(self, user_id, bot_name, now_status):
         user = await self.col.find_one({'id': int(user_id), 'bot_name': bot_name, 'now_status': now_status})
         return user.get('verification_status', {}) if user else {}
 
-    async def update_verification(self, user_id, bot_name, now_status, date_temp, time_temp):
+    async def update_verification_dot(self, user_id, bot_name, now_status, date_temp, time_temp):
         await self.col.update_one(
             {'id': int(user_id), 'bot_name': bot_name, 'now_status': now_status},
+            {'$set': {'verification_status': {'date': date_temp, 'time': time_temp}}},
+            upsert=True
+        )
+        
+    async def get_verified_bd(self, user_id, db_name, now_status):
+        user = await self.col.find_one({'id': int(user_id), 'db_name': db_name, 'now_status': now_status})
+        return user.get('verification_status', {}) if user else {}
+
+    async def update_verification_bd(self, user_id, db_name, now_status, date_temp, time_temp):
+        await self.col.update_one(
+            {'id': int(user_id), 'db_name': db_name, 'now_status': now_status},
             {'$set': {'verification_status': {'date': date_temp, 'time': time_temp}}},
             upsert=True
         )
