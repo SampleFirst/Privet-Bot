@@ -1,4 +1,4 @@
 <h1 align="center">
-  <b>Eva Forward Bot</b>
+  <b>Private Bot</b>
 </h1>
 
