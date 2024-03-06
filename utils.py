@@ -1,6 +1,6 @@
 import logging
-from datetime import datetime, timedelta
 import pytz
+from datetime import datetime, timedelta
 from pyrogram import Client
 from database.users_chats_db import db
 from info import AUTH_CHANNEL, LOG_CHANNEL
@@ -8,7 +8,10 @@ from info import AUTH_CHANNEL, LOG_CHANNEL
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-
+# Temp DB for banned
+class temp(object):
+    STATUS = {}
+    
 async def is_subscribed(bot, query=None, userid=None):
     try:
         if userid is None and query is not None:
@@ -24,29 +27,63 @@ async def is_subscribed(bot, query=None, userid=None):
     return False
 
 
-async def check_status(client, userid, bot_name):
-    user = await client.get_users(int(userid))
+async def update_verification(bot, user_id, bot_name):
+    user = await bot.get_users(int(user_id))
+    if not await db.is_user_exist(user.id, bot_name):
+        await db.add_user(user.id, user.first_name, bot_name)
+        await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
     tz = pytz.timezone('Asia/Kolkata')
-    today = datetime.now(tz).date()
-    now = datetime.now(tz).time()
-    status = await db.get_status_bot(userid, bot_name)
+    date_var = datetime.now(tz) + timedelta(minutes=2)
+    temp_time = date_var.strftime("%H:%M:%S")
+    date_var, time_var = str(date_var).split(" ")
+    status_key = f"{user_id}_{bot_name}"
+    print("Status key:", status_key)  # Print status key
+    await update_verify_status(user.id, date_var, temp_time, status_key)
+
+async def update_verify_status(user_id, date_temp, time_temp, status_key):
+    status = await get_verify_status(user_id, bot_name)
+    status["date"] = date_temp
+    status["time"] = time_temp
+    temp.STATUS[status_key] = status
+    await db.update_verification(user_id, bot_name, date_temp, time_temp)
+
+
+async def get_verify_status(user_id, bot_name):
+    status_key = f"{user_id}_{bot_name}"
+    status = temp.STATUS.get(status_key)
+    if not status:
+        status = await db.get_verified(user_id, bot_name)
+        temp.STATUS[status_key] = status
+    return status
+    
+async def check_verification(bot, user_id, bot_name):
+    user = await bot.get_users(int(user_id))
+    if not await db.is_user_exist(user.id, bot_name):
+        await db.add_user(user.id, user.first_name, bot_name)
+        await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
+    tz = pytz.timezone('Asia/Kolkata')
+    today = date.today()
+    now = datetime.now(tz)
+    curr_time = now.strftime("%H:%M:%S")
+    hour1, minute1, second1 = curr_time.split(":")
+    curr_time = time(int(hour1), int(minute1), int(second1))
+    status_key = f"{user_id}_{bot_name}"
+    print("Status key:", status_key)  # Print status key
+    status = await get_verify_status(user_id, bot_name)
     date_var = status["date"]
     time_var = status["time"]
-    comp_date = datetime.strptime(date_var, '%Y-%m-%d').date()
-    comp_time = datetime.strptime(time_var, '%H:%M:%S').time()
-    if comp_date < today:
+    years, month, day = date_var.split('-')
+    comp_date = date(int(years), int(month), int(day))
+    hour, minute, second = time_var.split(":")
+    comp_time = time(int(hour), int(minute), int(second))
+    if comp_date<today:
         return False
-    elif comp_date == today:
-        if comp_time < now:
-            return False
+    else:
+        if comp_date == today:
+            if comp_time<curr_time:
+                return False
+            else:
+                return True
         else:
             return True
-    else:
-        return True
 
-
-async def update_status(client, user_id, bot_name):
-    now_status = "is attempt"
-    date = datetime.now().date()
-    time = datetime.now().time()
-    await db.update_status_bot(user_id, bot_name, now_status, date, time)
