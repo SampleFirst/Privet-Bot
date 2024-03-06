@@ -9,7 +9,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQ
 from info import ADMINS, PICS, LOG_CHANNEL
 from database.users_chats_db import db
 
-from utils import check_verification_dot, update_verification_dot, check_verification_bd, update_verification_bd
+from utils import check_verification, update_verification
 from Script import script
 
 from plugins.datetime import get_datetime 
@@ -144,13 +144,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
         expiry_date = get_expiry_datetime(format_type=2, expiry_option="now_to_2m")
         expiry_time = get_expiry_datetime(format_type=5, expiry_option="now_to_2m")
         
-        if await check_verification_dot(client, user_id, bot_name, now_status):
+        if await check_verification(client, user_id, bot_name, now_status):
             await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {bot_name}.", show_alert=True)
             logger.info(f"{user_name} has Active status for {bot_name} with {now_status}")
             return 
         else:
             await client.send_message(LOG_CHANNEL, script.LOG_BOT.format(a=user_id, b=user_name, c=bot_name, d=now_status, e=now_date, f=now_time, g=expiry_date, h=expiry_time))
-            await update_verification_dot(client, user_id, bot_name, now_status)
+            await update_verification(client, user_id, bot_name, now_status)
             logger.info(f"{user_name} update status for {bot_name} with {now_status}")
             buttons = [
                 [
@@ -184,13 +184,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
         expiry_date = get_expiry_datetime(format_type=2, expiry_option="now_to_2m")
         expiry_time = get_expiry_datetime(format_type=5, expiry_option="now_to_2m")
         
-        if await check_verification_bd(client, user_id, db_name, now_status):
+        if await check_verification(client, user_id, db_name, now_status):
             await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {db_name}.", show_alert=True)
             logger.info(f"{user_name} has Active status for {db_name} with {now_status}")
             return 
         else:
             await client.send_message(LOG_CHANNEL, script.LOG_DB.format(a=user_id, b=user_name, c=db_name, d=now_status, e=now_date, f=now_time, g=expiry_date, h=expiry_time))
-            await update_verification_bd(client, user_id, db_name, now_status)
+            await update_verification(client, user_id, db_name, now_status)
             logger.info(f"{user_name} update status for {db_name} with {now_status}")
             buttons = [
                 [
