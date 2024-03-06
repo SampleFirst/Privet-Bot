@@ -36,3 +36,6 @@ PICS = environ.get('PICS', 'https://telegra.ph/file/6d98a444198fdac6322c2.jpg').
 DATABASE_URI = environ.get('DATABASE_URI', "")
 DATABASE_NAME = environ.get('DATABASE_NAME', "")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
+
+PORT = environ.get("PORT", "8080")
+
