@@ -45,7 +45,7 @@ async def update_verify_status(user_id, bot_name, date_temp, time_temp):
     status = await get_verify_status(user_id, bot_name)
     status["date"] = date_temp
     status["time"] = time_temp
-    status["bot_name"] = bot_name 
+    status_key = f"{user_id}_{bot_name}"
     temp.STATUS[status_key] = status
     await db.update_verification(user_id, bot_name, date_temp, time_temp)
 
