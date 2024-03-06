@@ -9,7 +9,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQ
 from info import ADMINS, PICS, LOG_CHANNEL
 from database.users_chats_db import db
 
-from utils import check_verification, update_verification
+from utils import check_verification_bot, update_verification_bot, check_verification_db, update_verification_db
 from Script import script
 
 from plugins.datetime import get_datetime 
