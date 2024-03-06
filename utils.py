@@ -54,7 +54,7 @@ async def get_verify_status(user_id, bot_name, now_status):
     status_key = f"{user_id}_{bot_name}_{now_status}"
     status = temp.STATUS.get(status_key)
     if not status:
-        status = await db.get_verified(user_id, bot_name)
+        status = await db.get_verified(user_id, bot_name, now_status)
         temp.STATUS[status_key] = status
     return status
     
