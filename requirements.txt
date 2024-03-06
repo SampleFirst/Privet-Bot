@@ -4,7 +4,7 @@ requests
 bs4
 python-dotenv
 pytz
-urllib
+urllib3==1.26
 pyrogram
 tldextract
 Flask==3.0.2
