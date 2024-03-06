@@ -38,9 +38,9 @@ async def update_verification(bot, user_id, bot_name):
     date_var, time_var = str(date_var).split(" ")
     status_key = f"{user_id}_{bot_name}"
     print("Status key:", status_key)  # Print status key
-    await update_verify_status(user.id, date_var, temp_time, status_key)
+    await update_verify_status(user.id, status_key, date_var, temp_time)
 
-async def update_verify_status(user_id, date_temp, time_temp, status_key):
+async def update_verify_status(user_id, status_key, date_temp, time_temp):
     status = await get_verify_status(user_id, bot_name)
     status["date"] = date_temp
     status["time"] = time_temp
