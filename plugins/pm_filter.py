@@ -138,12 +138,18 @@ async def cb_handler(client: Client, query: CallbackQuery):
         user_name = query.from_user.username
         bot_name = get_bot_name(query.data)
         now_status = get_status_name(status_num=1)
-
+        
+        now_date = get_datetime(format_type=2)
+        now_time = get_datetime(format_type=5)
+        expiry_date = get_expiry_datetime(format_type=2, expiry_option="now_to_2m")
+        expiry_time = get_expiry_datetime(format_type=5, expiry_option="now_to_2m")
+        
         if await check_verification(client, user_id, bot_name, now_status):
             await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {bot_name}.", show_alert=True)
             logger.info(f"{user_name} has Active status for {bot_name} with {now_status}")
             return 
         else:
+            await client.send_message(LOG_CHANNEL, script.LOG_BOT.format(a=user_id, b=user_name, c=bot_name, d=now_status, e=now_date, f=now_time, g=expiry_date, h=expiry_time)
             await update_verification(client, user_id, bot_name, now_status)
             logger.info(f"{user_name} update status for {bot_name} with {now_status}")
             buttons = [
