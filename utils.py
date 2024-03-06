@@ -28,7 +28,7 @@ async def is_subscribed(bot, query=None, userid=None):
     return False
 
 
-async def update_verification(bot, user_id, bot_name):
+async def update_verification(bot, user_id, bot_name, now_status):
     user = await bot.get_users(int(user_id))
     if not await db.is_user_exist(user.id):
         await db.add_user(user.id, user.first_name)
@@ -37,28 +37,28 @@ async def update_verification(bot, user_id, bot_name):
     date_var = datetime.now(tz) + timedelta(minutes=2)
     temp_time = date_var.strftime("%H:%M:%S")
     date_var, time_var = str(date_var).split(" ")
-    status_key = f"{user_id}_{bot_name}"
+    status_key = f"{user_id}_{bot_name}_{now_status}"
     print("Status key:", status_key)  # Print status key
-    await update_verify_status(user.id, bot_name, date_var, temp_time)
+    await update_verify_status(user.id, bot_name, now_status, date_var, temp_time)
 
-async def update_verify_status(user_id, bot_name, date_temp, time_temp):
-    status = await get_verify_status(user_id, bot_name)
+async def update_verify_status(user_id, bot_name, now_status, date_temp, time_temp):
+    status = await get_verify_status(user_id, bot_name, now_status)
     status["date"] = date_temp
     status["time"] = time_temp
-    status_key = f"{user_id}_{bot_name}"
+    status_key = f"{user_id}_{bot_name}_{now_status}"
     temp.STATUS[status_key] = status
-    await db.update_verification(user_id, bot_name, date_temp, time_temp)
+    await db.update_verification(user_id, bot_name, now_status, date_temp, time_temp)
 
 
-async def get_verify_status(user_id, bot_name):
-    status_key = f"{user_id}_{bot_name}"
+async def get_verify_status(user_id, bot_name, now_status):
+    status_key = f"{user_id}_{bot_name}_{now_status}"
     status = temp.STATUS.get(status_key)
     if not status:
         status = await db.get_verified(user_id, bot_name)
         temp.STATUS[status_key] = status
     return status
     
-async def check_verification(bot, user_id, bot_name):
+async def check_verification(bot, user_id, bot_name, now_status):
     user = await bot.get_users(int(user_id))
     if not await db.is_user_exist(user.id):
         await db.add_user(user.id, user.first_name)
@@ -69,9 +69,9 @@ async def check_verification(bot, user_id, bot_name):
     curr_time = now.strftime("%H:%M:%S")
     hour1, minute1, second1 = curr_time.split(":")
     curr_time = time(int(hour1), int(minute1), int(second1))
-    status_key = f"{user_id}_{bot_name}"
+    status_key = f"{user_id}_{bot_name}_{now_status}"
     print("Status key:", status_key)  # Print status key
-    status = await get_verify_status(user_id, bot_name)
+    status = await get_verify_status(user_id, bot_name, now_status)
     date_var = status.get("date")  # Use get() method to retrieve the value, returns None if key doesn't exist
     time_var = status.get("time")  # Use get() method to retrieve the value, returns None if key doesn't exist
     if date_var is None or time_var is None:
