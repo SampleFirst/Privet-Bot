@@ -47,16 +47,16 @@ async def update_verify_status_dot(user_id, bot_name, now_status, date_temp, tim
     status["date"] = date_temp
     status["time"] = time_temp
     status_key = f"{user_id}_{bot_name}_{now_status}"
-    temp.STATUS[status_key] = status
+    temp.STATUS_BOT[status_key] = status
     await db.update_verification_dot(user_id, bot_name, now_status, date_temp, time_temp)
 
 
 async def get_verify_status_dot(user_id, bot_name, now_status):
     status_key = f"{user_id}_{bot_name}_{now_status}"
-    status = temp.STATUS.get(status_key)
+    status = temp.STATUS_BOT.get(status_key)
     if not status:
         status = await db.get_verified_dot(user_id, bot_name, now_status)
-        temp.STATUS[status_key] = status
+        temp.STATUS_BOT[status_key] = status
     return status
     
 async def check_verification_dot(bot, user_id, bot_name, now_status):
@@ -112,16 +112,16 @@ async def update_verify_status_bd(user_id, db_name, now_status, date_temp, time_
     status["date"] = date_temp
     status["time"] = time_temp
     status_key = f"{user_id}_{db_name}_{now_status}"
-    temp.STATUS[status_key] = status
+    temp.STATUS_DB[status_key] = status
     await db.update_verification_bd(user_id, db_name, now_status, date_temp, time_temp)
 
 
 async def get_verify_status_bd(user_id, db_name, now_status):
     status_key = f"{user_id}_{db_name}_{now_status}"
-    status = temp.STATUS.get(status_key)
+    status = temp.STATUS_DB.get(status_key)
     if not status:
         status = await db.get_verified_bd(user_id, db_name, now_status)
-        temp.STATUS[status_key] = status
+        temp.STATUS_DB[status_key] = status
     return status
     
 async def check_verification_bd(bot, user_id, db_name, now_status):
