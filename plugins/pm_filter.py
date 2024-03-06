@@ -138,12 +138,12 @@ async def cb_handler(client: Client, query: CallbackQuery):
         user_name = query.from_user.username
         bot_name = get_bot_name(query.data)
 
-        if await check_verification(user_id, bot_name):
+        if await check_verification(client, user_id, bot_name):
             await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {bot_name}.", show_alert=True)
             logger.info(f"{user_name} has Active status for {bot_name}")
             return 
         else:
-            await update_verification(bot, user_id, bot_name)
+            await update_verification(client, user_id, bot_name)
             logger.info(f"{user_name} update status for {bot_name}")
             buttons = [
                 [
