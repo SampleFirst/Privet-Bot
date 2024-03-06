@@ -9,7 +9,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQ
 from info import ADMINS, PICS, LOG_CHANNEL
 from database.users_chats_db import db
 
-from utils import check_status, update_status
+from utils import check_verification, update_verification
 from Script import script
 
 from plugins.datetime import get_datetime 
@@ -137,16 +137,14 @@ async def cb_handler(client: Client, query: CallbackQuery):
         user_id = query.from_user.id
         user_name = query.from_user.username
         bot_name = get_bot_name(query.data)
-        now_status = get_status_name(status_num=1)
-        expire_date = get_expiry_datetime(format_type=7, expiry_option="now_to_2m")
-        expire_time = get_expiry_datetime(format_type=6, expiry_option="now_to_2m")
 
-        if await check_status(client, user_id, bot_name):
+        if await check_verification(user_id, bot_name):
             await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {bot_name}.", show_alert=True)
-            return
+            logger.info(f"{user_name} has Active status for {bot_name}")
+            return 
         else:
-            await db.update_status_bot(user_id, bot_name, now_status, expire_date, expire_time)
-
+            await update_verification(bot, user_id, bot_name)
+            logger.info(f"{user_name} update status for {bot_name}")
             buttons = [
                 [
                     InlineKeyboardButton('Description', callback_data='botdis'),
@@ -167,61 +165,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 reply_markup=reply_markup,
                 parse_mode=enums.ParseMode.HTML
             )
-            
-    elif query.data == "mdb" or query.data == "adb" or query.data == "sdb" or query.data == "bdb":
-        user_id = query.from_user.id
-        user_name = query.from_user.username
-        db_name = get_db_name(query.data)
-        now_status = get_status_name(status_num=1)
-        now_date = get_datetime(format_type=21)
-        expiry_date = get_expiry_datetime(format_type=21, expiry_option="now_to_5m")
-    
-        if await db.is_status_exist_db(user_id, db_name, now_status):
-            await query.answer(f"Hey {user_name}! Sorry For This But You already have an active request for {db_name}.", show_alert=True)
-            return
-        else:
-            await query.message.edit_text("Processing...")
-            
-        buttons = [
-            [
-                InlineKeyboardButton('Description', callback_data='dbdis'),
-            ],
-            [
-                InlineKeyboardButton('Go Back', callback_data='database')
-            ]
-        ]
-        reply_markup = InlineKeyboardMarkup(buttons)
-        
-        await db.update_status_db(user_id, db_name, now_status, now_date, expiry_date)
-        try:
-            await add_expiry_date_timer(client, user_id, db_name, expiry_date)
-            await client.send_message(
-                chat_id=LOG_CHANNEL,
-                text=script.LOG_DB.format(
-                    a=user_name,
-                    b=user_id,
-                    c=db_name,
-                    d=now_status,
-                    e=now_date,
-                    f=expiry_date
-                )
-            )
-        except Exception as e:
-            print(e)
-            await client.send_message(
-                chat_id=LOG_CHANNEL,
-                text=str(e)
-            )
-        await client.edit_message_media(
-            chat_id=query.message.chat.id,
-            message_id=query.message.message_id,
-            media=InputMediaPhoto(random.choice(PICS))
-        )
-        await query.message.edit_text(
-            text=script.SELECT_DB.format(user=query.from_user.mention, db_name=db_name),
-            reply_markup=reply_markup,
-            parse_mode=enums.ParseMode.HTML
-        )
 
     elif data == "botpre":
         await query.message.edit_text(
