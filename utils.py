@@ -71,20 +71,21 @@ async def check_verification(bot, user_id, bot_name):
     status_key = f"{user_id}_{bot_name}"
     print("Status key:", status_key)  # Print status key
     status = await get_verify_status(user_id, bot_name)
-    date_var = status["date"]
-    time_var = status["time"]
+    date_var = status.get("date")  # Use get() method to retrieve the value, returns None if key doesn't exist
+    time_var = status.get("time")  # Use get() method to retrieve the value, returns None if key doesn't exist
+    if date_var is None or time_var is None:
+        return False
     years, month, day = date_var.split('-')
     comp_date = date(int(years), int(month), int(day))
     hour, minute, second = time_var.split(":")
     comp_time = time(int(hour), int(minute), int(second))
-    if comp_date<today:
+    if comp_date < today:
         return False
     else:
         if comp_date == today:
-            if comp_time<curr_time:
+            if comp_time < curr_time:
                 return False
             else:
                 return True
         else:
             return True
-
