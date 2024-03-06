@@ -1,6 +1,6 @@
 import logging
 import pytz
-from datetime import date
+from datetime import date, time
 from datetime import datetime, timedelta
 from pyrogram import Client
 from database.users_chats_db import db
