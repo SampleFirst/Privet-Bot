@@ -1,6 +1,7 @@
 git+https://github.com/MrMKN/pyrogram                          
 tgcrypto
 requests
+motor==2.5.1
 bs4
 python-dotenv
 pytz
