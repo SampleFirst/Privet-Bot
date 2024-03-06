@@ -29,8 +29,8 @@ async def is_subscribed(bot, query=None, userid=None):
 
 async def update_verification(bot, user_id, bot_name):
     user = await bot.get_users(int(user_id))
-    if not await db.is_user_exist(user.id, bot_name):
-        await db.add_user(user.id, user.first_name, bot_name)
+    if not await db.is_user_exist(user.id):
+        await db.add_user(user.id, user.first_name)
         await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
     tz = pytz.timezone('Asia/Kolkata')
     date_var = datetime.now(tz) + timedelta(minutes=2)
@@ -58,8 +58,8 @@ async def get_verify_status(user_id, bot_name):
     
 async def check_verification(bot, user_id, bot_name):
     user = await bot.get_users(int(user_id))
-    if not await db.is_user_exist(user.id, bot_name):
-        await db.add_user(user.id, user.first_name, bot_name)
+    if not await db.is_user_exist(user.id):
+        await db.add_user(user.id, user.first_name)
         await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
     tz = pytz.timezone('Asia/Kolkata')
     today = date.today()
