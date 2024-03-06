@@ -21,13 +21,13 @@ class Database:
             ),
         )
 
-    async def get_verified(self, user_id, bot_name):
-        user = await self.col.find_one({'id': int(user_id), 'bot_name': bot_name})
+    async def get_verified(self, user_id, bot_name, now_status):
+        user = await self.col.find_one({'id': int(user_id), 'bot_name': bot_name, 'now_status': now_status})
         return user.get('verification_status', {}) if user else {}
 
-    async def update_verification(self, user_id, bot_name, date_temp, time_temp):
+    async def update_verification(self, user_id, bot_name, now_status, date_temp, time_temp):
         await self.col.update_one(
-            {'id': int(user_id), 'bot_name': bot_name},
+            {'id': int(user_id), 'bot_name': bot_name, 'now_status': now_status},
             {'$set': {'verification_status': {'date': date_temp, 'time': time_temp}}},
             upsert=True
         )
@@ -78,62 +78,6 @@ class Database:
         users = self.col.find({'ban_status.is_banned': True})
         b_users = [user['id'] async for user in users]
         return b_users
-
-    async def update_status_bot(self, id, bot_name, now_status, date, time):
-        status = {
-            'now_status': now_status,
-            'date': str(date),
-            'time': str(time)
-        }
-        await self.col.update_one({'id': int(id), 'bot_name': bot_name}, {'$set': {'userbot_status': status}})
-        
-    async def get_status_bot(self, id, bot_name):
-        default = {
-            'date': "1999-12-31",
-            'time': "23:59:59"
-        }
-        user = await self.col.find_one({'id': int(id), 'bot_name': bot_name})
-        if user:
-            return user.get("userbot_status", default)
-        return default
-        
-    async def update_status_db(self, id, db_name, now_status, date, time):
-        status = {
-            'now_status': now_status,
-            'date': str(date),
-            'time': str(time)
-        }
-        await self.col.update_one({'id': int(id), 'db_name': db_name}, {'$set': {'userbot_status': status}})
-        
-    async def get_status_db(self, id, db_name, now_status):
-        default = {
-            'date': "1999-12-31",
-            'time': "23:59:59"
-        }
-        user = await self.col.find_one({'id': int(id), 'db_name': db_name})
-        if user:
-            return user.get("userdb_status", default)
-        return default
-        
-    async def total_status_bot(self, bot_name=None, now_status=None):
-        query = {}
-        if bot_name:
-            query['user_status.bot_name'] = bot_name
-        if now_status:
-            query['user_status.now_status'] = now_status
-
-        count = await self.col.count_documents(query)
-        return count
-
-    async def total_status_db(self, db_name=None, now_status=None):
-        query = {}
-        if db_name:
-            query['user_status.db_name'] = db_name
-        if now_status:
-            query['user_status.now_status'] = now_status
-
-        count = await self.col.count_documents(query)
-        return count
 
     async def set_payment_img(self, id, file_id):
         await self.col.update_one({'id': int(id)}, {'$set': {'file_id': file_id}})
