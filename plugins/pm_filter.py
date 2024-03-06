@@ -203,9 +203,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
             reply_markup = InlineKeyboardMarkup(buttons)
 
             await client.edit_message_media(
-                chat_id=query.message.chat.id,
-                message_id=query.message.message_id,
-                media=InputMediaPhoto(random.choice(PICS))
+                query.message.chat.id,
+                query.message.id,
+                InputMediaPhoto(random.choice(PICS))
             )
             await query.message.edit_text(
                 text=script.SELECT_DB.format(user=query.from_user.mention, db_name=db_name),
