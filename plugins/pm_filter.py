@@ -144,13 +144,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
         expiry_date = get_expiry_datetime(format_type=2, expiry_option="now_to_2m")
         expiry_time = get_expiry_datetime(format_type=5, expiry_option="now_to_2m")
         
-        if await check_verification(client, user_id, bot_name, now_status):
+        if await check_verification_bot(client, user_id, bot_name, now_status):
             await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {bot_name}.", show_alert=True)
             logger.info(f"{user_name} has Active status for {bot_name} with {now_status}")
             return 
         else:
             await client.send_message(LOG_CHANNEL, script.LOG_BOT.format(a=user_id, b=user_name, c=bot_name, d=now_status, e=now_date, f=now_time, g=expiry_date, h=expiry_time)
-            await update_verification(client, user_id, bot_name, now_status)
+            await update_verification_bot(client, user_id, bot_name, now_status)
             logger.info(f"{user_name} update status for {bot_name} with {now_status}")
             buttons = [
                 [
@@ -173,6 +173,46 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 parse_mode=enums.ParseMode.HTML
             )
 
+    elif query.data == "mdb" or query.data == "adb" or query.data == "sdb" or query.data == "bdb":
+        user_id = query.from_user.id
+        user_name = query.from_user.username
+        db_name = get_db_name(query.data)
+        now_status = get_status_name(status_num=1)
+        
+        now_date = get_datetime(format_type=2)
+        now_time = get_datetime(format_type=5)
+        expiry_date = get_expiry_datetime(format_type=2, expiry_option="now_to_2m")
+        expiry_time = get_expiry_datetime(format_type=5, expiry_option="now_to_2m")
+        
+        if await check_verification_db(client, user_id, db_name, now_status):
+            await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {db_name}.", show_alert=True)
+            logger.info(f"{user_name} has Active status for {db_name} with {now_status}")
+            return 
+        else:
+            await client.send_message(LOG_CHANNEL, script.LOG_BOT.format(a=user_id, b=user_name, c=db_name, d=now_status, e=now_date, f=now_time, g=expiry_date, h=expiry_time)
+            await update_verification_db(client, user_id, bot_name, now_status)
+            logger.info(f"{user_name} update status for {bot_name} with {now_status}")
+            buttons = [
+                [
+                    InlineKeyboardButton('Description', callback_data='dbdis'),
+                ],
+                [
+                    InlineKeyboardButton('Go Back', callback_data='bots')
+                ]
+            ]
+            reply_markup = InlineKeyboardMarkup(buttons)
+
+            await client.edit_message_media(
+                chat_id=query.message.chat.id,
+                message_id=query.message.message_id,
+                media=InputMediaPhoto(random.choice(PICS))
+            )
+            await query.message.edit_text(
+                text=script.SELECT_DB.format(user=query.from_user.mention, db_name=db_name),
+                reply_markup=reply_markup,
+                parse_mode=enums.ParseMode.HTML
+            )
+        
     elif data == "botpre":
         await query.message.edit_text(
             text=script.BUY_BOT_PREMIUM.format(user=query.from_user.mention),
