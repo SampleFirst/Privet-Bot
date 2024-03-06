@@ -48,21 +48,26 @@ Name: {}
 Date: <code>{}</code>
 Time: <code>{}</code>"""
 
-    LOG_BOT = """🆕️ #new_attempt
-ID: <code>{b}</code>
-Name: {a}
+    LOG_BOT = """🆕️ #new_bot_attempt\n
+ID: <code>{a}</code>
+Name: @{b}
 Bot Name: {c}
 Now Status: {d}
-Datetime: <code>{e}</code>
-Expire on: <code>{f}</code>"""
+Date: <code>{e}</code>
+Time: <code>{f}</code>
+Exp Date: <code>{g}</code>
+Exp Time: <code>{h}</code>"""
 
-    LOG_DB = """🆕️ #new_attempt
+    LOG_DB = """🆕️ #new_db_attempt
 ID: <code>{b}</code>
 Name: {a}
 DB Name: {c}
 Now Status: {d}
-Datetime: <code>{e}</code>
-Expire on: <code>{f}</code>"""
+Date: <code>{e}</code>
+Time: <code>{f}</code>
+Exp Date: <code>{g}</code>
+Exp Time: <code>{h}</code>"""
+
     
     MELCOW_ENG = """<b>Hello {}, and Welcome to {} Group </b> 🌟"""
 
