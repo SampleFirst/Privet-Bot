@@ -9,13 +9,13 @@ class script(object):
 ⌾ Expiry Date: {b}
 ⌾ Expiry Time: {c}
 ⌾ Validity: {d}\n
-💰 Price {e}₹ Per Month..."""
+💰 Price 99₹ Per Month..."""
     
     SELECT_DB = """🏷 Database:- {a}\n
 ⌾ Expiry Date: {b}
 ⌾ Expiry Time: {c}
 ⌾ Validity: {d}\n
-💰 Price {e}₹ Per Month..."""
+💰 Price 99₹ Per Month..."""
     
     BUY_BOT_PREMIUM = """Hey {user}\n\nThank To Buy A Premium Access For Bot\nMake Patients Admin Review You Request and Sending Confirmation Message soon.."""
 
