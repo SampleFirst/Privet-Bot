@@ -445,7 +445,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             selected_bot = USER_SELECTED.get(user_id, "")
             now_status = get_status_name(status_num=6)
             now_date = get_datetime(format_type=23)
-            expiry_date = get_expiry_datetime(format_type=23, expiry_option="next_to_2m")
+            expiry_date = get_expiry_datetime(format_type=23, expiry_option="now_to_2m")
             
             keyboard = InlineKeyboardMarkup(
                 [[
@@ -473,7 +473,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             selected_bot = USER_SELECTED.get(user_id, "")
             now_status = get_status_name(status_num=6)
             now_date = get_datetime(format_type=23)
-            expiry_date = get_expiry_datetime(format_type=23, expiry_option="next_to_2m")
+            expiry_date = get_expiry_datetime(format_type=23, expiry_option="now_to_2m")
             
             keyboard = InlineKeyboardMarkup(
                 [[
@@ -501,7 +501,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             selected_bot = USER_SELECTED.get(user_id, "")
             now_status = get_status_name(status_num=6)
             now_date = get_datetime(format_type=23)
-            expiry_date = get_expiry_datetime(format_type=23, expiry_option="next_to_2m")
+            expiry_date = get_expiry_datetime(format_type=23, expiry_option="now_to_2m")
             
             keyboard = InlineKeyboardMarkup(
                 [[
@@ -529,7 +529,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             selected_bot = USER_SELECTED.get(user_id, "")
             now_status = get_status_name(status_num=6)
             now_date = get_datetime(format_type=23)
-            expiry_date = get_expiry_datetime(format_type=23, expiry_option="next_to_2m")
+            expiry_date = get_expiry_datetime(format_type=23, expiry_option="now_to_2m")
             
             keyboard = InlineKeyboardMarkup(
                 [[
