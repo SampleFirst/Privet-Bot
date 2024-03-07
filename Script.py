@@ -5,9 +5,17 @@ class script(object):
 
     DATABASE = """Hey {user},\nChoose a Database Premium category:"""
     
-    SELECT_BOT = """Hey {user},\nGood Choice For: {bot_name}..."""
+    SELECT_BOT = """🏷 Bot:- {a}\n
+⌾ Expiry Date: {b}
+⌾ Expiry Time: {c}
+⌾ Validity: {d}\n
+💰 Price {e}₹ Per Month..."""
     
-    SELECT_DB = """Hey {user},\nGood Choice For: {db_name}..."""
+    SELECT_DB = """🏷 Database:- {a}\n
+⌾ Expiry Date: {b}
+⌾ Expiry Time: {c}
+⌾ Validity: {d}\n
+💰 Price {e}₹ Per Month..."""
     
     BUY_BOT_PREMIUM = """Hey {user}\n\nThank To Buy A Premium Access For Bot\nMake Patients Admin Review You Request and Sending Confirmation Message soon.."""
 
