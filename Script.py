@@ -35,6 +35,38 @@ Validity: 30 Days\n
 ⌾  Paytm - UPI - Soon...\n
 ▣  After Payment Send Screenshot in Bot..."""
 
+    LOG_PREDB = """🎉 #new_premium\n
+User ID: {a}
+Username: @{b}
+Now Status: {c}
+Price: 99₹
+Now Date: {d}
+Expire Date: {e}"""
+
+    LOG_PREBOT = """🎉 #new_premium\n
+User ID: {a}
+Username: @{b}
+Now Status: {c}
+Price: 99₹
+Now Date: {d}
+Expire Date: {e}"""
+
+    MOVIES_TEXT = """Here are the details about the Movies Bot premium plan:\n\n- Exclusive movie recommendations\n- High-speed streaming access"""
+    
+    LINK_TEXT = """Here are the details about the Anime Bot premium plan:\n\n- Curated anime suggestions\n- Early access to new episodes"""
+    
+    RENAME_TEXT = """Here are the details about the Rename Bot premium plan:\n\n- Unlimited username changes\n- Priority support"""
+    
+    YT_TEXT = """Here are the details about the Yt & Insta Bot premium plan:\n\n- Video and photo download\n- Ad-free experience"""
+    
+    MOVIESDB_TEXT = """Here are the details about the Movies Database premium plan:\n\n- Extensive movie collection\n- Advanced search features"""
+    
+    ANIMEDB_TEXT = """Here are the details about the Anime Database premium plan:\n\n- Comprehensive anime database\n- Personalized recommendations"""
+    
+    SERIESDB_TEXT = """Here are the details about the TV Show Database premium plan:\n\n- Access to a wide range of TV shows\n- Latest episode updates"""
+
+    BOOKSDB_TEXT = """Here are the details about the TV Show Database premium plan:\n\n- Access to a wide range of TV shows\n- Latest episode updates"""
+    
     BUY_BOT_PREMIUM = """Hey {user}\n\nThank To Buy A Premium Access For Bot\nMake Patients Admin Review You Request and Sending Confirmation Message soon.."""
 
     BUY_DB_PREMIUM = """Hey {user}\n\nThank To Buy A Premium Access For Database\nMake Patients Admin Review You Request and Sending Confirmation Message soon.."""
