@@ -49,16 +49,17 @@ async def payment_screenshot_received(client, message):
         await message.reply_text("Invalid selection. Start the process again.")
 
 async def handle_bot_screenshot(client, message, user_id, selected_type, file_id):
-    selected_type = USER_SELECTED.get(user_id, "")
     user_name = message.from_user.username  # Retrieve user_name from message object
     now_dt = get_datetime(format_type=23)
     exp_dt = get_expiry_datetime(format_type=23, expiry_option="today_to_30d")
     
-    caption_db = f"User ID: {user_id}\n" \
-                f"User Name: {user_name}\n" \
-                f"Selected Bot: {selected_type}\n"
-                f"Now Datetime: {now_dt}\n"
-                f"Exp Datetime: {exp_dt}\n"
+    caption_db = (
+        f"User ID: {user_id}\n"
+        f"User Name: {user_name}\n"
+        f"Selected DB: {selected_type}\n"
+        f"Now Datetime: {now_dt}\n"
+        f"Exp Datetime: {exp_dt}\n"
+    )
               
     keyboard = InlineKeyboardMarkup(
         [[
@@ -68,20 +69,20 @@ async def handle_bot_screenshot(client, message, user_id, selected_type, file_id
     )
     await client.send_photo(chat_id=LOG_CHANNEL, photo=file_id, caption=caption_db, reply_markup=keyboard)
     await message.reply_text(f"Hey {user_name}!\n\nYour Payment Screenshot Received. Wait for Confirmation by Admin.\n\nSending Confirmation Message Soon...")
-    user_states[user_id] = False
 
 
 async def handle_db_screenshot(client, message, user_id, selected_type, file_id):
-    selected_type = USER_SELECTED.get(user_id, "")
     user_name = message.from_user.username  # Retrieve user_name from message object
     now_dt = get_datetime(format_type=23)
     exp_dt = get_expiry_datetime(format_type=23, expiry_option="today_to_30d")
     
-    caption_db = f"User ID: {user_id}\n" \
-                f"User Name: {user_name}\n" \
-                f"Selected DB: {selected_type}\n"
-                f"Now Datetime: {now_dt}\n"
-                f"Exp Datetime: {exp_dt}\n"
+    caption_db = (
+        f"User ID: {user_id}\n"
+        f"User Name: {user_name}\n"
+        f"Selected DB: {selected_type}\n"
+        f"Now Datetime: {now_dt}\n"
+        f"Exp Datetime: {exp_dt}\n"
+    )
               
     keyboard = InlineKeyboardMarkup(
         [[
@@ -91,7 +92,7 @@ async def handle_db_screenshot(client, message, user_id, selected_type, file_id)
     )
     await client.send_photo(chat_id=LOG_CHANNEL, photo=file_id, caption=caption_db, reply_markup=keyboard)
     await message.reply_text(f"Hey {user_name}!\n\nYour Payment Screenshot Received. Wait for Confirmation by Admin.\n\nSending Confirmation Message Soon...")
-    user_states[user_id] = False
+
 
 
 @Client.on_callback_query()
