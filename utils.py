@@ -29,29 +29,29 @@ async def is_subscribed(bot, query=None, userid=None):
 
 async def get_timedelta(now_status):
     if now_status == "is Attempt":
-        return minutes=2
+        return timedelta(minutes=2)
     elif now_status == "is Confirm":
-        return minutes=2
+        return timedelta(minutes=2)
     elif now_status == "is Premium":
-        return days=30
+        return timedelta(days=30)
     elif now_status == "Attempt Cancel":
-        return minutes=2
+        return timedelta(minutes=2)
     elif now_status == "Confirm Cancel":
-        return minutes=2
+        return timedelta(minutes=2)
     elif now_status == "Premium Cancel":
-        return minutes=2
+        return timedelta(minutes=2)
     elif now_status == "Attempt expired":
-        return minutes=1
+        return timedelta(minutes=1)
     elif now_status == "Confirm expired":
-        return minutes=1
+        return timedelta(minutes=1)
     elif now_status == "Premium expired":
-        return minutes=1
+        return timedelta(minutes=1)
     elif now_status == "Attempt Remove":
-        return minutes=1
+        return timedelta(minutes=1)
     elif now_status == "Confirm Remove":
-        return minutes=1
+        return timedelta(minutes=1)
     elif now_status == "Premium Remove":
-        return minutes=1
+        return timedelta(minutes=1)
     else:
         raise ValueError("Invalid now_status. Please choose a valid status.")
 
@@ -61,8 +61,8 @@ async def update_verification(bot, user_id, name, now_status):
         await db.add_user(user.id, user.first_name)
         await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
     tz = pytz.timezone('Asia/Kolkata')
-    delta = awite get_timedelta(now_status)
-    date_var = datetime.now(tz) + timedelta(delta)
+    delta = await get_timedelta(now_status)
+    date_var = datetime.now(tz) + delta
     temp_time = date_var.strftime("%H:%M:%S")
     date_var, time_var = str(date_var).split(" ")
     status_key = f"{user_id}_{name}_{now_status}"
