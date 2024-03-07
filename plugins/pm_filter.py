@@ -295,6 +295,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             user_states[user_id] = True
             
     elif query.data == "botbuy":
+        user_id = query.from_user.id  # Assigning user_id here
         selected_type = USER_SELECTED.get(user_id, "")
         buttons = [
             [
@@ -312,8 +313,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
             reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
-
+    
     elif query.data == "dbbuy":
+        user_id = query.from_user.id  # Assigning user_id here
         selected_type = USER_SELECTED.get(user_id, "")
         buttons = [
             [
