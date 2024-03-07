@@ -444,7 +444,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
             user_name = query.from_user.username
             selected_bot = USER_SELECTED.get(user_id, "")
             now_status = get_status_name(status_num=6)
-    
+            now_date = get_datetime(format_type=23)
+            expiry_date = get_expiry_datetime(format_type=23, expiry_option="next_to_2m")
+            
             keyboard = InlineKeyboardMarkup(
                 [[
                     InlineKeyboardButton("✅ Confirmed", callback_data="botpre")
@@ -471,7 +473,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
             user_name = query.from_user.username
             selected_bot = USER_SELECTED.get(user_id, "")
             now_status = get_status_name(status_num=6)
-    
+            now_date = get_datetime(format_type=23)
+            expiry_date = get_expiry_datetime(format_type=23, expiry_option="next_to_2m")
+            
             keyboard = InlineKeyboardMarkup(
                 [[
                     InlineKeyboardButton("✅ Confirmed", callback_data="botpre")
@@ -497,7 +501,9 @@ async def cb_handler(client: Client, query: CallbackQuery):
             user_name = query.from_user.username
             selected_bot = USER_SELECTED.get(user_id, "")
             now_status = get_status_name(status_num=6)
-    
+            now_date = get_datetime(format_type=23)
+            expiry_date = get_expiry_datetime(format_type=23, expiry_option="next_to_2m")
+            
             keyboard = InlineKeyboardMarkup(
                 [[
                     InlineKeyboardButton("✅ Confirmed", callback_data="dbpre")
@@ -523,6 +529,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
             user_name = query.from_user.username
             selected_bot = USER_SELECTED.get(user_id, "")
             now_status = get_status_name(status_num=6)
+            now_date = get_datetime(format_type=23)
+            expiry_date = get_expiry_datetime(format_type=23, expiry_option="next_to_2m")
             
             keyboard = InlineKeyboardMarkup(
                 [[
