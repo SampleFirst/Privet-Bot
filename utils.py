@@ -60,9 +60,9 @@ async def get_verify_status(user_id, name, now_status):
         status = temp.STATUS_DB.get(status_key)
     if not status:
         if name == 'bot':
-            status = await db.get_verified_dot(user_id, now_status)
+            status = await db.get_verified_dot(user_id, name, now_status)
         else:
-            status = await db.get_verified_bd(user_id, now_status)
+            status = await db.get_verified_bd(user_id, name, now_status)
         if name == 'bot':
             temp.STATUS_BOT[status_key] = status
         else:
