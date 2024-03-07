@@ -246,7 +246,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                     InlineKeyboardButton('Description', callback_data='botdis'),
                 ],
                 [
-                    InlineKeyboardButton('Buy Premium', callback_data='botbuy''),
+                    InlineKeyboardButton('Buy Premium', callback_data='botbuy'),
                 ],
                 [
                     InlineKeyboardButton('Go Back', callback_data='bots')
