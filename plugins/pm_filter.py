@@ -144,6 +144,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
         expiry_date = get_expiry_datetime(format_type=2, expiry_option="now_to_2m")
         expiry_time = get_expiry_datetime(format_type=5, expiry_option="now_to_2m")
         
+        exp_date = get_expiry_datetime(format_type=2, expiry_option="today_to_30d")
+        exp_time = get_expiry_datetime(format_type=5, expiry_option="today_to_30d")
+        validity = get_expiry_name(expiry_option="today_to_30d")
+
         if await check_verification(client, user_id, bot_name, now_status):
             await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {bot_name}.", show_alert=True)
             logger.info(f"{user_name} has Active status for {bot_name} with {now_status}")
@@ -168,7 +172,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 InputMediaPhoto(random.choice(PICS))
             )
             await query.message.edit_text(
-                text=script.SELECT_BOT.format(user=query.from_user.mention, bot_name=bot_name),
+                text=script.SELECT_BOT.format(a=bot_name, b=exp_date, c=exp_time, d=validity),
                 reply_markup=reply_markup,
                 parse_mode=enums.ParseMode.HTML
             )
@@ -184,6 +188,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
         expiry_date = get_expiry_datetime(format_type=2, expiry_option="now_to_2m")
         expiry_time = get_expiry_datetime(format_type=5, expiry_option="now_to_2m")
         
+        exp_date = get_expiry_datetime(format_type=2, expiry_option="today_to_30d")
+        exp_time = get_expiry_datetime(format_type=5, expiry_option="today_to_30d")
+        validity = get_expiry_name(expiry_option="today_to_30d")
+
         if await check_verification(client, user_id, db_name, now_status):
             await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {db_name}.", show_alert=True)
             logger.info(f"{user_name} has Active status for {db_name} with {now_status}")
@@ -208,7 +216,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 InputMediaPhoto(random.choice(PICS))
             )
             await query.message.edit_text(
-                text=script.SELECT_DB.format(user=query.from_user.mention, db_name=db_name),
+                text=script.SELECT_DB.format(a=db_name, b=exp_date, c=exp_time, d=validity),
                 reply_markup=reply_markup,
                 parse_mode=enums.ParseMode.HTML
             )
