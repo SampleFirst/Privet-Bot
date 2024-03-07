@@ -55,10 +55,10 @@ async def handle_bot_screenshot(client, message, user_id, selected_type, file_id
     exp_dt = get_expiry_datetime(format_type=23, expiry_option="today_to_30d")
     
     caption_db = f"User ID: {user_id}\n" \
-              f"User Name: {user_name}\n" \
-              f"Selected DB: {selected_type}\n"
-              f"Now Datetime: {now_dt}\n"
-              f"Exp Datetime: {exp_dt}\n"
+                f"User Name: {user_name}\n" \
+                f"Selected Bot: {selected_type}\n"
+                f"Now Datetime: {now_dt}\n"
+                f"Exp Datetime: {exp_dt}\n"
               
     keyboard = InlineKeyboardMarkup(
         [[
@@ -78,10 +78,10 @@ async def handle_db_screenshot(client, message, user_id, selected_type, file_id)
     exp_dt = get_expiry_datetime(format_type=23, expiry_option="today_to_30d")
     
     caption_db = f"User ID: {user_id}\n" \
-              f"User Name: {user_name}\n" \
-              f"Selected DB: {selected_type}\n"
-              f"Now Datetime: {now_dt}\n"
-              f"Exp Datetime: {exp_dt}\n"
+                f"User Name: {user_name}\n" \
+                f"Selected DB: {selected_type}\n"
+                f"Now Datetime: {now_dt}\n"
+                f"Exp Datetime: {exp_dt}\n"
               
     keyboard = InlineKeyboardMarkup(
         [[
