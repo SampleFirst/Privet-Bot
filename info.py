@@ -38,5 +38,8 @@ DATABASE_URI = environ.get('DATABASE_URI', "")
 DATABASE_NAME = environ.get('DATABASE_NAME', "")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 
+PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', 0))
+PAYMENT_CHAT = int(environ.get('PAYMENT_CHAT', 0))
+
 PORT = environ.get("PORT", "8080")
 
