@@ -51,6 +51,7 @@ async def payment_screenshot_received(client, message):
 async def handle_bot_screenshot(client, message, user_id, selected_type, file_id):
 
     selected_type = USER_SELECTED.get(user_id, "")
+    user_name = message.from_user.username  # Retrieve user_name from message object
 
     caption_db = f"User ID: {user_id}\n" \
               f"User Name: {user_name}\n" \
@@ -66,9 +67,11 @@ async def handle_bot_screenshot(client, message, user_id, selected_type, file_id
     await message.reply_text(f"Hey {user_name}!\n\nYour Payment Screenshot Received. Wait for Confirmation by Admin.\n\nSending Confirmation Message Soon...")
     user_states[user_id] = False
 
+
 async def handle_db_screenshot(client, message, user_id, selected_type, file_id):
 
     selected_type = USER_SELECTED.get(user_id, "")
+    user_name = message.from_user.username 
 
     caption_db = f"User ID: {user_id}\n" \
               f"User Name: {user_name}\n" \
