@@ -347,7 +347,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         user_name = query.from_user.username
         db_name = USER_SELECTED.get(user_id, "")
         now_status = get_status_name(status_num=2)
-        if await check_verification(client, user_id, selected_bot, now_status):
+        if await check_verification(client, user_id, db_name, now_status):
             await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {db_name}.", show_alert=True)
             logger.info(f"{user_name} has Active status for {db_name} with {now_status}")
             return 
@@ -468,7 +468,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
     
     elif query.data == "botcan2":
         if is_admin:
-            selected_bot = query.data.replace("botdis_", "")
             user_id = query.from_user.id
             user_name = query.from_user.username
             selected_bot = USER_SELECTED.get(user_id, "")
