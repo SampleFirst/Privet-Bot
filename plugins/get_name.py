@@ -9,8 +9,8 @@ def get_bot_name(query_data):
     bot_name = None
     if query_data == "mbot":
         bot_name = "Movies Bot"
-    elif query_data == "abot":
-        bot_name = "Anime Bot"
+    elif query_data == "fbot":
+        bot_name = "File to Link Bot"
     elif query_data == "rbot":
         bot_name = "Rename Bot"
     elif query_data == "dbot":
@@ -25,7 +25,7 @@ def get_db_name(query_data):
     elif query_data == "adb":
         db_name = "Anime Database"
     elif query_data == "sdb":
-        db_name = "TV Series Database"
+        db_name = "Series Database"
     elif query_data == "bdb":
         db_name = "Audio Book Database"
     return db_name
