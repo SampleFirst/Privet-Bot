@@ -31,6 +31,7 @@ CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHAN
 auth_channel = environ.get('AUTH_CHANNEL')
 AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_channel) else None
 PICS = environ.get('PICS', 'https://telegra.ph/file/6d98a444198fdac6322c2.jpg').split()
+UPI_PIC = environ.get('UPI_PIC', 'https://telegra.ph/file/7e56d907542396289fee4.jpg')
 
 # MongoDB information
 DATABASE_URI = environ.get('DATABASE_URI', "")
