@@ -6,7 +6,7 @@ import asyncio
 from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto
 
-from info import ADMINS, PICS, LOG_CHANNEL
+from info import ADMINS, PICS, UPI_PIC, LOG_CHANNEL
 from database.users_chats_db import db
 
 from utils import check_verification, update_verification
@@ -20,10 +20,73 @@ from plugins.status_name import get_status_name
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.ERROR)
 
+USER_SELECTED = {}
+user_states = {}
+
+
+@Client.on_message(filters.photo & filters.private)
+async def payment_screenshot_received(client, message):
+    user_id = message.from_user.id
+    file_id = str(message.photo.file_id)
+
+    # Check if the user has made a selection before sending the screenshot
+    if user_id not in user_states or not user_states[user_id]:
+        await message.reply_text("Please select Bot or Database before sending the screenshot.")
+        return
+
+    selected_type = USER_SELECTED.get(user_id, "")
+
+    if not selected_type:
+        await message.reply_text("Invalid selection. Please start the process again.")
+        return
+
+    # Update if and elif conditions for selected_type
+    if selected_type in {"Movies Bot", "Anime Bot", "Rename Bot", "YouTube Downloader Bot"}:
+        await handle_bot_screenshot(client, message, user_id, selected_type, file_id)
+    elif selected_type in {"Movies Database", "Anime Database", "Series Database", "Audio Book Database"}:
+        await handle_db_screenshot(client, message, user_id, selected_type, file_id)
+    else:
+        await message.reply_text("Invalid selection. Start the process again.")
+
+async def handle_bot_screenshot(client, message, user_id, selected_type, file_id):
+
+    selected_type = USER_SELECTED.get(user_id, "")
+
+    caption_db = f"User ID: {user_id}\n" \
+              f"User Name: {user_name}\n" \
+              f"Selected DB: {selected_type}\n"
+
+    keyboard = InlineKeyboardMarkup(
+        [[
+            InlineKeyboardButton("✅ Confirmed", callback_data=f"dbpre"),
+            InlineKeyboardButton("❌ Cancel", callback_data=f"payment_cancel_db")
+        ]]
+    )
+    await client.send_photo(chat_id=LOG_CHANNEL, photo=file_id, caption=caption_db, reply_markup=keyboard)
+    await message.reply_text(f"Hey {user_name}!\n\nYour Payment Screenshot Received. Wait for Confirmation by Admin.\n\nSending Confirmation Message Soon...")
+    user_states[user_id] = False
+
+async def handle_db_screenshot(client, message, user_id, selected_type, file_id):
+
+    selected_type = USER_SELECTED.get(user_id, "")
+
+    caption_db = f"User ID: {user_id}\n" \
+              f"User Name: {user_name}\n" \
+              f"Selected DB: {selected_type}\n"
+
+    keyboard = InlineKeyboardMarkup(
+        [[
+            InlineKeyboardButton("✅ Confirmed", callback_data=f"dbpre"),
+            InlineKeyboardButton("❌ Cancel", callback_data=f"payment_cancel_db")
+        ]]
+    )
+    await client.send_photo(chat_id=LOG_CHANNEL, photo=file_id, caption=caption_db, reply_markup=keyboard)
+    await message.reply_text(f"Hey {user_name}!\n\nYour Payment Screenshot Received. Wait for Confirmation by Admin.\n\nSending Confirmation Message Soon...")
+    user_states[user_id] = False
+
 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
-    data = query.data
     if query.data == "close_data":
         await query.message.delete()
 
@@ -67,7 +130,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             show_alert=True
         )
 
-    elif data == "bots":
+    elif query.data == "bots":
         buttons = [
             [
                 InlineKeyboardButton('Movies Bot', callback_data='mbot'),
@@ -94,14 +157,14 @@ async def cb_handler(client: Client, query: CallbackQuery):
             parse_mode=enums.ParseMode.HTML
         )
 
-    elif data == "database":
+    elif query.data == "database":
         buttons = [
             [
                 InlineKeyboardButton('Movies Database', callback_data='mdb'),
                 InlineKeyboardButton('Anime Database', callback_data='adb')
             ],
             [
-                InlineKeyboardButton('TV Show Database', callback_data='sdb'),
+                InlineKeyboardButton('Series Database', callback_data='sdb'),
                 InlineKeyboardButton('Audio Books', callback_data='bdb')
             ],
             [
@@ -156,9 +219,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await client.send_message(LOG_CHANNEL, script.LOG_BOT.format(a=user_id, b=user_name, c=bot_name, d=now_status, e=now_date, f=now_time, g=expiry_date, h=expiry_time))
             await update_verification(client, user_id, bot_name, now_status)
             logger.info(f"{user_name} update status for {bot_name} with {now_status}")
+            USER_SELECTED[user_id] = bot_name
             buttons = [
                 [
                     InlineKeyboardButton('Description', callback_data='botdis'),
+                ],
+                [
+                    InlineKeyboardButton('Buy Premium', callback_data='botbuy'),
                 ],
                 [
                     InlineKeyboardButton('Go Back', callback_data='bots')
@@ -176,6 +243,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 reply_markup=reply_markup,
                 parse_mode=enums.ParseMode.HTML
             )
+            user_states[user_id] = True
 
     elif query.data == "mdb" or query.data == "adb" or query.data == "sdb" or query.data == "bdb":
         user_id = query.from_user.id
@@ -200,9 +268,13 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await client.send_message(LOG_CHANNEL, script.LOG_DB.format(a=user_id, b=user_name, c=db_name, d=now_status, e=now_date, f=now_time, g=expiry_date, h=expiry_time))
             await update_verification(client, user_id, db_name, now_status)
             logger.info(f"{user_name} update status for {db_name} with {now_status}")
+            USER_SELECTED[user_id] = db_name
             buttons = [
                 [
                     InlineKeyboardButton('Description', callback_data='dbdis'),
+                ],
+                [
+                    InlineKeyboardButton('Buy Premium', callback_data='dbbuy'),
                 ],
                 [
                     InlineKeyboardButton('Go Back', callback_data='bots')
@@ -220,19 +292,58 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 reply_markup=reply_markup,
                 parse_mode=enums.ParseMode.HTML
             )
-        
-    elif data == "botpre":
+            user_states[user_id] = True
+            
+    elif query.data == "botbuy":
+        selected_type = USER_SELECTED.get(user_id, "")
+        buttons = [
+            [
+                InlineKeyboardButton('Go Back', callback_data='bots')
+            ]
+        ]
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await client.edit_message_media(
+            query.message.chat.id,
+            query.message.id,
+            InputMediaPhoto(UPI_PIC)
+        )
         await query.message.edit_text(
-            text=script.BUY_BOT_PREMIUM.format(user=query.from_user.mention),
+            text=script.BUY_BOT.format(bot_name=selected_type),
+            reply_markup=reply_markup,
             parse_mode=enums.ParseMode.HTML
         )
 
-    elif data == "dbpre":
+    elif query.data == "dbbuy":
+        selected_type = USER_SELECTED.get(user_id, "")
+        buttons = [
+            [
+                InlineKeyboardButton('Go Back', callback_data='bots')
+            ]
+        ]
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await client.edit_message_media(
+            query.message.chat.id,
+            query.message.id,
+            InputMediaPhoto(UPI_PIC)
+        )
+        await query.message.edit_text(
+            text=script.BUY_DB.format(db_name=selected_type),
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
+
+    elif query.data == "botpre":
+        await query.message.edit_text(
+            text=script.BUY_BOT_PREMIUM.format(db_name=db_name),
+            parse_mode=enums.ParseMode.HTML
+        )
+
+    elif query.data == "dbpre":
         await query.message.edit_text(
             text=script.BUY_DB_PREMIUM.format(user=query.from_user.mention),
             parse_mode=enums.ParseMode.HTML
         )
-
+        
     elif query.data == "botdis":
         await query.answer(
             text=script.CONSTRUCTION.format(user=query.from_user.mention),
