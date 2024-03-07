@@ -55,5 +55,8 @@ def format_types(obj, format_type):
         return obj.strftime("%B %d, %Y %I:%M:%S %p")  # Month day, year hour minute second AM/PM (ex: March 06, 2024 01:23:45 AM)
     elif format_type == 22:
         return obj.strftime("%Y-%m-%d %H:%M:%S")  # Updated format (ex: 2024-03-06 01:23:45)
+    elif format_type == 23:
+        return obj.strftime("%d %b %Y %I:%M:%S %p")  # Day month year hour minute second AM/PM (ex: 6 Mar 2024 01:22:25 AM)
     else:
         raise ValueError("Invalid format_type. Please choose a number between 1 and 22.")
+
