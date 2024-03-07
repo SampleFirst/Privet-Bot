@@ -50,7 +50,7 @@ async def update_verify_status(user_id, name, now_status, date_temp, time_temp):
         await db.update_verification_dot(user_id, name, now_status, date_temp, time_temp)
     else:
         temp.STATUS_DB[status_key] = status
-    await db.update_verification_db(user_id, name, now_status, date_temp, time_temp)
+    await db.update_verification_bd(user_id, name, now_status, date_temp, time_temp)
 
 async def get_verify_status(user_id, name, now_status):
     status_key = f"{user_id}_{name}_{now_status}"
