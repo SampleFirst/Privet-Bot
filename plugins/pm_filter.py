@@ -246,7 +246,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             logger.info(f"{user_name} has Active status for {bot_name} with {attempt_status}")
             return
         else:
-            await client.send_message(LOG_CHANNEL, script.LOG_BOT.format(a=user_id, b=user_name, c=bot_name, d=now_status, e=now_date, f=now_time, g=expiry_date, h=expiry_time))
+            await client.send_message(LOG_CHANNEL, script.LOG_BOT.format(a=user_id, b=user_name, c=bot_name, d=attempt_status, e=now_date, f=now_time, g=expiry_date, h=expiry_time))
             await update_verification(client, user_id, bot_name, attempt_status)
             logger.info(f"{user_name} update status for {bot_name} with {attempt_status}")
             USER_SELECTED[user_id] = bot_name
