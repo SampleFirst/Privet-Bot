@@ -415,6 +415,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             now_date = get_datetime(format_type=23)
             expiry_date = get_expiry_datetime(format_type=23, expiry_option="today_to_30d")
             tz = pytz.timezone('Asia/Kolkata')
+            invite_expire = datetime.now(tz) + timedelta(minutes=2)
             
             # Dictionary mapping database names to their corresponding channel IDs
             database_channels = {
@@ -427,35 +428,35 @@ async def cb_handler(client: Client, query: CallbackQuery):
             try:
                 # Retrieve the channel IDs associated with the selected database
                 channel_ids = database_channels[selected_db]
-                invite_links = []
     
                 # Generate invite links for each channel ID
                 for channel_id in channel_ids:
                     link = await client.create_chat_invite_link(
                         int(channel_id),
-                        expire_date=datetime.now(tz) + timedelta(minutes=2),
+                        expire_date=invite_expire,
                         member_limit=1
                     )
-                    invite_links.append(link.invite_link)
+                    
+                    # Increment the invite link count
+                    invite_link_count = 1  # You may adjust this as needed
+                    
+                    await client.send_message(user_id, f"Congratulations, you've been upgraded to Premium for {selected_db}! 🌟 Here are your invite link:\n{link.invite_link} 🚀", parse_mode=enums.ParseMode.HTML)
+                    await db.store_invite_link(user_id, selected_db, channel_id, link.invite_link, invite_link_count, invite_expire)
+                    await update_verification(client, user_id, selected_db, now_status)
+                    logger.info(f"{user_name} update status for {selected_db} with {now_status}")
     
-                # Send invite links to the user
-                invite_links_text = '\n'.join(invite_links)
-                await client.send_message(user_id, f"Congratulations, you've been upgraded to Premium for {selected_db}! 🌟 Here are your invite links:\n{invite_links_text} 🚀", parse_mode=enums.ParseMode.HTML)
-                await update_verification(client, user_id, selected_db, now_status)
-                logger.info(f"{user_name} update status for {selected_db} with {now_status}")
+                    # Log the premium upgrade in the premium logs channel
+                    await client.send_message(
+                        PREMIUM_LOGS,
+                        text=script.LOG_PREDB.format(a=user_id, b=user_name, c=now_status, d=now_date, e=expiry_date),
+                        parse_mode=enums.ParseMode.HTML
+                    )
     
-                # Log the premium upgrade in the premium logs channel
-                await client.send_message(
-                    PREMIUM_LOGS,
-                    text=script.LOG_PREDB.format(a=user_id, b=user_name, c=now_status, d=now_date, e=expiry_date),
-                    parse_mode=enums.ParseMode.HTML
-                )
-    
-                # Edit the message to show the premium upgrade details
-                await query.message.edit_text(
-                    text=script.LOG_PREDB.format(a=user_id, b=user_name, c=now_status, d=now_date, e=expiry_date),
-                    parse_mode=enums.ParseMode.HTML
-                )
+                    # Edit the message to show the premium upgrade details
+                    await query.message.edit_text(
+                        text=script.LOG_PREDB.format(a=user_id, b=user_name, c=now_status, d=now_date, e=expiry_date),
+                        parse_mode=enums.ParseMode.HTML
+                    )
             except KeyError:
                 await query.answer('Invalid database selected', show_alert=True)
         else:
