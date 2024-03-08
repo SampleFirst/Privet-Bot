@@ -551,6 +551,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await query.answer('This Button Only For ADMINS', show_alert=True)
     
     elif query.data.startswith("botdis"):
+        user_id = query.from_user.id
         selected_bot = USER_SELECTED.get(user_id, "")
         description_text = ""
     
@@ -574,6 +575,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         )
     
     elif query.data == "dbdis":
+        user_id = query.from_user.id
         selected_bot = USER_SELECTED.get(user_id, "")
         description_text = ""
         
