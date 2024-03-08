@@ -42,6 +42,17 @@ class Database:
             {'$set': {'verification_status': {'date': date_temp, 'time': time_temp}}},
             upsert=True
         )
+
+    async def store_invite_link(self, user_id, db_name, channel_id, invite_link, invite_link_count, invite_link_expiry):
+        await self.col.update_one(
+            {'id': int(user_id), 'db_name': db_name, 'channel_id': channel_id},
+            {'$set': {'invite_link_data': {
+                'invite_link': invite_link,
+                'invite_link_count': invite_link_count,
+                'invite_link_expiry': invite_link_expiry
+            }}},
+            upsert=True
+        )
         
     async def add_user(self, id, name):
         user = self.new_user(id, name)
