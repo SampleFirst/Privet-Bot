@@ -46,14 +46,18 @@ class Database:
     async def store_invite_link(self, user_id, db_name, channel_id, invite_link, invite_link_count, invite_link_expiry):
         await self.col.update_one(
             {'id': int(user_id), 'db_name': db_name, 'channel_id': channel_id},
-            {'$set': {'invite_link_data': {
+            {'$set': {'invite_link_status': {
                 'invite_link': invite_link,
                 'invite_link_count': invite_link_count,
                 'invite_link_expiry': invite_link_expiry
             }}},
             upsert=True
         )
-        
+
+    async def get_store_invite_link(self, user_id, db_name, channel_id):
+        user = await self.col.find_one({'id': int(user_id), 'db_name': db_name, 'channel_id': channel_id})
+        return user.get('invite_link_status', {}) if user else {}
+
     async def add_user(self, id, name):
         user = self.new_user(id, name)
         await self.col.insert_one(user)
