@@ -77,9 +77,8 @@ async def handle_bot_screenshot(client, message, user_id, selected_bot, file_id)
     await client.send_photo(chat_id=LOG_CHANNEL, photo=file_id, caption=caption_db, reply_markup=keyboard)
     await update_verification(client, user_id, selected_bot, now_status)
     logger.info(f"{user_name} update status for {selected_bot} with {now_status}")
-
     await message.reply_text(f"Hey {user_name}!\n\nYour Payment Screenshot Received. Wait for Confirmation by Admin.\n\nSending Confirmation Message Soon...")
-
+    USER_STATES[user_id] = False 
 
 async def handle_db_screenshot(client, message, user_id, selected_bot, file_id):
     user_name = message.from_user.username  # Retrieve user_name from message object
@@ -106,9 +105,8 @@ async def handle_db_screenshot(client, message, user_id, selected_bot, file_id):
     await client.send_photo(chat_id=LOG_CHANNEL, photo=file_id, caption=caption_db, reply_markup=keyboard)
     await update_verification(client, user_id, selected_bot, now_status)
     logger.info(f"{user_name} update status for {selected_bot} with {now_status}")
-
     await message.reply_text(f"Hey {user_name}!\n\nYour Payment Screenshot Received. Wait for Confirmation by Admin.\n\nSending Confirmation Message Soon...")
-
+    USER_STATES[user_id] = False 
 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
