@@ -31,8 +31,7 @@ USER_STATES = {}
 async def payment_screenshot_received(client, message):
     user_id = message.from_user.id
     file_id = str(message.photo.file_id)
-
-    # Check if the user has made a selection before sending the screenshot
+    
     if user_id not in USER_STATES or not USER_STATES[user_id]:
         await message.reply_text("Please select Bot or Database before sending the screenshot.")
         return
@@ -43,7 +42,6 @@ async def payment_screenshot_received(client, message):
         await message.reply_text("Invalid selection. Please start the process again.")
         return
 
-    # Update if and elif conditions for selected_bot
     if selected_bot in {"Movies Bot", "File to Link Bot", "Rename Bot", "YouTube Downloader Bot"}:
         await handle_bot_screenshot(client, message, user_id, selected_bot, file_id)
     elif selected_bot in {"Movies Database", "Anime Database", "Series Database", "Audio Book Database"}:
@@ -320,54 +318,44 @@ async def cb_handler(client: Client, query: CallbackQuery):
         user_name = query.from_user.username
         bot_name = USER_SELECTED.get(user_id, "")
         now_status = get_status_name(status_num=2)
-        if await check_verification(client, user_id, bot_name, now_status):
-            await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {bot_name}.", show_alert=True)
-            logger.info(f"{user_name} has Active status for {bot_name} with {now_status}")
-            return 
-        else:
-            buttons = [
-                [
-                    InlineKeyboardButton('Go Back', callback_data='bots')
-                ]
+        buttons = [
+            [
+                InlineKeyboardButton('Go Back', callback_data='bots')
             ]
-            reply_markup = InlineKeyboardMarkup(buttons)
-            await client.edit_message_media(
-                query.message.chat.id,
-                query.message.id,
-                InputMediaPhoto(UPI_PIC)
-            )
-            await query.message.edit_text(
-                text=script.BUY_BOT.format(bot_name=bot_name),
-                reply_markup=reply_markup,
-                parse_mode=enums.ParseMode.HTML
-            )
+        ]
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await client.edit_message_media(
+            query.message.chat.id,
+            query.message.id,
+            InputMediaPhoto(UPI_PIC)
+        )
+        await query.message.edit_text(
+            text=script.BUY_BOT.format(bot_name=bot_name),
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
     
     elif query.data == "dbbuy":
         user_id = query.from_user.id
         user_name = query.from_user.username
         db_name = USER_SELECTED.get(user_id, "")
         now_status = get_status_name(status_num=2)
-        if await check_verification(client, user_id, db_name, now_status):
-            await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {db_name}.", show_alert=True)
-            logger.info(f"{user_name} has Active status for {db_name} with {now_status}")
-            return 
-        else:
-            buttons = [
-                [
-                    InlineKeyboardButton('Go Back', callback_data='bots')
-                ]
+        buttons = [
+            [
+                InlineKeyboardButton('Go Back', callback_data='database')
             ]
-            reply_markup = InlineKeyboardMarkup(buttons)
-            await client.edit_message_media(
-                query.message.chat.id,
-                query.message.id,
-                InputMediaPhoto(UPI_PIC)
-            )
-            await query.message.edit_text(
-                text=script.BUY_DB.format(db_name=db_name),
-                reply_markup=reply_markup,
-                parse_mode=enums.ParseMode.HTML
-            )
+        ]
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await client.edit_message_media(
+            query.message.chat.id,
+            query.message.id,
+            InputMediaPhoto(UPI_PIC)
+        )
+        await query.message.edit_text(
+            text=script.BUY_DB.format(db_name=db_name),
+            reply_markup=reply_markup,
+            parse_mode=enums.ParseMode.HTML
+        )
     
     
     elif query.data == "botpre":
@@ -388,7 +376,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             elif selected_bot == 'YouTube Downloader Bot':
                 await client.send_message(PAYMENT_CHAT, f"/pro {user_id}")
                 
-            # Add user to premium database
             await update_verification(client, user_id, selected_bot, now_status)
             logger.info(f"{user_name} update status for {selected_bot} with {now_status}")
             await client.send_message(user_id, "Done! 🎉 Congratulations, you've upgraded to Premium for {selected_bot}! 🌟 Check out your plan details in /myplan...", parse_mode=enums.ParseMode.HTML)
@@ -417,21 +404,17 @@ async def cb_handler(client: Client, query: CallbackQuery):
             await update_verification(client, user_id, selected_db, now_status)
             logger.info(f"{user_name} update status for {selected_db} with {now_status}")
     
-            # Log the premium upgrade in the premium logs channel
             await client.send_message(
                 PREMIUM_LOGS,
                 text=script.LOG_PREDB.format(a=user_id, b=user_name, c=now_status, d=now_date, e=expiry_date),
                 parse_mode=enums.ParseMode.HTML
             )
-    
-            # Edit the message to show the premium upgrade details
             await query.message.edit_text(
                 text=script.LOG_PREDB.format(a=user_id, b=user_name, c=now_status, d=now_date, e=expiry_date),
                 parse_mode=enums.ParseMode.HTML
             )
         else:
             await query.answer('This Button Only For ADMINS', show_alert=True)
-    
     
     elif query.data == "botcan1":
         if is_admin:
@@ -545,7 +528,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         else:
             await query.answer('This Button Only For ADMINS', show_alert=True)
     
-    elif query.data.startswith("botdis"):
+    elif query.data == "botdis":
         user_id = query.from_user.id
         selected_bot = USER_SELECTED.get(user_id, "")
         description_text = ""
@@ -592,4 +575,5 @@ async def cb_handler(client: Client, query: CallbackQuery):
             text=description_text,
             parse_mode=enums.ParseMode.MARKDOWN
         )
-    
+        
+        
