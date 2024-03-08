@@ -2,6 +2,7 @@
 import random
 import logging
 import asyncio
+import pytz
 
 from datetime import date, time, datetime, timedelta
 from pyrogram import Client, filters, enums
@@ -413,7 +414,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
             now_status = get_status_name(status_num=3)
             now_date = get_datetime(format_type=23)
             expiry_date = get_expiry_datetime(format_type=23, expiry_option="today_to_30d")
-    
+            tz = pytz.timezone('Asia/Kolkata')
+            
             # Dictionary mapping database names to their corresponding channel IDs
             database_channels = {
                 "Movies Database": MOVIES_DB,
@@ -431,7 +433,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 for channel_id in channel_ids:
                     link = await client.create_chat_invite_link(
                         int(channel_id),
-                        expire_date=datetime.datetime.now() + datetime.timedelta(minutes=1),
+                        expire_date=datetime.now(tz) + timedelta(minutes=2),
                         member_limit=1
                     )
                     invite_links.append(link.invite_link)
