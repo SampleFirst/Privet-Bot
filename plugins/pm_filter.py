@@ -408,11 +408,11 @@ async def cb_handler(client: Client, query: CallbackQuery):
         if is_admin:
             user_id = query.from_user.id
             user_name = query.from_user.username
-            selected_bot = USER_SELECTED.get(user_id, "")
+            selected_db = USER_SELECTED.get(user_id, "")
             now_status = get_status_name(status_num=3)
             now_date = get_datetime(format_type=23)
             expiry_date = get_expiry_datetime(format_type=23, expiry_option="today_to_30d")
-            
+    
             # Dictionary mapping database names to their corresponding channel IDs
             database_channels = {
                 "Movies Database": MOVIES_DB,
@@ -420,31 +420,35 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 "Series Database": SERIES_DB,
                 "Audio Book Database": AUDIOBOOK_DB
             }
-            
+    
             try:
-                channel_ids = database_channels[selected_bot]
+                # Retrieve the channel IDs associated with the selected database
+                channel_ids = database_channels[selected_db]
                 invite_links = []
-                
+    
+                # Generate invite links for each channel ID
                 for channel_id in channel_ids:
-                    # Generate invite links in batches of 2 users
-                    for _ in range(0, len(channel_id), 2):
-                        link = await client.create_chat_invite_link(
-                            channel_id,
-                            expire_date=datetime.datetime.now() + datetime.timedelta(days=1),
-                            member_limit=1
-                        )
-                        invite_links.append(link.invite_link)
-                
+                    link = await client.create_chat_invite_link(
+                        int(channel_id),
+                        expire_date=datetime.datetime.now() + datetime.timedelta(minutes=1),
+                        member_limit=1
+                    )
+                    invite_links.append(link.invite_link)
+    
                 # Send invite links to the user
                 invite_links_text = '\n'.join(invite_links)
-                await client.send_message(user_id, f"Congratulations, you've been upgraded to Premium for {selected_bot}! 🌟 Here are your invite links:\n{invite_links_text} 🚀", parse_mode=enums.ParseMode.HTML)
-                await update_verification(client, user_id, selected_bot, now_status)
-                logger.info(f"{user_name} update status for {selected_bot} with {now_status}")
+                await client.send_message(user_id, f"Congratulations, you've been upgraded to Premium for {selected_db}! 🌟 Here are your invite links:\n{invite_links_text} 🚀", parse_mode=enums.ParseMode.HTML)
+                await update_verification(client, user_id, selected_db, now_status)
+                logger.info(f"{user_name} update status for {selected_db} with {now_status}")
+    
+                # Log the premium upgrade in the premium logs channel
                 await client.send_message(
                     PREMIUM_LOGS,
                     text=script.LOG_PREDB.format(a=user_id, b=user_name, c=now_status, d=now_date, e=expiry_date),
                     parse_mode=enums.ParseMode.HTML
                 )
+    
+                # Edit the message to show the premium upgrade details
                 await query.message.edit_text(
                     text=script.LOG_PREDB.format(a=user_id, b=user_name, c=now_status, d=now_date, e=expiry_date),
                     parse_mode=enums.ParseMode.HTML
