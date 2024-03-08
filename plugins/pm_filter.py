@@ -11,7 +11,7 @@ from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQ
 from info import ADMINS, PICS, UPI_PIC, LOG_CHANNEL, PREMIUM_LOGS, PAYMENT_CHAT, MOVIES_DB, ANIME_DB, SERIES_DB, AUDIOBOOK_DB
 from database.users_chats_db import db
 
-from utils import check_verification, update_verification
+from utils import send_invite_link, check_verification, update_verification
 from Script import script
 
 from plugins.datetime import get_datetime 
@@ -414,59 +414,23 @@ async def cb_handler(client: Client, query: CallbackQuery):
             now_status = get_status_name(status_num=3)
             now_date = get_datetime(format_type=23)
             expiry_date = get_expiry_datetime(format_type=23, expiry_option="today_to_30d")
-            tz = pytz.timezone('Asia/Kolkata')
-            invite_expire = datetime.now(tz) + timedelta(minutes=2)
-            
-            # Dictionary mapping database names to their corresponding channel IDs
-            database_channels = {
-                "Movies Database": MOVIES_DB,
-                "Anime Database": ANIME_DB,
-                "Series Database": SERIES_DB,
-                "Audio Book Database": AUDIOBOOK_DB
-            }
+        
+            await send_invite_link(client, user_id, selected_db)
+            await update_verification(client, user_id, selected_db, now_status)
+            logger.info(f"{user_name} update status for {selected_db} with {now_status}")
     
-            try:
-                # Retrieve the channel IDs associated with the selected database
-                channel_ids = database_channels[selected_db]
+            # Log the premium upgrade in the premium logs channel
+            await client.send_message(
+                PREMIUM_LOGS,
+                text=script.LOG_PREDB.format(a=user_id, b=user_name, c=now_status, d=now_date, e=expiry_date),
+                parse_mode=enums.ParseMode.HTML
+            )
     
-                for channel_id in channel_ids:
-                    # Get total members count for the channel
-                    total_members = await client.get_chat_members_count(channel_id)
-                    
-                    # Skip the channel if total members count is 50
-                    if total_members == 50:
-                        continue
-    
-                    link = await client.create_chat_invite_link(
-                        int(channel_id),
-                        expire_date=invite_expire,
-                        member_limit=1
-                    )
-    
-                    invite_link_count = 1
-                    
-                    await client.send_message(user_id, f"Congratulations, you've been upgraded to Premium for {selected_db}! 🌟 Here is your invite link:\n{link.invite_link} 🚀", parse_mode=enums.ParseMode.HTML)
-                    await db.store_invite_link(user_id, selected_db, channel_id, link.invite_link, invite_link_count, invite_expire)
-                    logger.info(f"{user_id} update status for {selected_db} with {channel_id} and {link.invite_link} and {invite_link_count} and {invite_expire}")
-                    await update_verification(client, user_id, selected_db, now_status)
-                    logger.info(f"{user_name} update status for {selected_db} with {now_status}")
-    
-                    # Log the premium upgrade in the premium logs channel
-                    await client.send_message(
-                        PREMIUM_LOGS,
-                        text=script.LOG_PREDB.format(a=user_id, b=user_name, c=now_status, d=now_date, e=expiry_date),
-                        parse_mode=enums.ParseMode.HTML
-                    )
-    
-                    # Edit the message to show the premium upgrade details
-                    await query.message.edit_text(
-                        text=script.LOG_PREDB.format(a=user_id, b=user_name, c=now_status, d=now_date, e=expiry_date),
-                        parse_mode=enums.ParseMode.HTML
-                    )
-                else:
-                    await query.answer("No invite links available for selected database", show_alert=True)
-            except KeyError:
-                await query.answer('Invalid database selected', show_alert=True)
+            # Edit the message to show the premium upgrade details
+            await query.message.edit_text(
+                text=script.LOG_PREDB.format(a=user_id, b=user_name, c=now_status, d=now_date, e=expiry_date),
+                parse_mode=enums.ParseMode.HTML
+            )
         else:
             await query.answer('This Button Only For ADMINS', show_alert=True)
     
