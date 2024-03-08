@@ -41,5 +41,11 @@ COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', 0))
 PAYMENT_CHAT = int(environ.get('PAYMENT_CHAT', 0))
 
+# Database channels
+MOVIES_DB = int(environ.get('MOVIES_DB', 0))
+ANIME_DB = int(environ.get('ANIME_DB', 0))
+SERIES_DB = int(environ.get('SERIES_DB', 0))
+AUDIOBOOK_DB = int(environ.get('AUDIOBOOK_DB', 0))
+
 PORT = environ.get("PORT", "8080")
 
