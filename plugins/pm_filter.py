@@ -429,19 +429,25 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 # Retrieve the channel IDs associated with the selected database
                 channel_ids = database_channels[selected_db]
     
-                # Generate invite links for each channel ID
                 for channel_id in channel_ids:
+                    # Get total members count for the channel
+                    total_members = await client.get_chat_members_count(channel_id)
+                    
+                    # Skip the channel if total members count is 50
+                    if total_members == 50:
+                        continue
+    
                     link = await client.create_chat_invite_link(
                         int(channel_id),
                         expire_date=invite_expire,
                         member_limit=1
                     )
+    
+                    invite_link_count = 1
                     
-                    # Increment the invite link count
-                    invite_link_count = 1  # You may adjust this as needed
-                    
-                    await client.send_message(user_id, f"Congratulations, you've been upgraded to Premium for {selected_db}! 🌟 Here are your invite link:\n{link.invite_link} 🚀", parse_mode=enums.ParseMode.HTML)
+                    await client.send_message(user_id, f"Congratulations, you've been upgraded to Premium for {selected_db}! 🌟 Here is your invite link:\n{link.invite_link} 🚀", parse_mode=enums.ParseMode.HTML)
                     await db.store_invite_link(user_id, selected_db, channel_id, link.invite_link, invite_link_count, invite_expire)
+                    logger.info(f"{user_id} update status for {selected_db} with {channel_id} and {link.invite_link} and {invite_link_count} and {invite_expire}")
                     await update_verification(client, user_id, selected_db, now_status)
                     logger.info(f"{user_name} update status for {selected_db} with {now_status}")
     
@@ -457,6 +463,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                         text=script.LOG_PREDB.format(a=user_id, b=user_name, c=now_status, d=now_date, e=expiry_date),
                         parse_mode=enums.ParseMode.HTML
                     )
+                else:
+                    await query.answer("No invite links available for selected database", show_alert=True)
             except KeyError:
                 await query.answer('Invalid database selected', show_alert=True)
         else:
