@@ -6,7 +6,7 @@ import asyncio
 from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery, InputMediaPhoto
 
-from info import ADMINS, PICS, UPI_PIC, LOG_CHANNEL, PREMIUM_LOGS, PAYMENT_CHAT
+from info import ADMINS, PICS, UPI_PIC, LOG_CHANNEL, PREMIUM_LOGS, PAYMENT_CHAT, MOVIES_DB, ANIME_DB, SERIES_DB, AUDIOBOOK_DB
 from database.users_chats_db import db
 
 from utils import check_verification, update_verification
