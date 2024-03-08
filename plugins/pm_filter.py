@@ -219,7 +219,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
         user_id = query.from_user.id
         user_name = query.from_user.username
         bot_name = get_bot_name(query.data)
-        now_status = get_status_name(status_num=1)
         
         now_date = get_datetime(format_type=2)
         now_time = get_datetime(format_type=5)
@@ -230,14 +229,26 @@ async def cb_handler(client: Client, query: CallbackQuery):
         exp_time = get_expiry_datetime(format_type=5, expiry_option="today_to_30d")
         validity = get_expiry_name(expiry_option="today_to_30d")
 
-        if await check_verification(client, user_id, bot_name, now_status):
-            await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {bot_name}.", show_alert=True)
-            logger.info(f"{user_name} has Active status for {bot_name} with {now_status}")
-            return 
+        premium_status = get_status_name(status_num=3)
+        confirm_status = get_status_name(status_num=2)
+        attempt_status = get_status_name(status_num=1)
+        
+        if await check_verification(client, user_id, db_name, premium_status):
+            await query.answer(f"Hey {user_name}! you already have an Premium for {db_name}.", show_alert=True)
+            logger.info(f"{user_name} has Active status for {db_name} with {premium_status}")
+            return
+        elif await check_verification(client, user_id, db_name, confirm_status):
+            await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {db_name}.", show_alert=True)
+            logger.info(f"{user_name} has Active status for {db_name} with {confirm_status}")
+            return
+        elif await check_verification(client, user_id, db_name, attempt_status):
+            await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {db_name}.", show_alert=True)
+            logger.info(f"{user_name} has Active status for {db_name} with {attempt_status}")
+            return
         else:
             await client.send_message(LOG_CHANNEL, script.LOG_BOT.format(a=user_id, b=user_name, c=bot_name, d=now_status, e=now_date, f=now_time, g=expiry_date, h=expiry_time))
-            await update_verification(client, user_id, bot_name, now_status)
-            logger.info(f"{user_name} update status for {bot_name} with {now_status}")
+            await update_verification(client, user_id, bot_name, attempt_status)
+            logger.info(f"{user_name} update status for {bot_name} with {attempt_status}")
             USER_SELECTED[user_id] = bot_name
             buttons = [
                 [
@@ -268,7 +279,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
         user_id = query.from_user.id
         user_name = query.from_user.username
         db_name = get_db_name(query.data)
-        now_status = get_status_name(status_num=1)
         
         now_date = get_datetime(format_type=2)
         now_time = get_datetime(format_type=5)
@@ -279,14 +289,26 @@ async def cb_handler(client: Client, query: CallbackQuery):
         exp_time = get_expiry_datetime(format_type=5, expiry_option="today_to_30d")
         validity = get_expiry_name(expiry_option="today_to_30d")
 
-        if await check_verification(client, user_id, db_name, now_status):
+        premium_status = get_status_name(status_num=3)
+        confirm_status = get_status_name(status_num=2)
+        attempt_status = get_status_name(status_num=1)
+        
+        if await check_verification(client, user_id, db_name, premium_status):
+            await query.answer(f"Hey {user_name}! you already have an Premium for {db_name}.", show_alert=True)
+            logger.info(f"{user_name} has Active status for {db_name} with {premium_status}")
+            return
+        elif await check_verification(client, user_id, db_name, confirm_status):
             await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {db_name}.", show_alert=True)
-            logger.info(f"{user_name} has Active status for {db_name} with {now_status}")
-            return 
+            logger.info(f"{user_name} has Active status for {db_name} with {confirm_status}")
+            return
+        elif await check_verification(client, user_id, db_name, attempt_status):
+            await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {db_name}.", show_alert=True)
+            logger.info(f"{user_name} has Active status for {db_name} with {attempt_status}")
+            return
         else:
-            await client.send_message(LOG_CHANNEL, script.LOG_DB.format(a=user_id, b=user_name, c=db_name, d=now_status, e=now_date, f=now_time, g=expiry_date, h=expiry_time))
-            await update_verification(client, user_id, db_name, now_status)
-            logger.info(f"{user_name} update status for {db_name} with {now_status}")
+            await client.send_message(LOG_CHANNEL, script.LOG_DB.format(a=user_id, b=user_name, c=db_name, d=attempt_status, e=now_date, f=now_time, g=expiry_date, h=expiry_time))
+            await update_verification(client, user_id, db_name, attempt_status)
+            logger.info(f"{user_name} update status for {db_name} with {attempt_status}")
             USER_SELECTED[user_id] = db_name
             buttons = [
                 [
