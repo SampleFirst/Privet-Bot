@@ -41,11 +41,11 @@ COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', 0))
 PAYMENT_CHAT = int(environ.get('PAYMENT_CHAT', 0))
 
-# Database channels
-MOVIES_DB = int(environ.get('MOVIES_DB', 0))
-ANIME_DB = int(environ.get('ANIME_DB', 0))
-SERIES_DB = int(environ.get('SERIES_DB', 0))
-AUDIOBOOK_DB = int(environ.get('AUDIOBOOK_DB', 0))
+# Database mchannels
+MOVIES_DB = [int(mch) if id_pattern.search(mch) else mch for mch in environ.get('MOVIES_DB', '0').split()]
+ANIME_DB = [int(ach) if id_pattern.search(ach) else ach for ach in environ.get('ANIME_DB', '0').split()]
+SERIES_DB = [int(sch) if id_pattern.search(sch) else sch for sch in environ.get('SERIES_DB', '0').split()]
+AUDIOBOOK_DB = [int(bch) if id_pattern.search(bch) else bch for bch in environ.get('AUDIOBOOK_DB', '0').split()]
 
 PORT = environ.get("PORT", "8080")
 
