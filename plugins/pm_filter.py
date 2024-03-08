@@ -233,17 +233,17 @@ async def cb_handler(client: Client, query: CallbackQuery):
         confirm_status = get_status_name(status_num=2)
         attempt_status = get_status_name(status_num=1)
         
-        if await check_verification(client, user_id, db_name, premium_status):
-            await query.answer(f"Hey {user_name}! you already have an Premium for {db_name}.", show_alert=True)
-            logger.info(f"{user_name} has Active status for {db_name} with {premium_status}")
+        if await check_verification(client, user_id, bot_name, premium_status):
+            await query.answer(f"Hey {user_name}! you already have an Premium for {bot_name}.", show_alert=True)
+            logger.info(f"{user_name} has Active status for {bot_name} with {premium_status}")
             return
-        elif await check_verification(client, user_id, db_name, confirm_status):
-            await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {db_name}.", show_alert=True)
-            logger.info(f"{user_name} has Active status for {db_name} with {confirm_status}")
+        elif await check_verification(client, user_id, bot_name, confirm_status):
+            await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {bot_name}.", show_alert=True)
+            logger.info(f"{user_name} has Active status for {bot_name} with {confirm_status}")
             return
-        elif await check_verification(client, user_id, db_name, attempt_status):
-            await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {db_name}.", show_alert=True)
-            logger.info(f"{user_name} has Active status for {db_name} with {attempt_status}")
+        elif await check_verification(client, user_id, bot_name, attempt_status):
+            await query.answer(f"Hey {user_name}! Sorry, but you already have an active request for {bot_name}.", show_alert=True)
+            logger.info(f"{user_name} has Active status for {bot_name} with {attempt_status}")
             return
         else:
             await client.send_message(LOG_CHANNEL, script.LOG_BOT.format(a=user_id, b=user_name, c=bot_name, d=now_status, e=now_date, f=now_time, g=expiry_date, h=expiry_time))
