@@ -3,7 +3,7 @@ import pytz
 from datetime import date, time, datetime, timedelta
 from pyrogram import Client
 from database.users_chats_db import db
-from info import AUTH_CHANNEL, LOG_CHANNEL
+from info import AUTH_CHANNEL, LOG_CHANNEL, PREMIUM_LOGS, PAYMENT_CHAT, MOVIES_DB, ANIME_DB, SERIES_DB, AUDIOBOOK_DB
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -54,6 +54,37 @@ async def get_timedelta(now_status):
         return timedelta(minutes=1)
     else:
         raise ValueError("Invalid now_status. Please choose a valid status.")
+
+async def send_invite_link(client, user_id, db_name):
+    database_channels = {
+        "Movies Database": MOVIES_DB,
+        "Anime Database": ANIME_DB,
+        "Series Database": SERIES_DB,
+        "Audio Book Database": AUDIOBOOK_DB
+    }
+    
+    try:
+        channel_ids = database_channels[db_name]
+        for channel_id in channel_ids:
+            total_members = await client.get_chat_members_count(channel_id)
+            if total_members < 50:
+                tz = pytz.timezone('Asia/Kolkata')
+                invite_expire = datetime.now(tz) + timedelta(minutes=2)
+                
+                link = await client.create_chat_invite_link(
+                    int(channel_id),
+                    expire_date=invite_expire,
+                    member_limit=1
+                )
+
+                invite_link_count = 1
+
+                await client.send_message(user_id, f"Congratulations, you've been upgraded to Premium for {db_name}! 🌟 Here is your invite link:\n{link.invite_link} 🚀", parse_mode=enums.ParseMode.HTML)
+                await db.store_invite_link(user_id, db_name, channel_id, link.invite_link, invite_link_count, invite_expire)
+                logger.info(f"{user_id} update status for {db_name} with {channel_id} and {link.invite_link} and {invite_link_count} and {invite_expire}")
+                break
+    except KeyError:
+        await client.send_message(user_id, "Invalid database selected.")
 
 async def update_verification(bot, user_id, name, now_status):
     user = await bot.get_users(int(user_id))
