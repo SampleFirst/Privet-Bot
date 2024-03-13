@@ -8,7 +8,6 @@ umongo
 bs4
 python-dotenv
 pytz
-io
 zipfile
 urllib3
 pyrogram
