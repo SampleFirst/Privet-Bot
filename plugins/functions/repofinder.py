@@ -1,6 +1,7 @@
 import os
 import zipfile
 import io
+from io import BytesIO
 from pyrogram.errors import FloodWait
 from pyrogram import Client, filters, enums
 import subprocess
@@ -166,3 +167,40 @@ async def private_repo(client, message):
         await client.send_message(message.chat.id, "This feature is only available for admins.")
         
         
+@Client.on_message(filters.command("download"))
+async def download_repo(client, message):
+    if len(message.command) != 2:
+        await message.reply("Please provide a GitHub repository URL.")
+        return
+
+    repo_url = message.command[1]
+    zip_filename = "repo.zip"
+
+    # Get repository info from GitHub API
+    repo_info = requests.get(f"{repo_url}/archive/refs/heads/master.zip", stream=True).headers
+    if "content-length" not in repo_info:
+        await message.reply("Failed to download repository.")
+        return
+
+    # Download repository as zip file
+    zip_size = int(repo_info["content-length"])
+    progress = 0
+    with requests.get(f"{repo_url}/archive/refs/heads/master.zip", stream=True) as repo_zip:
+        repo_zip.raise_for_status()
+        async for chunk in client.stream(repo_zip.iter_content(1024)):
+            progress += len(chunk)
+            await message.reply_text(f"Downloading... {progress}/{zip_size} bytes")
+
+    # Save zip file to memory
+    zip_buffer = BytesIO(repo_zip.content)
+
+    # Extract zip file to memory
+    with zipfile.ZipFile(zip_buffer, "r") as zip_file:
+        zip_file.extractall(path=zip_filename)
+
+    # Send zip file to user
+    await message.reply_document(document=zip_filename)
+
+    # Clean up
+    os.remove(zip_filename)
+
