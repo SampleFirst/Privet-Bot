@@ -17,5 +17,5 @@ def convert_to_capital_font(text):
 def capital_font(client, message):
     text_to_convert = ' '.join(message.command[1:])
     converted_text = convert_to_capital_font(text_to_convert)
-    message.reply(converted_text)
+    message.reply(`converted_text`)
 
