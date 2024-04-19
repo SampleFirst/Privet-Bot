@@ -60,7 +60,7 @@ def search_movies(query):
         for movie in movies:
             if movie:
                 movies_details["id"] = f"link{movies.index(movie)}"
-                movies_details["title"] = movie.find("h2", {'class': 'title front-view-title'}).text
+                movies_details["title"] = movie.find("h2", {'class': 'title front-view-title'})
                 url_list[movies_details["id"]] = movie['href']
                 movies_list.append(movies_details)
                 movies_details = {}
