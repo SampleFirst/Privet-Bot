@@ -56,7 +56,7 @@ def search_movies(query):
     if website.status_code == 200:
         website = website.text
         website = BeautifulSoup(website, "html.parser")
-        movies = website.find_all("article", {'class': 'latestPost excerpt first'})
+        movies = website.find_all("h2", {'class': 'title front-view-title'})
         for movie in movies:
             if movie:
                 movies_details["id"] = f"link{movies.index(movie)}"
