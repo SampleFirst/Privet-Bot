@@ -51,19 +51,17 @@ async def movie_result(client, callback_query):
 
 def search_movies(query):
     movies_list = []
-    movies_details = {}
     website = requests.get(f"https://1cinevood.site/?s={query.replace(' ', '+')}")
     if website.status_code == 200:
         website = website.text
         website = BeautifulSoup(website, "html.parser")
-        movies = website.find_all("a", {'class': 'title front-view-title'})
+        movies = website.find_all("article", {'class': 'latestPost excerpt first'})
         for movie in movies:
-            if movie:
-                movies_details["id"] = f"link{movies.index(movie)}"
-                movies_details["title"] = movie.find("span", {'class': 'title front-view-title'}).text
-                url_list[movies_details["id"]] = movie['href']
-                movies_list.append(movies_details)
-                movies_details = {}
+            movies_details = {}
+            movies_details["id"] = movie['id']
+            movies_details["title"] = movie.find("header", {'class': 'entry-header'}).find("h2", {'class': 'title front-view-title'}).text
+            movies_details["url"] = f"https://1cinevood.site{movie.find('a')['href']}"
+            movies_list.append(movies_details)
     return movies_list
 
 
