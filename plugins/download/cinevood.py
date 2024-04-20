@@ -16,10 +16,10 @@ async def cinevood(client, message):
         return
     query = query[1]
     search_results = await message.reply_text("Processing...")
-    movies_list = search_movies(query)
-    if movies_list:
+    cine_list = search_movies(query)
+    if cine_list:
         keyboards = []
-        for movie in movies_list:
+        for movie in cine_list:
             keyboard = [InlineKeyboardButton(movie["title"], callback_data=movie["id"])]
             keyboards.append(keyboard)
         reply_markup = InlineKeyboardMarkup(keyboards)
@@ -42,8 +42,8 @@ async def movie_result(client, callback_query):
 
 
 def search_movies(query):
-    movies_list = []
-    movies_details = {}
+    cine_list = []
+    cines_details = {}
     website = requests.get(f"https://1cinevood.site/?s={query.replace(' ', '+')}")
     if website.status_code == 200:
         website = website.text
@@ -51,24 +51,25 @@ def search_movies(query):
         movies = website.find_all("a", {'class': 'post-image post-image-left'})
         for movie in movies:
             if movie:
-                movies_details["id"] = f"link{movies.index(movie)}"
-                movies_details["title"] = movie.find('img')['alt']
-                cine_list[movies_details["id"]] = movie['href']
-                movies_list.append(movies_details)
-                movies_details = {}
-    return movies_list
+                cines_details["id"] = f"link{movies.index(movie)}"
+                cines_details["title"] = movie.find('img')['alt']
+                cine_list[cines_details["id"]] = movie['href']
+                print(movie['href'])
+                cine_list.append(cines_details)
+                cines_details = {}
+    return cine_list
 
 def get_movie(movie_page_url):
-    movie_details = {}
-    movie_page_link = requests.get(movie_page_url)
-    if movie_page_link.status_code == 200:
-        movie_page_link = movie_page_link.text
-        movie_page_link = BeautifulSoup(movie_page_link, "html.parser")
-        title = movie_page_link.find("a", {'class': 'glow-on-hover'})
-        movie_details["title"] = title
-        links = movie_page_link.find_all("a", {'class': 'cat-b'})
+    cine_details = {}
+    cine_page = requests.get(movie_page_url)
+    if cine_page.status_code == 200:
+        cine_page = cine_page.text
+        cine_page = BeautifulSoup(cine_page, "html.parser")
+        title = cine_page.find_all("a", {'class': 'glow-on-hover'})
+        cine_details["title"] = title
+        links = title.find_all("a", {'rel': 'noopener', 'target': '_blank'})
         final_links = {}
         for i in links:
             final_links[f"{i.text}"] = i['href']
-        movie_details["links"] = final_links
-    return movie_details
+        cine_details["links"] = final_links
+    return cine_details
