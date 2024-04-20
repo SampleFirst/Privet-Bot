@@ -33,16 +33,11 @@ async def movie_result(client, callback_query):
     query = callback_query
     movie_id = query.data
     s = get_movie(url_list[movie_id])
-    link_buttons = []
     links = s["links"]
+    caption = f"🎥 {s['title']}\n\n⚡ Download Links:\n"
     for name, link in links.items():
-        button = InlineKeyboardButton(name, url=link)
-        link_buttons.append(button)
-
-    caption = f"🎥 {s['title']}\n\n⚡ Download Links:"
-    reply_markup = InlineKeyboardMarkup(link_buttons)
-    
-    await query.message.reply_text(caption, reply_markup=reply_markup)
+        caption += f"{name}: {link}\n"
+    await query.message.reply_text(caption)
     await query.answer("Sent movie links")
 
 
