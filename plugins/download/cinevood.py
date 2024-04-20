@@ -72,11 +72,11 @@ def get_movie(movie_page_url):
     if movie_page_link.status_code == 200:
         movie_page_link = movie_page_link.text
         movie_page_link = BeautifulSoup(movie_page_link, "html.parser")
-        title = movie_page_link.find("div", {'class': 'title single-title entry-title'}).h3.text
+        title = movie_page_link.find("h1", {"class": "title single-title entry-title"}).text.strip()
         movie_details["title"] = title
-        img = movie_page_link.find("div", {'class': 'poster_parent'})
+        img = movie_page_link.find("img", {"class": "aligncenter size-full wp-image-95"})['src']
         movie_details["img"] = img
-        links = movie_page_link.find_all("a", {'rel': 'noopener', 'glow-on-hover': 'button'})
+        links = movie_page_link.find_all("a", {"class": "glow-on-hover"})
         final_links = {}
         for i in links:
             final_links[f"{i.text}"] = i['href']
