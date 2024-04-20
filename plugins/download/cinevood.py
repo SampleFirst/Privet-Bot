@@ -37,7 +37,7 @@ async def movie_result(client, callback_query):
     links = s["links"]
     for name, link in links.items():
         button = InlineKeyboardButton(name, url=link)
-        link_buttons.append([button])
+        link_buttons.append(button)
 
     caption = f"🎥 {s['title']}\n\n⚡ Download Links:"
     reply_markup = InlineKeyboardMarkup(link_buttons)
