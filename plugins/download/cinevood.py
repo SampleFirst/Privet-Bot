@@ -56,14 +56,14 @@ def search_movies(query):
     if website.status_code == 200:
         website = website.text
         website = BeautifulSoup(website, "html.parser")
-        movies = website.find_all("a", class_="latestPost excerpt")
+        movies = website.find_all("h2", {'class': 'title front-view-title'})
         for movie in movies:
-            if movie:
+            movie_link = movie.find("a", href=True)
+            if movie_link:
                 movies_details["id"] = f"link{movies.index(movie)}"
-                movies_details["title"] = movie.find("h2", class_="title front-view-title").text.strip()
-                url_list[movies_details["id"]] = movie['href']
+                movies_details["title"] = movie_link.text.strip()
+                url_list[movies_details["id"]] = movie_link['href']
                 movies_list.append(movies_details)
-                movies_details = {}
     return movies_list
 
 def get_movie(movie_page_url):
