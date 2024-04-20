@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from io import BytesIO
 from info import ADMINS 
 
-url_list = {}
+cine_list = {}
 
 
 @Client.on_message(filters.command("cinevood") & filters.user(ADMINS))
@@ -32,7 +32,7 @@ async def cinevood(client, message):
 async def movie_result(client, callback_query):
     query = callback_query
     movie_id = query.data
-    s = get_movie(url_list[movie_id])
+    s = get_movie(cine_list[movie_id])
     links = s["links"]
     caption = f"🎥 {s['title']}\n\n⚡ Download Links:\n"
     for name, link in links.items():
@@ -55,7 +55,8 @@ def search_movies(query):
                 print(movies_details["id"])
                 movies_details["title"] = movie.find('img')['alt']
                 print(movies_details["title"])
-                url_list[movies_details["id"]] = movie['href']
+                cine_list[movies_details["id"]] = movie['href']
+                print(movie['href'])
                 movies_list.append(movies_details)
                 movies_details = {}
     return movies_list
@@ -66,9 +67,11 @@ def get_movie(movie_page_url):
     if movie_page_link.status_code == 200:
         movie_page_link = movie_page_link.text
         movie_page_link = BeautifulSoup(movie_page_link, "html.parser")
-        title = movie_page_link.find("h1", {"class": "title single-title entry-title"}).text.strip()
+        title = movie_page_link.find("a", {'class': 'glow-on-hover'})
+        print(title)
         movie_details["title"] = title
-        links = movie_page_link.find_all("a", {"class": "glow-on-hover"})
+        links = movie_page_link.find_all("a", {'rel': 'noopener', 'target': '_blank'})
+        print(links)
         final_links = {}
         for i in links:
             final_links[f"{i.text}"] = i['href']
