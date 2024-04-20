@@ -33,9 +33,6 @@ async def movie_result(client, callback_query):
     query = callback_query
     movie_id = query.data
     s = get_movie(url_list[movie_id])
-    response = requests.get(s["img"])
-    img = BytesIO(response.content)
-    await query.message.reply_photo(photo=img, caption=f"🎥 {s['title']}")
     link_buttons = []
     links = s["links"]
     for name, link in links.items():
@@ -74,8 +71,6 @@ def get_movie(movie_page_url):
         movie_page_link = BeautifulSoup(movie_page_link, "html.parser")
         title = movie_page_link.find("h1", {"class": "title single-title entry-title"}).text.strip()
         movie_details["title"] = title
-        img = movie_page_link.find("img", {"class": "aligncenter size-full wp-image-95"})['src']
-        movie_details["img"] = img
         links = movie_page_link.find_all("a", {"class": "glow-on-hover"})
         final_links = {}
         for i in links:
