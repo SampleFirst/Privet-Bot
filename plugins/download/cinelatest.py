@@ -17,8 +17,11 @@ async def cine_tranding_movies(client, message):
         movies = soup.find_all('div', {'class': 'box-in'})
         movie_list = ""
         for movie in movies:
-            title = movie.find('a', {'class': 'post-image'}).get('title')
-            movie_list += f"<code>{title}</code>\n\n"
+            title_element = movie.find('a', {'class': 'post-image'})
+            if title_element is not None:
+                title = title_element.get('title')
+                if title is not None:
+                    movie_list += f"<code>{title}</code>\n\n"
 
         await msg.delete()
         main = await message.reply_text(f"Trending Movies:\n\n{movie_list}", quote=True)
@@ -47,8 +50,11 @@ async def cine_latest_movies(client, message):
         movies = soup.find_all('article', {'class': 'latestPost excerpt'})[:10]
         movie_list = ""
         for movie in movies:
-            title = movie.find('a', {'class': 'title front-view-title'}).text
-            movie_list += f"<code>{title}</code>\n\n"
+            title_element = movie.find('a', {'class': 'title front-view-title'})
+            if title_element is not None:
+                title = title_element.text
+                if title is not None:
+                    movie_list += f"<code>{title}</code>\n\n"
         
         await msg.delete()
         main = await message.reply_text(f"Latest Movies:\n\n{movie_list}", quote=True)
