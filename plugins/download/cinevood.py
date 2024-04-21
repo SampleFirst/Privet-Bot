@@ -26,17 +26,21 @@ async def cinevood(client, message):
     else:
         await search_results.edit_text('Sorry 🙏, No Result Found!\nCheck If You Have Misspelled The Movie Name.')
 
-
 @Client.on_callback_query(filters.regex('^cine'))
 async def movie_result(client, callback_query):
     query = callback_query
     movie_id = query.data
     s = get_movie(cine_list[movie_id])
+    link_buttons = []
     links = s["links"]
-    caption = f"🎥 {s['title']}\n\n⚡ Download Links:\n"
     for name, link in links.items():
-        caption += f"{name}: {link}\n"
-    await query.message.reply_text(caption)
+        button = InlineKeyboardButton(name, url=link)
+        link_buttons.append([button])
+
+    caption = f"🎥 {s['title']}\n\n⚡ Download Links:"
+    reply_markup = InlineKeyboardMarkup(link_buttons)
+    
+    await query.message.reply_text(caption, reply_markup=reply_markup)
     await query.answer("Sent movie links")
 
 
