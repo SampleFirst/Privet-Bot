@@ -15,7 +15,7 @@ async def cine_tranding_movies(client, message):
         response = requests.get(url)
         response.raise_for_status()  # Raise an exception for HTTP errors
         soup = BeautifulSoup(response.text, "html.parser")
-        movies = soup.find_all('div', {'class': 'swiper-slide'})
+        movies = soup.find_all('src')['alt']
         movie_list = ""
         for movie in movies:
             movie_list += f"<code>{movie}</code>\n\n"
@@ -44,7 +44,7 @@ async def cine_latest_movies(client, message):
         soup = BeautifulSoup(response.text, "html.parser")
         
         # Extracting only the relevant movie information
-        movies = soup.find('h2', {'class': 'title front-view-title'})
+        movies = soup.find_all('h2', {'class': 'title front-view-title'})
         movie_list = ""
         for movie in movies:
             movie_list += f"<code>{movie}</code>\n\n"
