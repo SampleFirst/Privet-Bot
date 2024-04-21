@@ -65,11 +65,14 @@ def get_movie(movie_page_url):
     if movie_page_link.status_code == 200:
         movie_page_link = movie_page_link.text
         movie_page_link = BeautifulSoup(movie_page_link, "html.parser")
-        title = movie_page_link.find("a", {'class': 'cat-b'})
+        title = movie_page_link.find_all("span", {'class': 'download-btns'}).h6.text
         movie_details["title"] = title
-        links = movie_page_link.find_all("a", {'class': 'cat-b'})
-        final_links = {}
-        for i in links:
-            final_links[f"{i.text}"] = i['href']
-        movie_details["links"] = final_links
+        main_page = movie_page_link.find_all("div", {'class': 'cat-b'})
+        for main in main_page:
+            links = main.find("a", href=True)
+            final_links = {}
+            for i in links:
+                final_links[f"{i.text}"] = i['href']
+            movie_details["links"] = final_links
     return movie_details
+    
