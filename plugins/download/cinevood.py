@@ -72,8 +72,8 @@ def get_movie(movie_page_url):
             links = download_link.find_all("a")
             link_dict = {}
             for link in links:
-                quality = link.text.strip()
-                url = link["href"]
-                final_links[quality] = url
-            movie_details["links"] = final_links
+                link_dict[link.text.strip()] = link["href"]
+            final_links[link_text] = link_dict
+        movie_details["links"] = final_links
     return movie_details
+    
