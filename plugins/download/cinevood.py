@@ -28,7 +28,7 @@ async def cinevood(client, message):
         await search_results.edit_text('Sorry 🙏, No Result Found!\nCheck If You Have Misspelled The Movie Name.')
 
 
-@Client.on_callback_query(filters.regex('^link'))
+@Client.on_callback_query(filters.regex('^cine'))
 async def movie_result(client, callback_query):
     query = callback_query
     movie_id = query.data
@@ -51,7 +51,7 @@ def search_movies(query):
         movies = website.find_all("a", {'class': 'post-image post-image-left'})
         for movie in movies:
             if movie:
-                movies_details["id"] = f"link{movies.index(movie)}"
+                movies_details["id"] = f"cine{movies.index(movie)}"
                 movies_details["title"] = movie.find('img')['alt']
                 cine_list[movies_details["id"]] = movie['href']
                 print(movie['href'])
