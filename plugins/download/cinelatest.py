@@ -20,7 +20,7 @@ def get_trending_movies():
     return trending_movies
     
 @Client.on_message(filters.command("trending"))
-def trending_movies(client, message):
+async def trending_movies(client, message):
     trending_list = get_trending_movies()
     message_text = "Trending Movies:\n\n" + "\n".join(trending_list)
     main = await message.reply_text(message_text)
