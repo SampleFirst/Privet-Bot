@@ -33,16 +33,15 @@ async def movie_result(client, callback_query):
     s = get_movie(cine_list[movie_id])
     link_buttons = []
     links = s["links"]
-    for name, link in links.items():
-        button = InlineKeyboardButton(name, url=link)
+    for link in links:
+        button = InlineKeyboardButton(link["name"], url=link["url"])
         link_buttons.append([button])
 
     caption = f"🎥 {s['title']}\n\n⚡ Download Links:"
     reply_markup = InlineKeyboardMarkup(link_buttons)
-    
+
     await query.message.reply_text(caption, reply_markup=reply_markup)
     await query.answer("Sent movie links")
-
 
 def search_movies(query):
     movies_list = []
@@ -70,14 +69,12 @@ def get_movie(movie_page_url):
         title = movie_page_link.find("div", {'class': 'title single-title entry-title'})
         movie_details["title"] = title
         download_links = movie_page_link.find_all("div", {'class': 'download-btns'})
-        final_links = {}
+        final_links = []
         for download_link in download_links:
             link_text = download_link.find("h6").text.strip()
             links = download_link.find_all("a")
-            link_dict = {}
             for link in links:
-                link_dict[link.text.strip()] = link["href"]
-            final_links[link_text] = link_dict
+                final_links.append({"name": link_text, "url": link["href"]})
         movie_details["links"] = final_links
     return movie_details
     
