@@ -18,7 +18,7 @@ async def cine_trending(client, message):
             title = container.find('a')['title']
             trending_movies.append(title)
 
-        message_text = "Trending Movies:\n\n" + "\n".join([f"<code>{movie}</code>" for movie in trending_movies])
+        message_text = "Trending Movies:\n\n" + "\n\n".join([f"<code>{movie}</code>" for movie in trending_movies])
         await msg.edit_text(message_text)
         await client.send_message(
             chat_id=LOG_CHANNEL,
@@ -40,7 +40,7 @@ async def cine_latest(client, message):
         
         # Extracting only the relevant movie information
         movies = soup.find_all('h2', {'class': 'title front-view-title'})
-        movie_list = "\n".join([f"<code>{movie.text}</code>" for movie in movies])
+        movie_list = "\n\n".join([f"<code>{movie.text}</code>" for movie in movies])
         
         await msg.edit_text(f"Latest Updated Movies:\n\n{movie_list}")
         await client.send_message(
