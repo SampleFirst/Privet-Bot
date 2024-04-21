@@ -6,31 +6,30 @@ from pyrogram import Client, filters
 from info import ADMINS, LOG_CHANNEL
 
 
-@Client.on_message(filters.command("cinetranding"))
-async def cine_tranding_movies(client, message):
-    msg = await message.reply_text("Fetching popular movies...", quote=True)
-    url = f"https://1cinevood.site/"
+def get_trending_movies():
+    url = "https://1cinevood.site/"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.content, 'html.parser')
 
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raise an exception for HTTP errors
-        soup = BeautifulSoup(response.text, "html.parser")
-        movies = [movie['alt'] for movie in soup.find_all('src')]
-        movie_list = "<code>Most Popular Movies:</code>\n\n"
-        for movie in movies:
-            movie_list += f"<code>{movie}</code>\n\n"
+    trending_movies = []
+    movie_containers = soup.find_all('div', class_='box-in')
+    for container in movie_containers:
+        title = container.find('a')['title']
+        trending_movies.append(title)
 
-        await msg.delete()
-        main = await message.reply_text(f"{movie_list}", quote=True)
+    return trending_movies
+    
+@Client.on_message(filters.command("trending"))
+def trending_movies(client, message):
+    trending_list = get_trending_movies()
+    message_text = "Trending Movies:\n\n" + "\n".join(trending_list)
+    main = await message.reply_text(message_text)
         await client.send_message(
             chat_id=LOG_CHANNEL,
-            text=f"Latest Updated Movies:\n\n{movie_list}"
+            text=message_text"
         )
-
         await asyncio.sleep(15)
         await main.delete()
-    except Exception as e:
-        await message.reply_text(f"An error occurred: {e}")
 
 @Client.on_message(filters.command("cinelatest"))
 async def cine_latest_movies(client, message):
