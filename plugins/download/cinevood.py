@@ -7,7 +7,6 @@ from info import ADMINS
 
 cine_list = {}
 
-
 @Client.on_message(filters.command("cinevood") & filters.user(ADMINS))
 async def cinevood(client, message):
     query = message.text.split(maxsplit=1)
@@ -20,13 +19,14 @@ async def cinevood(client, message):
     if movies_list:
         keyboards = []
         for movie in movies_list:
-            keyboard = [InlineKeyboardButton(movie["title"], callback_data=movie["id"])]
+            keyboard = [
+                InlineKeyboardButton(movie["title"], callback_data=movie["id"]),
+            ]
             keyboards.append(keyboard)
         reply_markup = InlineKeyboardMarkup(keyboards)
         await search_results.edit_text('Search Results...', reply_markup=reply_markup)
     else:
         await search_results.edit_text('Sorry 🙏, No Result Found!\nCheck If You Have Misspelled The Movie Name.')
-
 
 @Client.on_callback_query(filters.regex('^cine'))
 async def movie_result(client, callback_query):
@@ -37,9 +37,16 @@ async def movie_result(client, callback_query):
     caption = f"🎥 {s['title']}\n\n⚡ Download Links:\n"
     for name, link in links.items():
         caption += f"{name}: {link}\n"
-    await query.message.reply_text(caption)
+    buttons = []
+    for name, link in links.items():
+        buttons.append(
+            [
+                InlineKeyboardButton(name, url=link),
+            ]
+        )
+    reply_markup = InlineKeyboardMarkup(buttons)
+    await query.message.reply_text(caption, reply_markup=reply_markup)
     await query.answer("Sent movie links")
-
 
 def search_movies(query):
     movies_list = []
@@ -54,7 +61,6 @@ def search_movies(query):
                 movies_details["id"] = f"cine{movies.index(movie)}"
                 movies_details["title"] = movie.find('img')['alt']
                 cine_list[movies_details["id"]] = movie['href']
-                print(movie['href'])
                 movies_list.append(movies_details)
                 movies_details = {}
     return movies_list
@@ -67,10 +73,8 @@ def get_movie(movie_page_url):
         movie_page_link = BeautifulSoup(movie_page_link, "html.parser")
         title = movie_page_link.find_all("span", {'class': 'download-btns'})
         movie_details["title"] = title
-        links = movie_page_link.find_all("a", {'class': 'cat-b'})
-        final_links = {}
-        for i in links:
-            final_links[f"{i.text}"] = i['href']
-        movie_details["links"] = final_links
+        links = {}
+        for i in movie_page_link.find_all("a", {'class': 'download-btns'}):
+            links[i.text] = i['href']
+        movie_details["links"] = links
     return movie_details
-    
