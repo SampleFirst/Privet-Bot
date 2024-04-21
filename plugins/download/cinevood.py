@@ -6,13 +6,13 @@ from io import BytesIO
 from info import ADMINS 
 
 cine_list = {}
-
+1
 
 @Client.on_message(filters.command("cinevood") & filters.user(ADMINS))
 async def cinevood(client, message):
     query = message.text.split(maxsplit=1)
     if len(query) == 1:
-        await message.reply_text("Please provide a movie name to search.")
+        await message.reply_text("Please provide a movSampleFirst/Privet-Bot/edit/main/plugins/download/cinevood.pyie name to search.")
         return
     query = query[1]
     search_results = await message.reply_text("Processing...")
@@ -65,7 +65,7 @@ def get_movie(movie_page_url):
         movie_page_link = movie_page_link.text
         movie_page_link = BeautifulSoup(movie_page_link, "html.parser")
         title = movie_page_link.find("div", {'class': 'title single-title entry-title'})
-        movie_details["title"] = title.text.strip()
+        movie_details["title"] = title
         download_links = movie_page_link.find_all("div", {'class': 'download-btns'})
         final_links = {}
         for download_link in download_links:
