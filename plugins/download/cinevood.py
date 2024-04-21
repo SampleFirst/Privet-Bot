@@ -65,10 +65,16 @@ def get_movie(movie_page_url):
         movie_page_link = movie_page_link.text
         movie_page_link = BeautifulSoup(movie_page_link, "html.parser")
         title = movie_page_link.find("div", {'class': 'title single-title entry-title'})
-        movie_details["title"] = title
-        links = movie_page_link.find_all("a", {'rel': 'noopener', 'target': '_blank'})
+        movie_details["title"] = title.text.strip()
+        download_links = movie_page_link.find_all("div", {'class': 'download-btns'})
         final_links = {}
-        for i in links:
-            final_links[f"{i.text}"] = i['href']
+        for download_link in download_links:
+            link_text = download_link.find("h6").text.strip()
+            links = download_link.find_all("a")
+            link_dict = {}
+            for link in links:
+                link_dict[link.text.strip()] = link["href"]
+            final_links[link_text] = link_dict
         movie_details["links"] = final_links
     return movie_details
+    
