@@ -15,10 +15,10 @@ async def cine_tranding_movies(client, message):
         response = requests.get(url)
         response.raise_for_status()  # Raise an exception for HTTP errors
         soup = BeautifulSoup(response.text, "html.parser")
-        movies = soup.find_all('div', {'class': 's-slider'})
+        movies = soup.find_all('div', {'class': 'box-in'})
         movie_list = ""
         for movie in movies:
-            movie_list += f"<code>{movie}</code>\n\n"  # Remove leading and trailing whitespace
+            movie_list += f"<code>{movie}</code>\n\n"
 
         await msg.delete()
         main = await message.reply_text(f"Most Popular Movies:\n\n{movie_list}", quote=True)
@@ -40,14 +40,14 @@ async def cine_latest_movies(client, message):
 
     try:
         response = requests.get(url)
-        response.raise_for_status()  # Raise an exception for HTTP errors
+        response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
         
         # Extracting only the relevant movie information
-        movies = soup.find_all('div', {'class': 'latestPost excerpt'}) # Start from the fourth Fmvideo div
+        movies = soup.find_all('h2', {'class': 'title front-view-title'}).text
         movie_list = ""
         for movie in movies:
-            movie_list += f"<code>{movie}</code>\n\n"  # Remove leading and trailing whitespace
+            movie_list += f"<code>{movie}</code>\n\n"
         
         await msg.delete()
         main = await message.reply_text(f"Latest Updated Movies:\n\n{movie_list}", quote=True)
@@ -60,3 +60,4 @@ async def cine_latest_movies(client, message):
         await main.delete()
     except Exception as e:
         await message.reply_text(f"An error occurred: {e}")
+        
