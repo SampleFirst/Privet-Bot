@@ -1,4 +1,4 @@
-# cinelatest.py
+# skylatest.py
 import asyncio
 import requests
 from bs4 import BeautifulSoup
@@ -9,8 +9,6 @@ from info import ADMINS, LOG_CHANNEL
 @Client.on_message(filters.command("cinetranding"))
 async def cine_tranding_movies(client, message):
     msg = await message.reply_text("Fetching popular movies...", quote=True)
-    domain = await fetch_new_domain()
-    suffix = await fetch_new_suffix()
     url = f"https://1cinevood.site/"
 
     try:
@@ -38,8 +36,6 @@ async def cine_tranding_movies(client, message):
 @Client.on_message(filters.command("cinelatest"))
 async def cine_latest_movies(client, message):
     msg = await message.reply_text("Fetching latest movies...", quote=True)
-    domain = await fetch_new_domain()
-    suffix = await fetch_new_suffix()
     url = f"https://1cinevood.site/"
 
     try:
