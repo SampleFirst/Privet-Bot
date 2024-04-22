@@ -19,7 +19,7 @@ async def mkv_trending(client, message):
         for movie in movies:
             movie_list += f"<code>{movie.find('span', {'class': 'mli-info'}).text}</code>\n\n"
 
-        await msg.edit_text(f"Most Popular Movies:\n\n{movie_list}", quote=True)
+        await msg.edit_text(f"Most Popular Movies:\n\n{movie_list}")
         await client.send_message(
             chat_id=LOG_CHANNEL,
             text=f"Latest Updated Movies:\n\n{movie_list}"
