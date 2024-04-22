@@ -9,7 +9,7 @@ from plugins.download.domain import fetch_new_domain, fetch_new_suffix
 
 @Client.on_message(filters.command("skytrending"))
 async def sky_trending(client, message):
-    msg = await message.reply_text("Fetching popular movies...", quote=True)
+    msg = await message.reply_text("Fetching trending movies...", quote=True)
     domain = await fetch_new_domain()
     suffix = await fetch_new_suffix()
     url = f"https://{domain}.{suffix}/"
