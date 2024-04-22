@@ -7,8 +7,8 @@ from info import ADMINS, LOG_CHANNEL
 from plugins.download.domain import fetch_new_domain, fetch_new_suffix
 
 
-@Client.on_message(filters.command("popular"))
-async def popular_movies(client, message):
+@Client.on_message(filters.command("skytrending"))
+async def sky_trending(client, message):
     msg = await message.reply_text("Fetching popular movies...", quote=True)
     domain = await fetch_new_domain()
     suffix = await fetch_new_suffix()
@@ -23,21 +23,19 @@ async def popular_movies(client, message):
         for movie in movies:
             movie_list += f"<code>{movie.text.strip()}</code>\n\n"  # Remove leading and trailing whitespace
 
-        await msg.delete()
-        main = await message.reply_text(f"Most Popular Movies:\n\n{movie_list}", quote=True)
+        await msg.edit_text(f"Most Popular Movies:\n\n{movie_list}", quote=True)
         await client.send_message(
             chat_id=LOG_CHANNEL,
             text=f"Latest Updated Movies:\n\n{movie_list}"
         )
-        
         await asyncio.sleep(15)
-        await main.delete()
+        await msg.delete()
     except Exception as e:
         await message.reply_text(f"An error occurred: {e}")
 
 
-@Client.on_message(filters.command("latest"))
-async def latest_movies(client, message):
+@Client.on_message(filters.command("skylatest"))
+async def sky_latest(client, message):
     msg = await message.reply_text("Fetching latest movies...", quote=True)
     domain = await fetch_new_domain()
     suffix = await fetch_new_suffix()
@@ -54,14 +52,12 @@ async def latest_movies(client, message):
         for movie in movies:
             movie_list += f"<code>{movie.text.strip()}</code>\n\n"  # Remove leading and trailing whitespace
         
-        await msg.delete()
-        main = await message.reply_text(f"Latest Updated Movies:\n\n{movie_list}", quote=True)
+        await msg.edit_text(f"Latest Updated Movies:\n\n{movie_list}", quote=True)
         await client.send_message(
             chat_id=LOG_CHANNEL,
             text=f"Latest Updated Movies:\n\n{movie_list}"
         )
-        
         await asyncio.sleep(15)
-        await main.delete()
+        await msg.delete()
     except Exception as e:
         await message.reply_text(f"An error occurred: {e}")
