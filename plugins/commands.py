@@ -4,7 +4,7 @@ import random
 import asyncio
 from pyrogram import Client, filters, enums
 from pyrogram.errors import ChatAdminRequired
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
 from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS
 from utils import is_subscribed
