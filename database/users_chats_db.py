@@ -15,6 +15,9 @@ class Database:
             id=id,
             name=name,
             file_id=None,
+            wallet=None,
+            balance=0,
+            referrals=[],
             ban_status=dict(
                 is_banned=False,
                 ban_reason="",
@@ -70,6 +73,19 @@ class Database:
         count = await self.col.count_documents({})
         return count
 
+    async def get_user(self, id):
+        return await self.col.find_one({'id': int(id)})
+
+    async def get_total_referrals(self, user_id):
+        user = await self.get_user(user_id)
+        return len(user.get('referrals', []))
+
+    async def get_chat_members_count(self, chat_id):
+        chat = await self.get_chat(chat_id)
+        if chat:
+            return chat.get('members', 0)
+        return 0
+        
     async def remove_ban(self, id):
         ban_status = dict(
             is_banned=False,
