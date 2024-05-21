@@ -74,6 +74,36 @@ async def start(client, message):
             quote=True
         )
 
+@Client.on_message(filters.regex('Balance 💰') & filters.private)
+async def balance(bot, message):
+    user = await db.get_user(message.from_user.id)
+    username = message.from_user.username or "N/A"
+    wallet = user.get("wallet", "None")
+    balance = user.get("balance", 0)
+    await message.reply(
+        f"🆔 User: {username}\n\n📝 Wallet: {wallet}\n\n💳 Balance: {balance} Coins",
+        quote=True
+    )
+
+@Client.on_message(filters.regex('🗣 Referral') & filters.private)
+async def referral(bot, message):
+    user_id = message.from_user.id
+    bot_name = (await bot.get_me()).username
+    total_referrals = await db.get_total_referrals(user_id)
+    referral_link = f"https://t.me/{bot_name}?start={user_id}"
+    await message.reply(
+        f"💰 Per Refer: Upto 50 Coins\n\n📝 Total Referrals: {total_referrals}\n\n🔍 Your Referral Link: {referral_link}",
+        quote=True
+    )
+
+@Client.on_message(filters.regex('Bonus 🎁') & filters.private)
+async def bonus(bot, message):
+    await message.reply("🎁 You can earn bonus by participating in our events and activities!", quote=True)
+
+@Client.on_message(filters.regex('📤 Withdraw') & filters.private)
+async def withdraw(bot, message):
+    await message.reply("📤 You can withdraw your balance once you reach the minimum threshold. Please contact support for more details.", quote=True)
+
 @Client.on_message(filters.command('logs') & filters.user(ADMINS))
 async def log_file(bot, message):
     """Send log file"""
