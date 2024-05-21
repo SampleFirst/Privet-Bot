@@ -14,6 +14,14 @@ import pytz
 
 logger = logging.getLogger(__name__)
 
+buttonz = ReplyKeyboardMarkup(
+    [
+        ["start⚡️", "help📚", "login🔑", "DC"],
+        ["follow❤️", "ping📡", "status📊", "maintainers😎"]
+    ],
+    resize_keyboard=True
+)
+    
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
@@ -34,25 +42,10 @@ async def start(client, message):
         await db.add_user(message.from_user.id, message.from_user.first_name)
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention, message.from_user.username))
     if len(message.command) != 2:
-        buttons = [
-            [
-                InlineKeyboardButton('My Plan', callback_data="plan"),
-                InlineKeyboardButton('Status', callback_data="status")
-            ],
-            [
-                InlineKeyboardButton('Bots Premium', callback_data="bots"),
-                InlineKeyboardButton('Database Premium', callback_data="database")
-            ],
-            [
-                InlineKeyboardButton('Bots Pack', callback_data="botspack"),
-                InlineKeyboardButton('Database Pack', callback_data="dbpack")
-            ]
-        ]
-        reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=script.START_TXT.format(user=message.from_user.mention),
-            reply_markup=reply_markup,
+            reply_markup=buttonz,
             parse_mode=enums.ParseMode.HTML,
             quote=True
         )
@@ -73,25 +66,10 @@ async def start(client, message):
         )
         return
     if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help"]:
-        buttons = [
-            [
-                InlineKeyboardButton('My Plan', callback_data="plan"),
-                InlineKeyboardButton('Status', callback_data="status")
-            ],
-            [
-                InlineKeyboardButton('Bots Premium', callback_data="bots"),
-                InlineKeyboardButton('Database Premium', callback_data="database")
-            ],
-            [
-                InlineKeyboardButton('Bots Pack', callback_data="botspack"),
-                InlineKeyboardButton('Database Pack', callback_data="dbpack")
-            ]
-        ]
-        reply_markup = InlineKeyboardMarkup(buttons)
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=script.START_TXT.format(user=message.from_user.mention),
-            reply_markup=reply_markup,
+            reply_markup=buttonz,
             parse_mode=enums.ParseMode.HTML,
             quote=True
         )
