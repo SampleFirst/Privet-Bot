@@ -16,8 +16,8 @@ logger = logging.getLogger(__name__)
 
 buttonz = ReplyKeyboardMarkup(
     [
-        ["start⚡️", "help📚", "login🔑", "DC"],
-        ["follow❤️", "ping📡", "status📊", "maintainers😎"]
+        ["Balance 💰", "🗣 Referral"],
+        ["Bonus 🎁", "📤 Withdraw"]
     ],
     resize_keyboard=True
 )
