@@ -93,6 +93,7 @@ async def referral(bot, message):
     referral_link = f"https://t.me/{bot_name}?start={user_id}"
     await message.reply(
         f"💰 Per Refer: Upto 50 Coins\n\n📝 Total Referrals: {total_referrals}\n\n🔍 Your Referral Link: {referral_link}",
+        parse_mode=enums.ParseMode.MARKDOWN,
         quote=True
     )
 
