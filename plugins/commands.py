@@ -90,11 +90,11 @@ async def referral(bot, message):
     user_id = message.from_user.id
     bot_name = (await bot.get_me()).username
     total_referrals = await db.get_total_referrals(user_id)
-    referral_link = f"https://t.me/{bot_name}?start={user_id}"
+    referral_link = f"[Your Referral Link](https://t.me/{bot_name}?start={user_id})"
     await message.reply(
-        f"💰 Per Refer: Upto 50 Coins\n\n📝 Total Referrals: {total_referrals}\n\n🔍 Your Referral Link: {referral_link}",
-        parse_mode=enums.ParseMode.MARKDOWN,
-        quote=True
+        f"💰 Per Refer: Upto 50 Coins\n\n📝 Total Referrals: {total_referrals}\n\n🔍 {referral_link}",
+        quote=True,
+        parse_mode=enums.ParseMode.MARKDOWN
     )
 
 @Client.on_message(filters.regex('Bonus 🎁') & filters.private)
