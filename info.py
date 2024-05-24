@@ -48,4 +48,5 @@ SERIES_DB = [int(sch) if id_pattern.search(sch) else sch for sch in environ.get(
 AUDIOBOOK_DB = [int(bch) if id_pattern.search(bch) else bch for bch in environ.get('AUDIOBOOK_DB', '0').split()]
 
 PORT = environ.get("PORT", "8080")
+IMDB_TEMPLATE = environ.get("IMDB_TEMPLATE", "<b>Query: {query}</b> \n‌‌‌‌IMDb Data:\n\n🏷 Title: <a href={url}>{title}</a>\n🎭 Genres: {genres}\n📆 Year: <a href={url}/releaseinfo>{year}</a>\n🌟 Rating: <a href={url}/ratings>{rating}</a> / 10")
 
