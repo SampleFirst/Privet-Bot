@@ -121,11 +121,11 @@ async def log_file(bot, message):
 def store_invite_url(client, message):
     global invite_url
     
-    # Extract the text from the message
-    text = message.text
+    command_parts = message.text.split("/store_url ", 1)
+    text = command_parts[1]
     
     # Check if the text contains a Telegram invite URL
-    if "https://t.me/+" in text:
+    if "https://t.me/" in text:
         invite_url = text
         message.reply_text(f"Invite URL stored: {invite_url}")
     else:
@@ -140,3 +140,4 @@ def get_invite_url(client, message):
         message.reply_text(f"Stored Invite URL: {invite_url}")
     else:
         message.reply_text("No URL has been stored yet.")
+
