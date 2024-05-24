@@ -5,7 +5,7 @@ import re
 from datetime import date, time, datetime, timedelta
 from pyrogram import Client, filters, enums
 from database.users_chats_db import db
-from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, LOG_CHANNEL, PREMIUM_LOGS, PAYMENT_CHAT, MOVIES_DB, ANIME_DB, SERIES_DB, AUDIOBOOK_DB
+from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, MAX_LIST_ELM, LOG_CHANNEL, PREMIUM_LOGS, PAYMENT_CHAT, MOVIES_DB, ANIME_DB, SERIES_DB, AUDIOBOOK_DB
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -30,6 +30,17 @@ async def is_subscribed(bot, query=None, userid=None):
         if user.status != "kicked":
             return True
     return False
+
+def list_to_str(k):
+    if not k:
+        return "N/A"
+    elif len(k) == 1:
+        return str(k[0])
+    elif MAX_LIST_ELM:
+        k = k[:int(MAX_LIST_ELM)]
+        return ' '.join(f'{elem}, ' for elem in k)
+    else:
+        return ' '.join(f'{elem}, ' for elem in k)
 
 async def get_poster(query, bulk=False, id=False, file=None):
     if not id:
