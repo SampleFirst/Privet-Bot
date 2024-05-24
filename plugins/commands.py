@@ -21,7 +21,10 @@ buttonz = ReplyKeyboardMarkup(
     ],
     resize_keyboard=True
 )
-    
+
+invite_url = ""
+
+
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
     if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
@@ -90,13 +93,13 @@ async def referral(bot, message):
     user_id = message.from_user.id
     bot_name = (await bot.get_me()).username
     total_referrals = await db.get_total_referrals(user_id)
-    referral_link = f"[Your Referral Link](https://t.me/{bot_name}?start={user_id})"
+    referral_link = f"https://t.me/{bot_name}?start={user_id}"
     await message.reply(
-        f"💰 Per Refer: Upto 50 Coins\n\n📝 Total Referrals: {total_referrals}\n\n🔍 {referral_link}",
-        quote=True,
-        parse_mode=enums.ParseMode.MARKDOWN
+        f"💰 Per Refer: Upto 50 Coins\n\n📝 Total Referrals: {total_referrals}\n\n🔍 Your Referral Link: {referral_link}",
+        parse_mode=enums.ParseMode.MARKDOWN,
+        quote=True
     )
-
+    
 @Client.on_message(filters.regex('Bonus 🎁') & filters.private)
 async def bonus(bot, message):
     await message.reply("🎁 You can earn bonus by participating in our events and activities!", quote=True)
@@ -113,3 +116,27 @@ async def log_file(bot, message):
     except Exception as e:
         await message.reply(str(e))
         
+# Define a command handler to store the invite URL
+@Client.on_message(filters.command("store_url") & filters.private)
+def store_invite_url(client, message):
+    global invite_url
+    
+    # Extract the text from the message
+    text = message.text
+    
+    # Check if the text contains a Telegram invite URL
+    if "https://t.me/+" in text:
+        invite_url = text
+        message.reply_text(f"Invite URL stored: {invite_url}")
+    else:
+        message.reply_text("No valid Telegram invite URL found in the message.")
+
+# Define a command handler to get the stored invite URL
+@Client.on_message(filters.command("get_url") & filters.private)
+def get_invite_url(client, message):
+    global invite_url
+    
+    if invite_url:
+        message.reply_text(f"Stored Invite URL: {invite_url}")
+    else:
+        message.reply_text("No URL has been stored yet.")
