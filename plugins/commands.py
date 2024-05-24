@@ -22,8 +22,6 @@ buttonz = ReplyKeyboardMarkup(
     resize_keyboard=True
 )
 
-invite_url = ""
-
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
@@ -116,28 +114,3 @@ async def log_file(bot, message):
     except Exception as e:
         await message.reply(str(e))
         
-# Define a command handler to store the invite URL
-@Client.on_message(filters.command("store_url") & filters.private)
-def store_invite_url(client, message):
-    global invite_url
-    
-    command_parts = message.text.split("/store_url ", 1)
-    text = command_parts[1]
-    
-    # Check if the text contains a Telegram invite URL
-    if "https://t.me/" in text:
-        invite_url = text
-        message.reply_text(f"Invite URL stored: {invite_url}")
-    else:
-        message.reply_text("No valid Telegram invite URL found in the message.")
-
-# Define a command handler to get the stored invite URL
-@Client.on_message(filters.command("get_url") & filters.private)
-def get_invite_url(client, message):
-    global invite_url
-    
-    if invite_url:
-        message.reply_text(f"Stored Invite URL: {invite_url}")
-    else:
-        message.reply_text("No URL has been stored yet.")
-
