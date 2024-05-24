@@ -18,7 +18,7 @@ def store_invite_url(client, message):
     text = command_parts[1]
     
     # Check if the text contains a Telegram invite URL
-    if "https://t.me/" in text:
+    if "https" in text:
         invite_url = text
         message.reply_text(f"Invite URL stored: {invite_url}")
     else:
