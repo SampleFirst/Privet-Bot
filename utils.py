@@ -10,6 +10,8 @@ from info import AUTH_CHANNEL, LONG_IMDB_DESCRIPTION, LOG_CHANNEL, PREMIUM_LOGS,
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+imdb = IMDb() 
+
 # Temp DB for banned
 class temp(object):
     STATUS_BOT = {}
