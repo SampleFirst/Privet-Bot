@@ -74,6 +74,34 @@ async def start(client, message):
             parse_mode=enums.ParseMode.HTML,
             quote=True
         )
+    data = message.command[1]    
+    if data.split("-", 1)[0] == "verify":
+        userid = data.split("-", 2)[1]
+        token = data.split("-", 3)[2]
+        if str(message.from_user.id) != str(userid):
+            return await message.reply_text(
+                text="<b>Invalid or Expired Link!</b>"
+            )
+        is_valid = await check_token(client, userid, token)
+        if is_valid:
+            await db.add_credits(userid, 20)
+            await message.reply_text(
+                text="Hey user You are successful verification"
+            )
+            return
+        else:
+            return await message.reply_text(
+                text="<b>Invalid or Expired Link!</b>"
+            )
+    else:
+        id = message.text.split(' ')[1]
+        if id:
+            if not await db.is_user_exist(message.from_user.id):
+                await db.add_user(message.from_user.id, message.from_user.first_name, id)
+                await client.send_message(id, "Congrats! You Won 10GB Upload limit")
+            else:
+                await client.send_message(id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
+                
 
 @Client.on_message(filters.regex('Balance 💰') & filters.private)
 async def balance(bot, message):
