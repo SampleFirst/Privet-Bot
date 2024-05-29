@@ -108,9 +108,9 @@ async def start(client, message):
 
 @Client.on_message(filters.regex('Balance 💰') & filters.private)
 async def balance(bot, message):
-    user = await db.get_user(message.from_user.id)
+    user_id = message.from_user.id
     username = message.from_user.username or "N/A"
-    balance = await db.get_credits(user.id)
+    balance = await db.get_credits(user_id)
     await message.reply(
         f"🆔 User: {username}\n\n💳 Credits: {balance} ",
         quote=True
