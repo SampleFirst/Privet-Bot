@@ -6,7 +6,7 @@ from pyrogram import Client, filters, enums
 from pyrogram.errors import ChatAdminRequired
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
-from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS
+from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, REFERRAL_ON
 from utils import is_subscribed
 from datetime import date, datetime
 from Script import script
@@ -14,14 +14,22 @@ import pytz
 
 logger = logging.getLogger(__name__)
 
-buttonz = ReplyKeyboardMarkup(
-    [
-        ["Balance 💰", "🗣 Referral"],
-        ["Bonus 🎁", "📤 Withdraw"]
-    ],
-    resize_keyboard=True
-)
-
+if REFERRAL_ON:
+    buttonz = ReplyKeyboardMarkup(
+        [
+            ["Balance 💰", "🗣 Referral"],
+            ["Bonus 🎁", "📤 Withdraw"]
+        ],
+        resize_keyboard=True
+    )
+else:
+    buttonz = ReplyKeyboardMarkup(
+        [
+            ["Balance 💰"],
+            ["Bonus 🎁", "📤 Withdraw"]
+        ],
+        resize_keyboard=True
+    )
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
