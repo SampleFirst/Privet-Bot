@@ -14,22 +14,16 @@ import pytz
 
 logger = logging.getLogger(__name__)
 
-if REFERRAL_ON:
-    buttonz = ReplyKeyboardMarkup(
-        [
-            ["Balance 💰", "🗣 Referral"],
-            ["Bonus 🎁", "📤 Withdraw"]
-        ],
-        resize_keyboard=True
-    )
-else:
-    buttonz = ReplyKeyboardMarkup(
-        [
-            ["Balance 💰"],
-            ["Bonus 🎁", "📤 Withdraw"]
-        ],
-        resize_keyboard=True
-    )
+async def get_buttons(user_id):
+    buttons = [
+        ["Balance 💰", "Bonus 🎁"]
+    ]
+    if REFERRAL_ON:
+        buttons[0].insert(1, "🗣 Referral")
+    user_credits = await db.get_credits(user_id)
+    if user_credits >= 100:
+        buttons[0].append("📤 Withdraw")
+    return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
@@ -50,6 +44,7 @@ async def start(client, message):
     if not await db.is_user_exist(message.from_user.id):
         await db.add_user(message.from_user.id, message.from_user.first_name)
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention, message.from_user.username))
+    buttonz = await get_buttons(message.from_user.id)
     if len(message.command) != 2:
         await message.reply_photo(
             photo=random.choice(PICS),
@@ -115,10 +110,9 @@ async def start(client, message):
 async def balance(bot, message):
     user = await db.get_user(message.from_user.id)
     username = message.from_user.username or "N/A"
-    wallet = user.get("wallet", "None")
-    balance = user.get("balance", 0)
+    balance = await db.get_credits(user.id)
     await message.reply(
-        f"🆔 User: {username}\n\n📝 Wallet: {wallet}\n\n💳 Balance: {balance} Coins",
+        f"🆔 User: {username}\n\n💳 Credits: {balance} ",
         quote=True
     )
 
