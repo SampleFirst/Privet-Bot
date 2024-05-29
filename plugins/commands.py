@@ -144,3 +144,47 @@ async def log_file(bot, message):
     except Exception as e:
         await message.reply(str(e))
         
+@Client.on_message(filters.command('stats') & filters.incoming)
+async def get_stats(bot, message):
+    rju = await message.reply('Fetching stats..')
+    try:
+        total_users = await db.total_users_count()
+        files = await Media.count_documents()
+        size = await db.get_db_size()
+        free = 536870912 - size
+        size = get_size(size)
+        free = get_size(free)
+        
+        stats_message = (
+            f"**Bot Stats**\n\n"
+            f"**Total Users:** {total_users}\n"
+            f"**Total Files:** {files}\n"
+            f"**Database Size:** {size}\n"
+            f"**Free Space:** {free}"
+        )
+        await rju.edit(stats_message)
+    except Exception as e:
+        await rju.edit(f"An error occurred: {e}")
+
+
+@Client.on_message(filters.command('users') & filters.user(ADMINS))
+async def list_users(bot, message):
+    raju = await message.reply('Getting List Of Users')
+    try:
+        users = db.get_all_users()
+        out = "Users Saved In DB Are:\n\n"
+        async for user in users:
+            user_info = f"<a href='tg://user?id={user['id']}'>{user['name']}</a>"
+            if user['ban_status']['is_banned']:
+                user_info += ' ( Banned User )'
+            out += f"{user_info}\n"
+        
+        if len(out) > 4096:
+            with open('users.txt', 'w+') as outfile:
+                outfile.write(out)
+            await message.reply_document('users.txt', caption="List Of Users")
+        else:
+            await raju.edit_text(out)
+    except Exception as e:
+        await raju.edit(f"An error occurred: {e}")
+        
