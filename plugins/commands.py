@@ -9,7 +9,6 @@ from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyb
 from database.users_chats_db import db
 from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, REFERRAL_ON
 from utils import is_subscribed, get_size
-from datetime import date, datetime
 from Script import script
 import pytz
 
@@ -28,20 +27,6 @@ async def get_buttons(user_id):
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
-    if message.chat.type in [enums.ChatType.GROUP, enums.ChatType.SUPERGROUP]:
-        buttons = [
-            [
-                InlineKeyboardButton('Support Chat', callback_data="none"),
-                InlineKeyboardButton('Update Channel', callback_data="none")
-            ]
-        ]
-        reply_markup = InlineKeyboardMarkup(buttons)
-        await asyncio.sleep(2)
-        if not await db.get_chat(message.chat.id):
-            total = await client.get_chat_members_count(message.chat.id)
-            await client.send_message(LOG_CHANNEL, script.LOG_TEXT_G.format(a=message.chat.title, b=message.chat.id, c=message.chat.username, d=total, f=client.mention, e="Unknown"))
-            await db.add_chat(message.chat.id, message.chat.title, message.chat.username)
-        return
     if not await db.is_user_exist(message.from_user.id):
         await db.add_user(message.from_user.id, message.from_user.first_name)
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(message.from_user.id, message.from_user.mention, message.from_user.username))
