@@ -8,7 +8,7 @@ from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
 from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, REFERRAL_ON
-from utils import is_subscribed
+from utils import is_subscribed, get_size
 from datetime import date, datetime
 from Script import script
 import pytz
@@ -172,7 +172,8 @@ async def list_users(bot, message):
     users = await db.get_all_users()
     out = "Users Saved In DB Are:\n\n"
     async for user in users:
-        out += f"<a href=tg://user?id={user['id']}>{user['name']}</a>"
+        user_id = user['id']
+        out += f"<a href=tg://user?id={user_id}>{user['name']}</a>"
         if user['ban_status']['is_banned']:
             out += '( Banned User )'
         out += '\n'
