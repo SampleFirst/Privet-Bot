@@ -125,8 +125,9 @@ async def bonus(bot, message):
     user_id = message.from_user.id
     username = message.from_user.username or "N/A"
     buttonz = await get_buttons(user_id)
-    got_bonus = await db.got_bonus(user_id)
-    if got_bonus == False:
+    bonus = await db.get_bonus(user_id)
+    if bonus == False:
+        await db.got_bonus(user_id)
         await message.reply(
             "🎁 Congratulation, you Received 20 Credits", 
             reply_markup=buttonz,
