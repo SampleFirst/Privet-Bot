@@ -31,21 +31,11 @@ CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHAN
 auth_channel = environ.get('AUTH_CHANNEL')
 AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_channel) else None
 PICS = environ.get('PICS', 'https://telegra.ph/file/6d98a444198fdac6322c2.jpg').split()
-UPI_PIC = environ.get('UPI_PIC', 'https://telegra.ph/file/7e56d907542396289fee4.jpg')
 
 # MongoDB information
 DATABASE_URI = environ.get('DATABASE_URI', "")
 DATABASE_NAME = environ.get('DATABASE_NAME', "")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
-
-PREMIUM_LOGS = int(environ.get('PREMIUM_LOGS', 0))
-PAYMENT_CHAT = int(environ.get('PAYMENT_CHAT', 0))
-
-# Database mchannels
-MOVIES_DB = [int(mch) if id_pattern.search(mch) else mch for mch in environ.get('MOVIES_DB', '0').split()]
-ANIME_DB = [int(ach) if id_pattern.search(ach) else ach for ach in environ.get('ANIME_DB', '0').split()]
-SERIES_DB = [int(sch) if id_pattern.search(sch) else sch for sch in environ.get('SERIES_DB', '0').split()]
-AUDIOBOOK_DB = [int(bch) if id_pattern.search(bch) else bch for bch in environ.get('AUDIOBOOK_DB', '0').split()]
 
 PORT = environ.get("PORT", "8080")
 IMDB_TEMPLATE = environ.get("IMDB_TEMPLATE", "<b>Query: {query}</b> \n‌‌‌‌IMDb Data:\n\n🏷 Title: <a href={url}>{title}</a>\n🎭 Genres: {genres}\n📆 Year: <a href={url}/releaseinfo>{year}</a>\n🌟 Rating: <a href={url}/ratings>{rating}</a> / 10")
