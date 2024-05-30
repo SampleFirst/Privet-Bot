@@ -21,6 +21,9 @@ class Database:
                 referred_by=referred_by,
                 referral_count=0,
             ),
+            bonus=dict(
+                got_bonus=False,
+            ),
             credits=0,
         )
 
@@ -81,6 +84,21 @@ class Database:
 
     # New functions for referral and credits management
 
+    async def got_bonus_status(self, user_id):
+        bonus = dict(
+            got_bonus=True
+        )
+        await self.col.update_one({'id': user_id}, {'$set': {'bonus': bonus}})
+        
+    async def get_bonus_status(self, id):
+        default = dict(
+            got_bonus=False
+        )
+        user = await self.col.find_one({'id': int(id)})
+        if not user:
+            return default
+        return user.get('bonus', default)
+        
     async def add_referral(self, id):
         await self.col.update_one({'id': int(id)}, {'$inc': {'referral.referral_count': 1}})
 
