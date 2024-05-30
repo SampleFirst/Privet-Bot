@@ -21,7 +21,7 @@ async def get_buttons(user_id):
     if REFERRAL_ON:
         buttons[0].append("🗣 Referral")
     bonus = await db.get_bonus_status(user_id)
-    if bonus == True:
+    if bonus["got_bonus"] == True:
         buttons[0].append("Earn Credits 💵")
     else:
         buttons[0].append("Bonus 🎁")
@@ -126,7 +126,7 @@ async def bonus(bot, message):
     username = message.from_user.username or "N/A"
     buttonz = await get_buttons(user_id)
     bonus = await db.get_bonus_status(user_id)
-    if bonus == True:
+    if bonus["got_bonus"] == True:
         await message.reply(
             "🎁 Your already Received 20 Credits", 
             reply_markup=buttonz,
