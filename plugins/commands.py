@@ -126,7 +126,14 @@ async def bonus(bot, message):
     username = message.from_user.username or "N/A"
     buttonz = await get_buttons(user_id)
     bonus = await db.get_bonus_status(user_id)
-    if bonus == False:
+    if bonus:
+        await message.reply(
+            "🎁 Your already Received 20 Credits", 
+            reply_markup=buttonz,
+            quote=True
+        )
+        await bot.send_message(LOG_CHANNEL, f"Hey Admin {user_id} Name: {username} Try Again For Bonus")
+    else:
         await db.got_bonus_status(user_id)
         await db.add_credits(user_id, 20)
         await message.reply(
@@ -134,14 +141,7 @@ async def bonus(bot, message):
             reply_markup=buttonz,
             quote=True
         )
-    else:
-        await message.reply(
-            "🎁 Your already Received 20 Credits", 
-            reply_markup=buttonz,
-            quote=True
-        )
-        await client.send_message(LOG_CHANNEL, f"Hey Admin {user_id} Name: {username} Try Again For Bonus")
-
+        
 @Client.on_message(filters.regex('📤 Withdraw') & filters.private)
 async def withdraw(bot, message):
     await message.reply("📤 You can withdraw your balance once you reach the minimum threshold. Please contact support for more details.", quote=True)
