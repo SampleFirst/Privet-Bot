@@ -52,7 +52,7 @@ async def sky_latest(client, message):
         for movie in movies:
             movie_list += f"<code>{movie.text.strip()}</code>\n\n"  # Remove leading and trailing whitespace
         
-        await msg.edit_text(f"Latest Updated Movies:\n\n{movie_list}", quote=True)
+        await msg.edit_text(f"Latest Updated Movies:\n\n{movie_list}")
         await client.send_message(
             chat_id=LOG_CHANNEL,
             text=f"Latest Updated Movies:\n\n{movie_list}"
