@@ -16,14 +16,20 @@ logger = logging.getLogger(__name__)
 
 async def get_buttons(user_id):
     buttons = [
-        ["Balance 💰", "Bonus 🎁"]
+        ["Balance 💰"]
     ]
     if REFERRAL_ON:
-        buttons[0].insert(1, "🗣 Referral")
+        buttons[0].append("🗣 Referral")
+    got_bonus = await db.got_bonus(user_id)
+    if got_bonus == True:
+        buttons[0].append("Earn Credits 💵")
+    else:
+        buttons[0].append("Bonus 🎁")
     user_credits = await db.get_credits(user_id)
     if user_credits >= 100:
         buttons[0].append("📤 Withdraw")
     return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
@@ -116,7 +122,23 @@ async def referral(bot, message):
     
 @Client.on_message(filters.regex('Bonus 🎁') & filters.private)
 async def bonus(bot, message):
-    await message.reply("🎁 You can earn bonus by participating in our events and activities!", quote=True)
+    user_id = message.from_user.id
+    username = message.from_user.username or "N/A"
+    buttonz = await get_buttons(user_id)
+    got_bonus = await db.got_bonus(user_id)
+    if got_bonus == False:
+        await message.reply(
+            "🎁 Congratulation, you Received 20 Credits", 
+            reply_markup=buttonz,
+            quote=True
+        )
+    else:
+        await message.reply(
+            "🎁 Your already Received 20 Credits", 
+            reply_markup=buttonz,
+            quote=True
+        )
+        await client.send_message(LOG_CHANNEL, f"Hey Admin {user_id} Name: {username} Try Again For Bonus")
 
 @Client.on_message(filters.regex('📤 Withdraw') & filters.private)
 async def withdraw(bot, message):
