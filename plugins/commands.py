@@ -20,8 +20,8 @@ async def get_buttons(user_id):
     ]
     if REFERRAL_ON:
         buttons[0].append("🗣 Referral")
-    got_bonus = await db.get_bonus_status(user_id)
-    if got_bonus == True:
+    bonus = await db.get_bonus_status(user_id)
+    if bonus:
         buttons[0].append("Earn Credits 💵")
     else:
         buttons[0].append("Bonus 🎁")
