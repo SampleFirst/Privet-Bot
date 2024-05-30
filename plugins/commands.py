@@ -17,19 +17,18 @@ import pytz
 logger = logging.getLogger(__name__)
 
 async def get_buttons(user_id):
-    buttons = [
-        ["Balance 💰"]
-    ]
-    if REFERRAL_ON:
-        buttons[0].append("🗣 Referral")
+    buttons = []
+    row = ["Balance 💰", "🗣 Referral"] if REFERRAL_ON else ["Balance 💰"]
+    buttons.append(row)
     bonus = await db.get_bonus_status(user_id)
-    if bonus["got_bonus"] == True:
-        buttons[0].append("Earn Credits 💵")
+    if bonus["got_bonus"]:
+        row = ["Earn Credits 💵"]
     else:
-        buttons[0].append("Bonus 🎁")
+        row = ["Bonus 🎁"]
     user_credits = await db.get_credits(user_id)
     if user_credits >= 100:
-        buttons[0].append("📤 Withdraw")
+        row.append("📤 Withdraw")
+    buttons.append(row)
     return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
 
 
