@@ -43,3 +43,11 @@ LONG_IMDB_DESCRIPTION = is_enabled(environ.get("LONG_IMDB_DESCRIPTION", "False")
 MAX_LIST_ELM = environ.get("MAX_LIST_ELM", None)
 REFERRAL_ON = environ.get("REFERRAL_ON", True)
 MAIN_CHANNEL = int(environ.get('MAIN_CHANNEL', 0))
+
+IS_VERIFY = is_enabled((environ.get('IS_VERIFY', 'False')), False)
+HOW_TO_VERIFY = environ.get('HOW_TO_VERIFY', "https://t.me/c/1845700490/3")
+VERIFY2_URL = environ.get('VERIFY2_URL', "clicksfly.com")
+VERIFY2_API = environ.get('VERIFY2_API', "c2150e28189cefefd05f8a9c5c5770cc462033e3")
+SHORTLINK_URL = environ.get('SHORTLINK_URL', 'clicksfly.com')
+SHORTLINK_API = environ.get('SHORTLINK_API', 'c2150e28189cefefd05f8a9c5c5770cc462033e3')
+
