@@ -152,7 +152,7 @@ async def earn_credits(client, message):
         ]]
         await client.send_message(
             chat_id=message.from_user.id,
-            text=f"Hey {message.from_user.name} 💕\n\nComplete This Ad And Earn 20 Credits.",
+            text=f"Hey {message.from_user.mention} 💕\n\nComplete This Ad And Earn 20 Credits.",
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup(btn)
         )
