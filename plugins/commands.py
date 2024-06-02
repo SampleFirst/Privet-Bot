@@ -112,9 +112,8 @@ async def balance(bot, message):
 @Client.on_message(filters.regex('🗣 Referral') & filters.private)
 async def referral(bot, message):
     user_id = message.from_user.id
-    bot_name = (await bot.get_me()).username
     total_referrals = await db.get_referral(user_id)
-    referral_link = f"https://t.me/{bot_name}?start={user_id}"
+    referral_link = f"https://t.me/{temp.U_NAME}?start={user_id}"
     await message.reply(
         f"💰 Per Refer: Upto 50 Coins\n\n📝 Total Referrals: {total_referrals}\n\n🔍 Your Referral Link: {referral_link}",
         disable_web_page_preview=True,
