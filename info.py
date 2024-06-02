@@ -41,7 +41,7 @@ PORT = environ.get("PORT", "8080")
 IMDB_TEMPLATE = environ.get("IMDB_TEMPLATE", "<b>Query: {query}</b> \n‌‌‌‌IMDb Data:\n\n🏷 Title: <a href={url}>{title}</a>\n🎭 Genres: {genres}\n📆 Year: <a href={url}/releaseinfo>{year}</a>\n🌟 Rating: <a href={url}/ratings>{rating}</a> / 10")
 LONG_IMDB_DESCRIPTION = is_enabled(environ.get("LONG_IMDB_DESCRIPTION", "False"), False)
 MAX_LIST_ELM = environ.get("MAX_LIST_ELM", None)
-REFERRAL_ON = environ.get("REFERRAL_ON", True)
+REFERRAL_ON = is_enabled((environ.get('REFERRAL_ON', 'False')), False)
 MAIN_CHANNEL = int(environ.get('MAIN_CHANNEL', 0))
 
 IS_VERIFY = is_enabled((environ.get('IS_VERIFY', 'False')), False)
