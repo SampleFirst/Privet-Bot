@@ -162,6 +162,7 @@ async def earn_credits(client, message):
         await client.send_message(
             chat_id=message.from_user.id,
             text="Congratulations! You've reached the daily credits limit set by our credits management system, Please try again after 24 hours."
+        )
 
 @Client.on_message(filters.regex('📤 Withdraw') & filters.private)
 async def withdraw(bot, message):
