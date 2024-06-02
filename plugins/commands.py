@@ -8,7 +8,7 @@ from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
 from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, REFERRAL_ON
-from utils import is_subscribed, get_size
+from utils import is_subscribed, get_size, check_verification, get_token
 from Script import script
 import time
 import datetime
@@ -117,7 +117,7 @@ async def referral(bot, message):
     referral_link = f"https://t.me/{bot_name}?start={user_id}"
     await message.reply(
         f"💰 Per Refer: Upto 50 Coins\n\n📝 Total Referrals: {total_referrals}\n\n🔍 Your Referral Link: {referral_link}",
-        parse_mode=enums.ParseMode.MARKDOWN,
+        disable_web_page_preview=True,
         quote=True
     )
     
@@ -143,7 +143,26 @@ async def bonus(bot, message):
             reply_markup=buttonz,
             quote=True
         )
-        
+
+@Client.on_message(filters.regex('Earn Credits 💵') & filters.private)
+async def earn_credits(client, message):
+    if not await check_verification(client, message.from_user.id):
+        btn = [[
+            InlineKeyboardButton(f"Verify", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=")),
+            InlineKeyboardButton("How To Verify", url="https://t.me/+IvrcMfPKCMxkNjVl")
+        ]]
+        await client.send_message(
+            chat_id=message.from_user.id,
+            text=f"Hey {message.from_user.name} 💕\n\nComplete This Ad And Earn 20 Credits.",
+            disable_web_page_preview=True,
+            reply_markup=InlineKeyboardMarkup(btn)
+        )
+        return
+    else:
+        await client.send_message(
+            chat_id=message.from_user.id,
+            text="Congratulations! You've reached the daily credits limit set by our credits management system, Please try again after 24 hours."
+
 @Client.on_message(filters.regex('📤 Withdraw') & filters.private)
 async def withdraw(bot, message):
     await message.reply("📤 You can withdraw your balance once you reach the minimum threshold. Please contact support for more details.", quote=True)
