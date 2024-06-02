@@ -25,6 +25,9 @@ VERIFIED = {}
 # temp db for banned 
 class temp(object):
     VERIFY = {}
+    ME = None
+    U_NAME = None
+    B_NAME = None
 
 async def is_subscribed(bot, query=None, userid=None):
     try:
