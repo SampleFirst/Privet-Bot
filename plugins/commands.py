@@ -20,16 +20,31 @@ async def get_buttons(user_id):
     buttons = []
     row = ["Balance 💰", "🗣 Referral"] if REFERRAL_ON else ["Balance 💰"]
     buttons.append(row)
+    
     bonus = await db.get_bonus_status(user_id)
-    if bonus["got_bonus"] == True:
-        row = ["Earn Credits 💵"]
+    if bonus["got_bonus"]:
+        buttons.append(["Earn Credits 💵"])
     else:
-        row = ["Bonus 🎁"]
+        buttons.append(["Bonus 🎁"])
+    
     user_credits = await db.get_credits(user_id)
     if user_credits >= 100:
-        row.append("📤 Withdraw")
-    buttons.append(row)
-    return ReplyKeyboardMarkup(buttons, resize_keyboard=True)
+        buttons[-1].append("📤 Withdraw")
+
+    # Flatten the buttons list
+    flat_buttons = [btn for row in buttons for btn in row]
+
+    # Arrange buttons according to the new format
+    if len(flat_buttons) == 1:
+        arranged_buttons = [[flat_buttons[0]]]
+    elif len(flat_buttons) == 2:
+        arranged_buttons = [[flat_buttons[0], flat_buttons[1]]]
+    elif len(flat_buttons) == 3:
+        arranged_buttons = [[flat_buttons[0], flat_buttons[1]], [flat_buttons[2]]]
+    elif len(flat_buttons) >= 4:
+        arranged_buttons = [[flat_buttons[0], flat_buttons[1]], [flat_buttons[2], flat_buttons[3]]]
+    
+    return ReplyKeyboardMarkup(arranged_buttons, resize_keyboard=True)
 
 
 @Client.on_message(filters.command("start") & filters.incoming)
