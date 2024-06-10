@@ -6,6 +6,7 @@ pymongo[srv]
 motor
 marshmallow
 umongo
+openai
 bs4
 python-dotenv
 pytz
