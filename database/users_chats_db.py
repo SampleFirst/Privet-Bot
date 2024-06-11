@@ -150,7 +150,7 @@ class Database:
     async def get_all_settings(self):
         return self.sett.find({})
         
-    async def delete_setting(self, settings)
+    async def delete_setting(self, settings):
         await self.sett.delete_many({settings})
 
     async def update_settings(self, settings):
