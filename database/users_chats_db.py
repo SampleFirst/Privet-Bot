@@ -1,5 +1,5 @@
 import motor.motor_asyncio
-from info import DATABASE_NAME, DATABASE_URI, REFER_ON, DAILY_BONUS
+from info import DATABASE_NAME, DATABASE_URI, REFER_ON, DAILY_BONUS, WITHDRAW_BTN
 
 
 class Database:
@@ -152,8 +152,9 @@ class Database:
         
     async def get_settings(self):       
         default = {
-            'refer': REFER_ON,  # default off
+            'refer_on': REFER_ON,  # default off
             'daily_bonus': DAILY_BONUS,  # default off
+            'withdraw_btn': WITHDRAW_BTN, #Defoult Off
         }
         settings = await self.sett.find_one({})
         if settings:
