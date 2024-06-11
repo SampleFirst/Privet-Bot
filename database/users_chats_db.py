@@ -152,7 +152,7 @@ class Database:
         
     async def get_settings(self):       
         default = {
-            'refer': REFER,  # default off
+            'refer': REFER_ON,  # default off
             'daily_bonus': DAILY_BONUS,  # default off
         }
         settings = await self.sett.find_one({})
