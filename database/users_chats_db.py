@@ -203,7 +203,7 @@ class Database:
         }
         await self.ott.update_one(ott)
         
-    async def update_settings(self, ottname, status credits):
+    async def update_settings(self, ottname, status, credits):
         await self.ott.update_one({'ottname': ottname}, {'$set': {'status': status}, {'credits': credits}})
     
 db = Database(DATABASE_URI, DATABASE_NAME)
