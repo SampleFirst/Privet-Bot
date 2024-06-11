@@ -5,16 +5,18 @@ from info import ADMINS
 # Command to add an OTT service with status and coins
 @Client.on_message(filters.command("add_ott") & filters.user(ADMINS))
 async def add_ott(client, message):
-    usage = "Usage: /add_ott <ottname> <status: active/down/some_videos_working> <coins>"
+    usage = "Usage: /add_ott 'ottname' 'status: Active/Down/Some Videos Working' 'coins'"
     try:
-        _, ottname, status, coins = message.text.split()[1:]
-        if status.lower() not in ["active", "down", "some_videos_working"]:
-            await message.reply("Invalid status! Status must be one of: active, down, some_videos_working.")
+        command, ottname, status, coins = message.text.split("'")[1::2]
+        if status.lower() not in ["Active", "Down", "Some Videos Working"]:
+            await message.reply("Invalid status! Status must be one of: Active, Down, Some Videos Working.")
             return
         await db.add_ott(ottname, status, int(coins))
         await message.reply(f"{ottname} added to the OTT list with status: {status} and coins: {coins}")
     except ValueError:
         await message.reply(usage)
+    except Exception as e:
+        await message.reply(f"An error occurred: {e}")
 
 # Command to get the list of OTT services
 @Client.on_message(filters.command("ott_list") & filters.user(ADMINS))
