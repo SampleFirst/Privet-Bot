@@ -8,6 +8,7 @@ class Database:
         self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
         self.db = self._client[database_name]
         self.col = self.db.users
+        self.sett = self.db.settings
 
     def new_user(self, id, name, referred_by=None):
         return dict(
@@ -147,14 +148,14 @@ class Database:
         return 0
 
     async def update_settings(self, settings):
-        await self.settings_col.update_one({}, {'$set': settings}, upsert=True)
+        await self.sett.update_one({}, {'$set': settings}, upsert=True)
         
     async def get_settings(self):       
         default = {
-            'refer': REFER_ON,  # default off
+            'refer': REFER,  # default off
             'daily_bonus': DAILY_BONUS,  # default off
         }
-        settings = await self.settings_col.find_one({})
+        settings = await self.sett.find_one({})
         if settings:
             return settings
         return default
