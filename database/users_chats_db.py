@@ -147,12 +147,18 @@ class Database:
             return result[0].get('totalCredits', 0)
         return 0
         
-    async def get_all_settings(self):
-        return self.sett.find({})
+    async def add_setting(self, key, value):
+        await self.sett.update_one({}, {'$set': {key: value}}, upsert=True)
         
-    async def delete_setting(self, settings):
-        await self.sett.delete_many({settings})
+    async def get_all_settings(self):
+        settings = await self.sett.find_one({})
+        if settings:
+            return settings
+        return {}
 
+    async def delete_all_settings(self):
+        await self.sett.delete_many({})
+        
     async def update_settings(self, settings):
         await self.sett.update_one({}, {'$set': settings}, upsert=True)
         
