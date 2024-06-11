@@ -276,8 +276,7 @@ async def deleteusers(bot, message):
 @Client.on_message(filters.command('deletesettings') & filters.user(ADMINS))
 async def delete_settings(bot, message):
     msg = await message.reply('Starting deletion of settings...')
-    total = await db.get_all_settings()
-    total_settings = len(total)
+    total_settings = 3
     start_time = time.time()
     count = 0
     complete = 0
