@@ -7,7 +7,7 @@ from pyrogram.errors import ChatAdminRequired
 from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
-from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, REFER_ON, DAILY_BONUS
+from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, REFER_ON, DAILY_BONUS, WITHDRAW_BTN
 from utils import is_subscribed, temp, get_size, check_verification, get_token, check_token
 from Script import script
 import time
@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 async def get_buttons(user_id):
     buttons = []
     settings = await db.get_settings()
-    row = ["Balance 💰", "🗣 Referral"] if settings['refer'] else ["Balance 💰"]
+    row = ["Balance 💰", "🗣 Referral"] if settings['refer_on'] else ["Balance 💰"]
     buttons.append(row)
     
     bonus = await db.get_bonus_status(user_id)
@@ -107,7 +107,7 @@ async def start(client, message):
             )
     else:
         settings = await db.get_settings()
-        if settings['refer']:
+        if settings['refer_on']:
             id = message.text.split(' ')[1]
             if id:
                 if not await db.is_user_exist(message.from_user.id):
@@ -133,7 +133,7 @@ async def referral(bot, message):
     settings = await db.get_settings()
     user_id = message.from_user.id
     
-    if settings['refer']:
+    if settings['refer_on']:
         total_referrals = await db.get_referral(user_id)
         referral_link = f"https://t.me/{temp.U_NAME}?start={user_id}"
         await message.reply(
@@ -281,7 +281,7 @@ async def settings(client, message):
         buttons = [
             [
                 InlineKeyboardButton('Refer Earn', callback_data="refer"),
-                InlineKeyboardButton('✅ ON' if settings["refer"] else '❌ OFF', callback_data="toggle_refer")
+                InlineKeyboardButton('✅ ON' if settings["refer_on"] else '❌ OFF', callback_data="toggle_refer")
             ],
             [
                 InlineKeyboardButton('Daily Bonus', callback_data="bonus"),
@@ -306,18 +306,18 @@ async def toggle_settings(client, callback_query):
     setting = callback_query.data.split('_')[1]
     settings = await db.get_settings()
     if setting == "refer":
-        settings['refer'] = not settings.get('refer', False)
+        settings['refer_on'] = not settings.get('refer_on', False)
     elif setting == "bonus":
         settings['daily_bonus'] = not settings.get('daily_bonus', False)
-    elif setting == "bonus":
-        settings['daily_bonus'] = not settings.get('daily_bonus', False)
+    elif setting == "withdraw":
+        settings['withdraw_btn'] = not settings.get('withdraw_btn', False)
         
     await db.update_settings(settings)
     
     buttons = [
         [
             InlineKeyboardButton('Refer Earn', callback_data="refer"),
-            InlineKeyboardButton('✅ ON' if settings["refer"] else '❌ OFF', callback_data="toggle_refer")
+            InlineKeyboardButton('✅ ON' if settings["refer_on"] else '❌ OFF', callback_data="toggle_refer")
         ],
         [
             InlineKeyboardButton('Daily Bonus', callback_data="bonus"),
