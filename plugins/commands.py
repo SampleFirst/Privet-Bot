@@ -279,3 +279,27 @@ async def settings(client, message):
             parse_mode=enums.ParseMode.HTML,
             reply_to_message_id=message.id
         )
+
+@Client.on_callback_query(filters.regex('toggle_'))
+async def toggle_settings(client, callback_query):
+    setting = callback_query.data.split('_')[1]
+    settings = await db.get_settings()
+    if setting == "refer":
+        settings['refer'] = not settings.get('refer', False)
+    elif setting == "bonus":
+        settings['daily_bonus'] = not settings.get('daily_bonus', False)
+    
+    await db.update_settings(settings)
+    
+    buttons = [
+        [
+            InlineKeyboardButton('Refer Earn', callback_data="toggle_refer"),
+            InlineKeyboardButton('ON' if settings["refer"] else 'OFF', callback_data="toggle_refer")
+        ],
+        [
+            InlineKeyboardButton('Daily Bonus', callback_data="toggle_bonus"),
+            InlineKeyboardButton('✅ Yes' if settings["daily_bonus"] else '❌ No', callback_data="toggle_bonus")
+        ],
+    ]
+    reply_markup = InlineKeyboardMarkup(buttons)
+    await callback_query.message.edit_reply_markup(reply_markup=reply_markup)
