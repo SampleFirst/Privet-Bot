@@ -7,7 +7,7 @@ from pyrogram.errors import ChatAdminRequired
 from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
-from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS
+from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, REFER_ON, DAILY_BONUS
 from utils import is_subscribed, temp, get_size, check_verification, get_token, check_token
 from Script import script
 import time
@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 
 async def get_buttons(user_id):
     buttons = []
-    row = ["Balance 💰", "🗣 Referral"] if REFERRAL_ON else ["Balance 💰"]
+    row = ["Balance 💰", "🗣 Referral"] if REFER_ON else ["Balance 💰"]
     buttons.append(row)
     
     bonus = await db.get_bonus_status(user_id)
