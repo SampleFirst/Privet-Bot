@@ -106,15 +106,18 @@ async def start(client, message):
                 text="<b>Invalid or Expired Link!</b>"
             )
     else:
-        id = message.text.split(' ')[1]
-        if id:
-            if not await db.is_user_exist(message.from_user.id):
-                await db.add_user(message.from_user.id, message.from_user.first_name, id)
-                await client.send_message(id, "Congrats! You Won 10GB Upload limit")
-            else:
-                await client.send_message(id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
-                
-
+        settings = await db.get_settings()
+        if settings['refer']:
+            id = message.text.split(' ')[1]
+            if id:
+                if not await db.is_user_exist(message.from_user.id):
+                    await db.add_user(message.from_user.id, message.from_user.first_name, id)
+                    await client.send_message(id, "Congrats! You Won 10GB Upload limit")
+                else:
+                    await client.send_message(id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
+        else:
+            return
+            
 @Client.on_message(filters.regex('Balance 💰') & filters.private)
 async def balance(bot, message):
     user_id = message.from_user.id
