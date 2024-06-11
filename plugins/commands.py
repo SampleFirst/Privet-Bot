@@ -18,7 +18,8 @@ logger = logging.getLogger(__name__)
 
 async def get_buttons(user_id):
     buttons = []
-    row = ["Balance 💰", "🗣 Referral"] if REFER_ON else ["Balance 💰"]
+    settings = await db.get_settings()
+    row = ["Balance 💰", "🗣 Referral"] if settings['refer'] else ["Balance 💰"]
     buttons.append(row)
     
     bonus = await db.get_bonus_status(user_id)
@@ -241,7 +242,7 @@ async def deleteusers(bot, message):
     async for user in users:
         try:
             print(user)
-            user_id = user['id']  # Update this to match the correct key
+            user_id = user['id']
             await db.delete_user(user_id)
             count += 1
             complete += 1
@@ -251,7 +252,7 @@ async def deleteusers(bot, message):
         
         except KeyError as e:
             await msg.edit(f"KeyError: {e}. User object: {user}")
-            continue  # Skip this user and continue with the next
+            continue
     
     time_taken = datetime.timedelta(seconds=int(time.time() - start_time))
     await msg.edit(f"All users deleted.\nTime taken: {time_taken}")
@@ -264,11 +265,11 @@ async def settings(client, message):
         buttons = [
             [
                 InlineKeyboardButton('Refer Earn', callback_data="toggle_refer"),
-                InlineKeyboardButton('ON' if settings["refer"] else 'OFF', callback_data="toggle_refer")
+                InlineKeyboardButton('✅ ON' if settings["refer"] else '❌ OFF', callback_data="toggle_refer")
             ],
             [
                 InlineKeyboardButton('Daily Bonus', callback_data="toggle_bonus"),
-                InlineKeyboardButton('✅ Yes' if settings["daily_bonus"] else '❌ No', callback_data="toggle_bonus")
+                InlineKeyboardButton('✅ ON' if settings["daily_bonus"] else '❌ OFF', callback_data="toggle_bonus")
             ],
         ]
         reply_markup = InlineKeyboardMarkup(buttons)
@@ -294,11 +295,11 @@ async def toggle_settings(client, callback_query):
     buttons = [
         [
             InlineKeyboardButton('Refer Earn', callback_data="toggle_refer"),
-            InlineKeyboardButton('ON' if settings["refer"] else 'OFF', callback_data="toggle_refer")
+            InlineKeyboardButton('✅ ON' if settings["refer"] else '❌ OFF', callback_data="toggle_refer")
         ],
         [
             InlineKeyboardButton('Daily Bonus', callback_data="toggle_bonus"),
-            InlineKeyboardButton('✅ Yes' if settings["daily_bonus"] else '❌ No', callback_data="toggle_bonus")
+            InlineKeyboardButton('✅ ON' if settings["daily_bonus"] else '❌ OFF', callback_data="toggle_bonus")
         ],
     ]
     reply_markup = InlineKeyboardMarkup(buttons)
