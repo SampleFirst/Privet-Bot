@@ -40,7 +40,9 @@ async def ott_list(client, message):
     if ott_list:
         response = f"Hi {user}! I am one and only DRM Downloader Bot on [Telegram](https://telegram.org/):\n\nAvailable OTTs:\n"
         for index, ott in enumerate(ott_list, start=1):
-            response += f"{index}) {ott['ottname']} ({ott['status']}){'_' * (30 - len(ott['ottname']) - len(ott['status']) - len(str(index)) - 3)}{ott['credits']} Credits\n"
+            # Calculate the number of underscores needed
+            num_underscores = 30 - len(str(index)) - len(ott['ottname']) - len(ott['status']) - 1
+            response += f"{index}) {ott['ottname']} ({ott['status']}){'_' * num_underscores}{ott['credits']} Credits\n"
         await message.reply(response, disable_web_page_preview=True, parse_mode=enums.ParseMode.MARKDOWN)
     else:
         await message.reply("No OTT services found.")
