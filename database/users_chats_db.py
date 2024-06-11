@@ -9,6 +9,9 @@ class Database:
         self.db = self._client[database_name]
         self.col = self.db.users
         self.sett = self.db.settings
+        self.ott = self.db.ott_list
+        self.noti = self.db.notifier
+        self.ren = self.db.rename
 
     def new_user(self, id, name, referred_by=None):
         return dict(
@@ -173,4 +176,34 @@ class Database:
             return settings
         return default
 
+    # New functions for ott list management
+    
+    async def add_ott(self, ottname, status, credits):
+        ott = {
+            'ottname': ottname,
+            'status': status,
+            'credits': credits
+        }
+        await self.ott.insert_one(ott)
+        
+    async def get_ott_list(self):
+        ott_list = []
+        async for ott in self.ott.find({}):
+            ott_list.append(f"{ott['ottname']}, {ott['status']}, {ott['credits']}")
+        return ott_list
+    
+    async def delete_all_ott(self):
+        await self.ott.delete_many({})
+    
+    async def rearrange_ott(self, ottname, status="down", credits=100):
+        ott = {
+            'ottname': ottname,
+            'status': status,
+            'credits': credits
+        }
+        await self.ott.update_one(ott)
+        
+    async def update_settings(self, ottname, status credits):
+        await self.ott.update_one({'ottname': ottname}, {'$set': {'status': status}, {'credits': credits}})
+    
 db = Database(DATABASE_URI, DATABASE_NAME)
