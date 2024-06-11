@@ -7,7 +7,7 @@ from pyrogram.errors import ChatAdminRequired
 from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
-from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, REFERRAL_ON
+from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS
 from utils import is_subscribed, temp, get_size, check_verification, get_token, check_token
 from Script import script
 import time
