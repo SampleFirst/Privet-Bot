@@ -144,12 +144,12 @@ async def referral(bot, message):
     else:
         buttonz = await get_buttons(message.from_user.id)
         msg = await message.reply(
-            "Referral program is currently disabled.",
+            text="Referral program is currently disabled.",
             reply_markup=buttonz,
             quote=True
         )
         await asyncio.sleep(5)
-        await bot.delete_messages(chat_id=message.chat.id, message_ids=[msg.message_id, message.message_id])
+        await bot.delete_messages(chat_id=message.chat.id, message_ids=[msg.id, message.id])
 
 
 @Client.on_message(filters.regex('Bonus 🎁') & filters.private)
