@@ -273,7 +273,32 @@ async def deleteusers(bot, message):
     time_taken = datetime.timedelta(seconds=int(time.time() - start_time))
     await msg.edit(f"All users deleted.\nTime taken: {time_taken}")
     
-
+@Client.on_message(filters.command('deletesettings') & filters.user(ADMINS))
+async def delete_settings(bot, message):
+    msg = await message.reply('Starting deletion of settings...')
+    total = await db.get_all_settings()
+    total_settings = len(total)
+    start_time = time.time()
+    count = 0
+    complete = 0
+    
+    settings = await db.get_all_settings()
+    async for setting in settings:
+        try:
+            await db.delete_setting(setting)
+            count += 1
+            complete += 1
+            
+            if not complete % 20:
+                await msg.edit(f"Total Settings: {total_settings}\nTotal Deleted: {complete}\nTotal Deletion Percentage: {complete / total_settings * 100:.2f}%")
+        
+        except KeyError as e:
+            await msg.edit(f"KeyError: {e}. User object: {user}")
+            continue
+    
+    time_taken = datetime.timedelta(seconds=int(time.time() - start_time))
+    await msg.edit(f"All settings deleted.\nTime taken: {time_taken}")
+    
 @Client.on_message(filters.command('settings'))
 async def settings(client, message):
     settings = await db.get_settings()
