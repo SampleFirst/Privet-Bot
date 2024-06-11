@@ -38,7 +38,7 @@ async def ott_list(client, message):
     ott_list = await db.get_ott_list()
     if ott_list:
         response = "Hi {user}! I am one and only DRM Downloader Bot on [Telegram](https://telegram.org/):\n\nAwailable OTTs:"
-        async for index, ott in enumerate(ott_list, start=1):
+        for index, ott in enumerate(ott_list, start=1):
             response += f"{index}) {ott['ottname']} ({ott['status']}){'_' * (30 - len(ott['ottname']) - len(ott['status']) - len(str(index)) - 3)}{ott['credits']} Credits\n"
         await message.reply(response)
     else:
