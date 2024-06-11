@@ -127,15 +127,28 @@ async def balance(bot, message):
 
 @Client.on_message(filters.regex('🗣 Referral') & filters.private)
 async def referral(bot, message):
+    settings = await db.get_settings()
     user_id = message.from_user.id
-    total_referrals = await db.get_referral(user_id)
-    referral_link = f"https://t.me/{temp.U_NAME}?start={user_id}"
-    await message.reply(
-        f"💰 Per Refer: Upto 50 Coins\n\n📝 Total Referrals: {total_referrals}\n\n🔍 Your Referral Link: {referral_link}",
-        disable_web_page_preview=True,
-        quote=True
-    )
     
+    if settings['refer']:
+        total_referrals = await db.get_referral(user_id)
+        referral_link = f"https://t.me/{temp.U_NAME}?start={user_id}"
+        await message.reply(
+            f"💰 Per Refer: Upto 50 Coins\n\n📝 Total Referrals: {total_referrals}\n\n🔍 Your Referral Link: {referral_link}",
+            disable_web_page_preview=True,
+            quote=True
+        )
+    else:
+        buttonz = await get_buttons(message.from_user.id)
+        msg = await message.reply(
+            "Referral program is currently disabled.",
+            reply_markup=buttonz,
+            quote=True
+        )
+        await asyncio.sleep(5)
+        await bot.delete_messages(chat_id=message.chat.id, message_ids=[msg.message_id, message.message_id])
+
+
 @Client.on_message(filters.regex('Bonus 🎁') & filters.private)
 async def bonus(bot, message):
     user_id = message.from_user.id
