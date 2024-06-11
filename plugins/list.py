@@ -1,22 +1,35 @@
 from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from database.users_chats_db import db
 from info import ADMINS
 
-# Command to add an OTT service with status and coins
+status_options = ["Active", "Down", "Some Videos Working", "None"]
+
 @Client.on_message(filters.command("add_ott") & filters.user(ADMINS))
 async def add_ott(client, message):
-    usage = "Usage: /add_ott 'ottname' 'status: Active/Down/Some Videos Working' 'coins'"
     try:
-        command, ottname, status, coins = message.text.split("'")[1::2]
-        if status.lower() not in ["Active", "Down", "Some Videos Working"]:
-            await message.reply("Invalid status! Status must be one of: Active, Down, Some Videos Working.")
-            return
-        await db.add_ott(ottname, status, int(coins))
-        await message.reply(f"{ottname} added to the OTT list with status: {status} and coins: {coins}")
-    except ValueError:
-        await message.reply(usage)
-    except Exception as e:
-        await message.reply(f"An error occurred: {e}")
+        command_parts = message.text.split()
+        ottname = " ".join(command_parts[1:-1])
+        coins = int(command_parts[-1])
+    except (IndexError, ValueError):
+        await message.reply("Usage: /add_ott ottname coins")
+        return
+
+    buttons = [
+        [InlineKeyboardButton(option, callback_data=f"add_ott:{ottname}:{coins}:{option}")]
+        for option in status_options
+    ]
+    reply_markup = InlineKeyboardMarkup(buttons)
+
+    await message.reply(f"OTT Name: {ottname}\nCoins: {coins}\nSelect Status:", reply_markup=reply_markup)
+
+@Client.on_callback_query(filters.regex(r"add_ott:(.*):(.*):(.*)"))
+async def add_ott_callback(client, callback_query: CallbackQuery):
+    _, ottname, coins, status = callback_query.data.split(":")
+    await db.add_ott(ottname, status, int(coins))
+    await callback_query.message.edit_text(f"Added OTT Service:\nName: {ottname}\nCoins: {coins}\nStatus: {status}")
+    await callback_query.answer("OTT service added successfully.")
+
 
 # Command to get the list of OTT services
 @Client.on_message(filters.command("ott_list") & filters.user(ADMINS))
