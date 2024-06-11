@@ -1,4 +1,4 @@
-from pyrogram import Client, filters
+from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from database.users_chats_db import db
 from info import ADMINS
@@ -35,12 +35,13 @@ async def add_ott_callback(client, callback_query: CallbackQuery):
 @Client.on_message(filters.command("ott_list") & filters.user(ADMINS))
 async def ott_list(client, message):
     user = message.from_user.mention
-    ott_list = await db.get_ott_list()
+    ott_cursor = await db.get_ott_list()  # Retrieve OTT services cursor
+    ott_list = await ott_cursor.to_list(length=None)  # Convert cursor to list
     if ott_list:
-        response = "Hi {user}! I am one and only DRM Downloader Bot on [Telegram](https://telegram.org/):\n\nAwailable OTTs:"
+        response = f"Hi {user}! I am one and only DRM Downloader Bot on [Telegram](https://telegram.org/):\n\nAvailable OTTs:\n"
         for index, ott in enumerate(ott_list, start=1):
             response += f"{index}) {ott['ottname']} ({ott['status']}){'_' * (30 - len(ott['ottname']) - len(ott['status']) - len(str(index)) - 3)}{ott['credits']} Credits\n"
-        await message.reply(response)
+        await message.reply(response, disable_web_page_preview=True, parse_mode=enums.ParseMode.MARKDOWN)
     else:
         await message.reply("No OTT services found.")
 
