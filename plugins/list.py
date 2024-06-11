@@ -34,10 +34,13 @@ async def add_ott_callback(client, callback_query: CallbackQuery):
 # Command to get the list of OTT services
 @Client.on_message(filters.command("ott_list") & filters.user(ADMINS))
 async def ott_list(client, message):
+    user = message.from_user.mention
     ott_list = await db.get_ott_list()
     if ott_list:
-        ott_list_text = "\n".join(ott_list)
-        await message.reply(f"List of OTT services:\n{ott_list_text}")
+        response = "Hi {user}! I am one and only DRM Downloader Bot on [Telegram](https://telegram.org/):\n\nAwailable OTTs:"
+        for index, ott in enumerate(ott_list, start=1):
+            response += f"{index}) {ott['ottname']} ({ott['status']}){'_' * (30 - len(ott['ottname']) - len(ott['status']) - len(str(index)) - 3)}{ott['credits']} Credits\n"
+        await message.reply(response)
     else:
         await message.reply("No OTT services found.")
 
