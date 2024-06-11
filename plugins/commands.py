@@ -29,7 +29,7 @@ async def get_buttons(user_id):
         buttons.append(["Bonus 🎁"])
     
     user_credits = await db.get_credits(user_id)
-    if user_credits >= 100:
+    if settings["withdraw_btn"] or user_credits >= 100:
         buttons[-1].append("📤 Withdraw")
 
     # Flatten the buttons list
@@ -116,8 +116,8 @@ async def start(client, message):
                 else:
                     await client.send_message(id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
         else:
-            return
-            
+            return 
+
 @Client.on_message(filters.regex('Balance 💰') & filters.private)
 async def balance(bot, message):
     user_id = message.from_user.id
@@ -280,12 +280,16 @@ async def settings(client, message):
     if settings is not None:
         buttons = [
             [
-                InlineKeyboardButton('Refer Earn', callback_data="toggle_refer"),
+                InlineKeyboardButton('Refer Earn', callback_data="refer"),
                 InlineKeyboardButton('✅ ON' if settings["refer"] else '❌ OFF', callback_data="toggle_refer")
             ],
             [
-                InlineKeyboardButton('Daily Bonus', callback_data="toggle_bonus"),
+                InlineKeyboardButton('Daily Bonus', callback_data="bonus"),
                 InlineKeyboardButton('✅ ON' if settings["daily_bonus"] else '❌ OFF', callback_data="toggle_bonus")
+            ],
+            [
+                InlineKeyboardButton('Withdraw BTN', callback_data="withdraw"),
+                InlineKeyboardButton('✅ Always ON' if settings["withdraw_btn"] else '❌ After 100 Coins', callback_data="toggle_withdraw")
             ],
         ]
         reply_markup = InlineKeyboardMarkup(buttons)
@@ -305,17 +309,23 @@ async def toggle_settings(client, callback_query):
         settings['refer'] = not settings.get('refer', False)
     elif setting == "bonus":
         settings['daily_bonus'] = not settings.get('daily_bonus', False)
-    
+    elif setting == "bonus":
+        settings['daily_bonus'] = not settings.get('daily_bonus', False)
+        
     await db.update_settings(settings)
     
     buttons = [
         [
-            InlineKeyboardButton('Refer Earn', callback_data="toggle_refer"),
+            InlineKeyboardButton('Refer Earn', callback_data="refer"),
             InlineKeyboardButton('✅ ON' if settings["refer"] else '❌ OFF', callback_data="toggle_refer")
         ],
         [
-            InlineKeyboardButton('Daily Bonus', callback_data="toggle_bonus"),
+            InlineKeyboardButton('Daily Bonus', callback_data="bonus"),
             InlineKeyboardButton('✅ ON' if settings["daily_bonus"] else '❌ OFF', callback_data="toggle_bonus")
+        ],
+        [
+            InlineKeyboardButton('Withdraw BTN', callback_data="withdraw"),
+            InlineKeyboardButton('✅ Always ON' if settings["withdraw_btn"] else '❌ After Earn', callback_data="toggle_withdraw")
         ],
     ]
     reply_markup = InlineKeyboardMarkup(buttons)
