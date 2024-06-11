@@ -146,5 +146,17 @@ class Database:
             return result[0].get('totalCredits', 0)
         return 0
 
+    async def update_settings(self, settings):
+        await self.settings_col.update_one({}, {'$set': settings}, upsert=True)
+        
+    async def get_settings(self):       
+        default = {
+            'refer': REFER_ON,  # default off
+            'daily_bonus': DAILY_BONUS,  # default off
+        }
+        settings = await self.settings_col.find_one({})
+        if settings:
+            return settings
+        return default
 
 db = Database(DATABASE_URI, DATABASE_NAME)
