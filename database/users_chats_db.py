@@ -11,7 +11,6 @@ class Database:
         self.sett = self.db.settings
         self.ott = self.db.ott_list
         self.noti = self.db.notifier
-        self.ren = self.db.rename
 
     def new_user(self, id, name, referred_by=None):
         return dict(
@@ -187,10 +186,7 @@ class Database:
         await self.ott.insert_one(ott)
         
     async def get_ott_list(self):
-        ott_list = []
-        async for ott in self.ott.find({}):
-            ott_list.append(f"{ott['ottname']}, {ott['status']}, {ott['credits']}")
-        return ott_list
+        return self.ott.find({})
     
     async def delete_all_ott(self):
         await self.ott.delete_many({})
