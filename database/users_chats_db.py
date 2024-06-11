@@ -1,5 +1,5 @@
 import motor.motor_asyncio
-from info import DATABASE_NAME, DATABASE_URI
+from info import DATABASE_NAME, DATABASE_URI, REFER_ON, DAILY_BONUS
 
 
 class Database:
