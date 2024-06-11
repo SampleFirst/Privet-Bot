@@ -256,3 +256,26 @@ async def deleteusers(bot, message):
     time_taken = datetime.timedelta(seconds=int(time.time() - start_time))
     await msg.edit(f"All users deleted.\nTime taken: {time_taken}")
     
+
+@Client.on_message(filters.command('settings'))
+async def settings(client, message):
+    settings = await db.get_settings()
+    if settings is not None:
+        buttons = [
+            [
+                InlineKeyboardButton('Refer Earn', callback_data="toggle_refer"),
+                InlineKeyboardButton('ON' if settings["refer"] else 'OFF', callback_data="toggle_refer")
+            ],
+            [
+                InlineKeyboardButton('Daily Bonus', callback_data="toggle_bonus"),
+                InlineKeyboardButton('✅ Yes' if settings["daily_bonus"] else '❌ No', callback_data="toggle_bonus")
+            ],
+        ]
+        reply_markup = InlineKeyboardMarkup(buttons)
+        await message.reply_text(
+            text=f"<b>Change Your Settings ⚙</b>",
+            reply_markup=reply_markup,
+            disable_web_page_preview=True,
+            parse_mode=enums.ParseMode.HTML,
+            reply_to_message_id=message.id
+        )
