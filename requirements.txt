@@ -1,17 +1,14 @@
 git+https://github.com/MrMKN/pyrogram                          
 tgcrypto
 requests
-imdbpy
 pymongo[srv]
 motor
 marshmallow
 umongo
-openai
 bs4
 python-dotenv
 pytz
 urllib3
-pyrogram
 tldextract
 Flask
 gunicorn
