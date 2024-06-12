@@ -214,6 +214,8 @@ class Database:
     
     async def delete_ott(self, ott_name):
         await self.ott.delete_many({'ott_name': (ott_name)})
-    
+
+    async def delete_all_ott(self):
+        await self.ott.delete_many({})
         
 db = Database(DATABASE_URI, DATABASE_NAME)
