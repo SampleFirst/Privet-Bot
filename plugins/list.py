@@ -28,8 +28,8 @@ async def ott_list_command(client, message):
 
     async for ott in ott_list:
         ott_name = ott['ott_name']
-        ott_status = ott['status'] if ott['status'] else "None"
-        noti_status = ott['status'] if ott['status'] else "None"
+        ott_status = ott['ott_status']['status'] if 'ott_status' in ott and ott['ott_status']['status'] else "None"
+        noti_status = ott['noti_status']['status'] if 'noti_status' in ott and ott['noti_status']['status'] else "None"
 
         ott_buttons.append([
             InlineKeyboardButton(f"{ott_name}", callback_data=f"ott_status_toggle_{ott_name}"),
@@ -39,7 +39,7 @@ async def ott_list_command(client, message):
 
     ott_keyboard = InlineKeyboardMarkup(ott_buttons)
     await message.reply(ott_message, reply_markup=ott_keyboard)
-
+    
 @Client.on_message(filters.command("delete_all_ott") & filters.user(ADMINS))
 async def delete_all_ott(client, message):
     await db.delete_all_ott()
