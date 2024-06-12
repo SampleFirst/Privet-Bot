@@ -19,7 +19,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.delete()
     
     elif query.data.startswith('toggle_'):
-        setting = data.split('_')[1]
+        setting = query.data.split('_')[1]
         settings = await db.get_settings()
         if setting == "refer":
             settings['refer_on'] = not settings.get('refer_on', False)
@@ -48,7 +48,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.message.edit_reply_markup(reply_markup=reply_markup)
 
     elif query.data.startswith('ott_status_toggle_'):
-        ott_name = data.split("_")[2]
+        ott_name = query.data.split("_")[2]
         await toggle_ott_status(ott_name)
         ott = await db.get_ott(ott_name)
         current_status_num = STATUS_MAPPING.get(ott['ott_status']['status'], 4) if 'ott_status' in ott else 4
@@ -58,7 +58,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         await query.answer("OTT status updated")
 
     elif query.data.startswith('noti_status_toggle_'):
-        ott_name = data.split("_")[2]
+        ott_name = query.data.split("_")[2]
         await toggle_noti_status(ott_name)
         ott = await db.get_ott(ott_name)
         current_status_num = STATUS_MAPPING.get(ott['noti_status']['status'], 4) if 'noti_status' in ott else 4
