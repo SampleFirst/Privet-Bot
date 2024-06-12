@@ -22,7 +22,7 @@ async def add_ott(client, message):
 
 @Client.on_message(filters.command("ott_list") & filters.user(ADMINS))
 async def ott_list_command(client, message):
-    ott_list = await db.get_ott_list()
+    ott_list = await db.get_all_otts()
     ott_message = "Current OTT List:\n\n"
     ott_buttons = []
 
@@ -61,8 +61,6 @@ async def toggle_ott_status(ott_name):
     else:
         new_status = "Active"
 
-    await db.update_ott_status(ott_name, new_status)
-
 async def toggle_noti_status(ott_name):
     ott = await db.get_ott(ott_name)
     current_status = ott['noti_status']['status'] if ott['noti_status']['status'] else None
@@ -74,4 +72,3 @@ async def toggle_noti_status(ott_name):
     else:
         new_status = "Active"
 
-    await db.update_noti_status(ott_name, new_status)
