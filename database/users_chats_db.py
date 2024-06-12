@@ -208,7 +208,10 @@ class Database:
             status=status,
         )
         await self.col.update_one({'id': id}, {'$set': {'ott_status': ott_status}})
-    
+
+    async def get_ott(self, ott_name):
+        return await self.ott.find_one({'ott_name': (ott_name)})
+        
     async def get_all_otts(self):
         return self.ott.find({})
     
