@@ -26,7 +26,7 @@ async def ott_list_command(client, message):
     ott_message = "Current OTT List:\n\n"
     ott_buttons = []
 
-    for ott in ott_list:
+    async for ott in ott_list:
         ott_name = ott['ott_name']
         ott_status = ott['ott_status']['status'] if ott['ott_status']['status'] else "None"
         noti_status = ott['noti_status']['status'] if ott['noti_status']['status'] else "None"
