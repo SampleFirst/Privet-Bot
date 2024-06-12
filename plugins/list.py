@@ -10,8 +10,6 @@ STATUS_MAPPING = {
     "None": 4
 }
 
-REVERSE_STATUS_MAPPING = {v: k for k, v in STATUS_MAPPING.items()}
-
 
 @Client.on_message(filters.command("add_ott") & filters.user(ADMINS))
 async def add_ott(client, message):
@@ -55,34 +53,3 @@ async def delete_all_ott(client, message):
     await db.delete_all_ott()
     await message.reply("All OTT services deleted")
 
-
-@Client.on_callback_query(filters.regex(r"ott_status_toggle_(.+)"))
-async def ott_status_toggle_callback(client, callback_query):
-    ott_name = callback_query.data.split("_")[2]
-    await toggle_ott_status(ott_name)
-    await callback_query.answer("OTT status updated")
-
-
-@Client.on_callback_query(filters.regex(r"noti_status_toggle_(.+)"))
-async def noti_status_toggle_callback(client, callback_query):
-    ott_name = callback_query.data.split("_")[2]
-    await toggle_noti_status(ott_name)
-    await callback_query.answer("Notification status updated")
-
-
-async def toggle_ott_status(ott_name):
-    ott = await db.get_ott(ott_name)
-    current_status_num = STATUS_MAPPING.get(ott['ott_status']['status'], 4) if 'ott_status' in ott else 4
-    new_status_num = (current_status_num % 4) + 1
-    new_status = REVERSE_STATUS_MAPPING[new_status_num]
-
-    await db.update_ott(ott_name, 'ott_status', new_status)
-
-
-async def toggle_noti_status(ott_name):
-    ott = await db.get_ott(ott_name)
-    current_status_num = STATUS_MAPPING.get(ott['noti_status']['status'], 4) if 'noti_status' in ott else 4
-    new_status_num = (current_status_num % 4) + 1
-    new_status = REVERSE_STATUS_MAPPING[new_status_num]
-
-    await db.update_ott(ott_name, 'noti_status', new_status)
