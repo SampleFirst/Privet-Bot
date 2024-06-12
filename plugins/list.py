@@ -38,11 +38,13 @@ async def ott_list(client, message):
     ott_cursor = await db.get_ott_list()  # Retrieve OTT services cursor
     ott_list = await ott_cursor.to_list(length=None)  # Convert cursor to list
     if ott_list:
-        response = f"Hi {user}! I am one and only DRM Downloader Bot on [Telegram](https://telegram.org/):\n\nAvailable OTTs:\n"
+        response = (f"Hi {user}! I am one and only Bot on [Telegram](https://telegram.org/):\n\n"
+                    "Available OTTs:\n\n"
+                    "{no:<2}) {ott:<20} - {Status:<7} - {credits}\n"
+                    "--------------------------------------------\n")
         for index, ott in enumerate(ott_list, start=1):
-            # Calculate the number of underscores needed
-            num_underscores = 30 - len(str(index)) - len(ott['ottname']) - len(ott['status']) - 1
-            response += f"{index}) {ott['ottname']} ({ott['status']}){'_' * num_underscores}{ott['credits']} Credits\n"
+            # Format the line for each OTT service
+            response += f"{index:<2}) {ott['ottname']:<20} - {ott['status']:<7} - {ott['credits']} Credits\n"
         await message.reply(response, disable_web_page_preview=True, parse_mode=enums.ParseMode.MARKDOWN)
     else:
         await message.reply("No OTT services found.")
