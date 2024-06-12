@@ -28,8 +28,8 @@ async def ott_list_command(client, message):
 
     async for ott in ott_list:
         ott_name = ott['ott_name']
-        ott_status = ott['ott_status']['status'] if ott['ott_status']['status'] else "None"
-        noti_status = ott['noti_status']['status'] if ott['noti_status']['status'] else "None"
+        ott_status = ott['status'] if ott['status'] else "None"
+        noti_status = ott['status'] if ott['status'] else "None"
 
         ott_buttons.append([
             InlineKeyboardButton(f"{ott_name}", callback_data=f"ott_status_toggle_{ott_name}"),
@@ -52,7 +52,7 @@ async def noti_status_toggle_callback(client, callback_query):
 
 async def toggle_ott_status(ott_name):
     ott = await db.get_ott(ott_name)
-    current_status = ott['ott_status']['status'] if ott['ott_status']['status'] else None
+    current_status = ott['status'] if ott['status'] else None
 
     if current_status == "Active":
         new_status = "Down"
@@ -61,9 +61,11 @@ async def toggle_ott_status(ott_name):
     else:
         new_status = "Active"
 
+    await db.update_ott(ott_name, True, new_status)
+    
 async def toggle_noti_status(ott_name):
     ott = await db.get_ott(ott_name)
-    current_status = ott['noti_status']['status'] if ott['noti_status']['status'] else None
+    current_status = ott['status'] if ott['status'] else None
 
     if current_status == "Active":
         new_status = "Down"
@@ -72,3 +74,4 @@ async def toggle_noti_status(ott_name):
     else:
         new_status = "Active"
 
+    await db.update_ott(ott_name, True, new_status)
