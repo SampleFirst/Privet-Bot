@@ -37,17 +37,25 @@ async def ott_list(client, message):
     user = message.from_user.mention
     ott_cursor = await db.get_ott_list()  # Retrieve OTT services cursor
     ott_list = await ott_cursor.to_list(length=None)  # Convert cursor to list
+
     if ott_list:
-        response = (f"Hi {user}! I am one and only Bot on [Telegram](https://telegram.org/):\n\n"
-                    "Available OTTs:\n\n"
-                    "{no:<2}) {ott:<20} - {Status:<7} - {credits}\n"
-                    "--------------------------------------------\n")
+        # Prepare the header of the response message
+        header = (f"Hi {user}! I am one and only Bot on [Telegram](https://telegram.org/):\n\n"
+                  "Available OTTs:\n\n"
+                  "{:<2} {:<20} {:<7} {:<10}\n".format("No", "OTT Service", "Status", "Credits") +
+                  "--------------------------------------------\n")
+
+        # Prepare the body of the response message
+        body = ""
         for index, ott in enumerate(ott_list, start=1):
             # Format the line for each OTT service
-            response += f"{index:<2}) {ott['ottname']:<20} - {ott['status']:<7} - {ott['credits']} Credits\n"
+            body += "{:<2} {:<20} {:<7} {:<10}\n".format(index, ott['ottname'], ott['status'], ott['credits'])
+
+        response = header + body
         await message.reply(response, disable_web_page_preview=True, parse_mode=enums.ParseMode.MARKDOWN)
     else:
         await message.reply("No OTT services found.")
+
 
 # Command to delete all OTT services
 @Client.on_message(filters.command("delete_all_ott") & filters.user(ADMINS))
