@@ -35,9 +35,11 @@ class Database:
             ott_name=ott_name,
             ott_status=dict(
                 is_active=False,
+                status=None,
             ),
             noti_status=dict(
                 is_active=False,
+                status=None,
             ),
         )
 
@@ -200,6 +202,13 @@ class Database:
         count = await self.ott.count_documents({})
         return count
         
+    async def update_ott(self, ott_name, is_active, status):
+        ott_status = dict(
+            is_active=is_active,
+            status=status,
+        )
+        await self.col.update_one({'id': id}, {'$set': {'ott_status': ott_status}})
+    
     async def get_all_otts(self):
         return self.ott.find({})
     
