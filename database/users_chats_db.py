@@ -29,6 +29,17 @@ class Database:
             ),
             credits=0,
         )
+        
+    def new_ott(self, ott_name):
+        return dict(
+            ott_name=ott_name,
+            ott_status=dict(
+                is_active=False,
+            ),
+            noti_status=dict(
+                is_active=False,
+            ),
+        )
 
     async def update_verification(self, id, date, time):
         status = {
@@ -178,6 +189,22 @@ class Database:
     # New functions for ott list management
     
     async def add_ott(self, ott_name):
-        await self.ott.insert_one(ott_name)
+        ott = self.new_ott(ott_name)
+        await self.ott.insert_one(ott)
+    
+    async def is_ott_exist(self, ott_name):
+        ott = await self.ott.find_one({'ott_name':(ott_name)})
+        return bool(ott)
+    
+    async def total_ott_count(self):
+        count = await self.ott.count_documents({})
+        return count
+        
+    async def get_all_otts(self):
+        return self.ott.find({})
+    
+    async def delete_ott(self, ott_name):
+        await self.ott.delete_many({'ott_name': (ott_name)})
+    
         
 db = Database(DATABASE_URI, DATABASE_NAME)
