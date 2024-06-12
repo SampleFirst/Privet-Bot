@@ -177,29 +177,7 @@ class Database:
 
     # New functions for ott list management
     
-    async def add_ott(self, ottname, status, credits):
-        ott = {
-            'ottname': ottname,
-            'status': status,
-            'credits': credits
-        }
-        await self.ott.insert_one(ott)
+    async def add_ott(self, ott_name):
+        await self.ott.insert_one(ott_name)
         
-    async def get_ott_list(self):
-        return self.ott.find({})
-    
-    async def delete_all_ott(self):
-        await self.ott.delete_many({})
-    
-    async def rearrange_ott(self, ottname, status="down", credits=100):
-        ott = {
-            'ottname': ottname,
-            'status': status,
-            'credits': credits
-        }
-        await self.ott.update_one(ott)
-        
-    async def update_settings(self, ottname, status, credits):
-        await self.ott.update_one({'ottname': ottname}, {'$set': {'status': status, 'credits': credits}})
-
 db = Database(DATABASE_URI, DATABASE_NAME)
