@@ -40,6 +40,11 @@ async def ott_list_command(client, message):
     ott_keyboard = InlineKeyboardMarkup(ott_buttons)
     await message.reply(ott_message, reply_markup=ott_keyboard)
 
+@Client.on_message(filters.command("delete_all_ott") & filters.user(ADMINS))
+async def delete_all_ott(client, message):
+    await db.delete_all_ott()
+    await message.reply("All OTT services deleted")
+
 @Client.on_callback_query(filters.regex(r"ott_status_toggle_(.+)"))
 async def ott_status_toggle_callback(client, callback_query):
     ott_name = callback_query.data.split("_")[2]
