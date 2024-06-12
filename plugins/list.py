@@ -42,6 +42,7 @@ async def ott_list(client, message):
         # Prepare the header of the response message
         header = (f"Hi {user}! I am one and only Bot on [Telegram](https://telegram.org/):\n\n"
                   "Available OTTs:\n\n"
+                  "```\n"
                   "{:<2} {:<20} {:<7} {:<10}\n".format("No", "OTT Service", "Status", "Credits") +
                   "--------------------------------------------\n")
 
@@ -51,10 +52,11 @@ async def ott_list(client, message):
             # Format the line for each OTT service
             body += "{:<2} {:<20} {:<7} {:<10}\n".format(index, ott['ottname'], ott['status'], ott['credits'])
 
-        response = header + body
+        response = header + body + "```"
         await message.reply(response, disable_web_page_preview=True, parse_mode=enums.ParseMode.MARKDOWN)
     else:
         await message.reply("No OTT services found.")
+
 
 
 # Command to delete all OTT services
