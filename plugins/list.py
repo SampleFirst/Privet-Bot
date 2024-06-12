@@ -1,4 +1,5 @@
 from pyrogram import Client, filters
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 from database.users_chats_db import db
 from info import ADMINS
 
@@ -19,3 +20,58 @@ async def add_ott(client, message):
     except Exception as e:
         await message.reply(f"An error occurred while adding the OTT platform: {str(e)}")
 
+@Client.on_message(filters.command("ott_list") & filters.user(ADMINS))
+async def ott_list_command(client, message):
+    ott_list = await db.get_ott_list()
+    ott_message = "Current OTT List:\n\n"
+    ott_buttons = []
+
+    for ott in ott_list:
+        ott_name = ott['ott_name']
+        ott_status = ott['ott_status']['status'] if ott['ott_status']['status'] else "None"
+        noti_status = ott['noti_status']['status'] if ott['noti_status']['status'] else "None"
+
+        ott_buttons.append([
+            InlineKeyboardButton(f"{ott_name}", callback_data=f"ott_status_toggle_{ott_name}"),
+            InlineKeyboardButton(f"ott - {ott_status}", callback_data=f"ott_status_toggle_{ott_name}"),
+            InlineKeyboardButton(f"noti - {noti_status}", callback_data=f"noti_status_toggle_{ott_name}")
+        ])
+
+    ott_keyboard = InlineKeyboardMarkup(ott_buttons)
+    await message.reply(ott_message, reply_markup=ott_keyboard)
+
+@Client.on_callback_query(filters.regex(r"ott_status_toggle_(.+)"))
+async def ott_status_toggle_callback(client, callback_query):
+    ott_name = callback_query.data.split("_")[2]
+    await toggle_ott_status(ott_name)
+
+@Client.on_callback_query(filters.regex(r"noti_status_toggle_(.+)"))
+async def noti_status_toggle_callback(client, callback_query):
+    ott_name = callback_query.data.split("_")[2]
+    await toggle_noti_status(ott_name)
+
+async def toggle_ott_status(ott_name):
+    ott = await db.get_ott(ott_name)
+    current_status = ott['ott_status']['status'] if ott['ott_status']['status'] else None
+
+    if current_status == "Active":
+        new_status = "Down"
+    elif current_status == "Down":
+        new_status = "Some Video Working"
+    else:
+        new_status = "Active"
+
+    await db.update_ott_status(ott_name, new_status)
+
+async def toggle_noti_status(ott_name):
+    ott = await db.get_ott(ott_name)
+    current_status = ott['noti_status']['status'] if ott['noti_status']['status'] else None
+
+    if current_status == "Active":
+        new_status = "Down"
+    elif current_status == "Down":
+        new_status = "Some Video Working"
+    else:
+        new_status = "Active"
+
+    await db.update_noti_status(ott_name, new_status)
