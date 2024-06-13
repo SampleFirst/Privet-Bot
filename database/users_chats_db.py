@@ -9,8 +9,6 @@ class Database:
         self.db = self._client[database_name]
         self.col = self.db.users
         self.sett = self.db.settings
-        self.ott = self.db.ott_list
-        self.noti = self.db.notifier
 
     def new_user(self, id, name, referred_by=None):
         return dict(
@@ -30,19 +28,6 @@ class Database:
             credits=0,
         )
         
-    def new_ott(self, ott_name):
-        return dict(
-            ott_name=ott_name,
-            ott_status=dict(
-                is_active=False,
-                status=None,
-            ),
-            noti_status=dict(
-                is_active=False,
-                status=None,
-            ),
-        )
-
     async def update_verification(self, id, date, time):
         status = {
             'date': str(date),
@@ -187,38 +172,5 @@ class Database:
         if settings:
             return settings
         return default
-
-    # New functions for ott list management
-    
-    async def add_ott(self, ott_name):
-        ott = self.new_ott(ott_name)
-        await self.ott.insert_one(ott)
-    
-    async def is_ott_exist(self, ott_name):
-        ott = await self.ott.find_one({'ott_name':(ott_name)})
-        return bool(ott)
-    
-    async def total_ott_count(self):
-        count = await self.ott.count_documents({})
-        return count
-        
-    async def update_ott(self, ott_name, is_active, status):
-        ott_status = dict(
-            is_active=is_active,
-            status=status,
-        )
-        await self.col.update_one({'id': id}, {'$set': {'ott_status': ott_status}})
-
-    async def get_ott(self, ott_name):
-        return await self.ott.find_one({'ott_name': (ott_name)})
-        
-    async def get_all_otts(self):
-        return self.ott.find({})
-    
-    async def delete_ott(self, ott_name):
-        await self.ott.delete_many({'ott_name': (ott_name)})
-
-    async def delete_all_ott(self):
-        await self.ott.delete_many({})
         
 db = Database(DATABASE_URI, DATABASE_NAME)
