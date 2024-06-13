@@ -32,7 +32,7 @@ async def list_commands(client, message):
     response = "Buttons list\n"
     if button_list:
         for idx, button in enumerate(button_list, 1):
-            response += f"{idx}) {button}\n"
+            response += f"{idx}) '{button}'\n"
     else:
         response += "No buttons found.\n"
 
