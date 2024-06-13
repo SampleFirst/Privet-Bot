@@ -13,13 +13,25 @@ async def list_filters(client, message):
 @Client.on_message(filters.command("show_commands"))
 def show_commands(client, message):
     commands = []
-    for filters in dir(Client):
-        if callable(getattr(Client, filters) and filters.with("command")):
-            commands.append(filters[4:])
+    
+    # Check all attributes in Client class
+    for attr_name in dir(client):
+        attr = getattr(client, attr_name)
+        
+        # Ensure the attribute is callable and a command handler
+        if callable(attr) and hasattr(attr, 'filters') and attr.filters:
+            for filter_obj in attr.filters:
+                if isinstance(filter_obj, filters.command):
+                    commands.append(filter_obj.commands[0])
+    
+    # Construct the response message
     response = "Available commands:\n"
     for command in commands:
         response += f"/{command}\n"
+    
+    # Send the response message
     client.send_message(message.chat.id, response)
+
 
 @Client.on_message(filters.command("commands"))
 async def list_commands(client, message):
