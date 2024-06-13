@@ -10,13 +10,16 @@ async def list_filters(client, message):
             filters_list.append(filter_name)
     await message.reply_text("List of all filters:\n" + "\n".join(filters_list))
 
-@Client.on_message(filters.command("list_commands"))
-async def listcommand(client, message):
-    commands_list = []
-    for command_name in dir(filters.command):
-        if not command_name.startswith("_"):
-            commands_list.append(command_name)
-    await message.reply_text("List of all commands:\n" + "\n".join(commands_list))
+@Client.on_message(filters.command("show_commands"))
+async def show_commands(client, message):
+    commands = []
+    for filters in dir(Client):
+        if callable(getattr(Client, filters)) and filters.with("command"):
+            commands.append(filters[4:])
+    response = "Available commands:\n"
+    for command in commands:
+        response += f"/{command}\n"
+    client.send_message(message.chat.id, response)
 
 @Client.on_message(filters.command("commands"))
 async def list_commands(client, message):
