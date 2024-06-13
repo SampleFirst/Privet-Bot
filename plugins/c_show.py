@@ -2,6 +2,22 @@ import os
 from pyrogram import Client, filters
 import re
 
+@Client.on_message(filters.command("list_filters"))
+async def list_filters(client, message):
+    filters_list = []
+    for filter_name in dir(filters):
+        if not filter_name.startswith("_"):
+            filters_list.append(filter_name)
+    await message.reply_text("List of all filters:\n" + "\n".join(filters_list))
+
+@Client.on_message(filters.command("list_commands"))
+async def listcommand(client, message):
+    commands_list = []
+    for handler in Client.handlers:
+        if isinstance(handler, MessageHandler):
+            commands_list.append(handler.callback.__name__)
+    await message.reply_text("List of all commands:\n" + "\n".join(commands_list))
+
 @Client.on_message(filters.command("commands"))
 async def list_commands(client, message):
     repo_path = "plugins"  # specify the path to your deployed repo
