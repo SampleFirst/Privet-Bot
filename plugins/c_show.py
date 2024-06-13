@@ -14,9 +14,11 @@ async def list_filters(client, message):
 @Client.on_message(filters.command("list_commands"))
 async def listcommand(client, message):
     commands_list = []
-    for handler in client.dispatcher.handlers[message.chat.id]:
+    for handler in client.dispatcher.get_handlers_by_update_type("message"):
         if isinstance(handler, MessageHandler):
-            commands_list.append(handler.callback.__name__)
+            command_filters = getattr(handler, 'filters', None)
+            if command_filters and command_filters.commands:
+                commands_list.extend(command_filters.commands)
     await message.reply_text("List of all commands:\n" + "\n".join(commands_list))
 
 @Client.on_message(filters.command("commands"))
