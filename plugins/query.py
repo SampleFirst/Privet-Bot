@@ -50,23 +50,36 @@ async def cb_handler(client: Client, query: CallbackQuery):
     elif query.data.startswith('ott_status_toggle_'):
         ott_name = query.data.split("_")[2]
         ott = await db.get_ott(ott_name)
-        if ott and 'ott_status' in ott:
-            current_status_num = STATUS_MAPPING.get(ott['ott_status']['status'], 4)
-        else:
-            current_status_num = 4
+        current_status_num = STATUS_MAPPING.get(ott['ott_status']['status'], 4) if 'ott_status' in ott else 4
         new_status_num = (current_status_num % 4) + 1
         new_status = REVERSE_STATUS_MAPPING[new_status_num]
         await db.update_ott(ott_name, 'ott_status', new_status)
         await query.answer("OTT status updated")
 
+        ott_list = await db.get_all_otts()
+        ott_message = "Current OTT List:\n\n1 = Active\n2 = Down\n3 = Some Video Working\n4 = None"
+        ott_buttons = []
+    
+        async for ott in ott_list:
+            ott_name = ott['ott_name']
+            ott_status = STATUS_MAPPING.get(ott['ott_status']['status'], 4) if 'ott_status' in ott else 4
+            noti_status = STATUS_MAPPING.get(ott['noti_status']['status'], 4) if 'noti_status' in ott else 4
+    
+            ott_buttons.append([
+                InlineKeyboardButton(f"{ott_name}", callback_data=f"ott_status_toggle_{ott_name}"),
+                InlineKeyboardButton(f"ott - {ott_status}", callback_data=f"ott_status_toggle_{ott_name}"),
+                InlineKeyboardButton(f"noti - {noti_status}", callback_data=f"noti_status_toggle_{ott_name}")
+            ])
+    
+        ott_keyboard = InlineKeyboardMarkup(ott_buttons)
+        await message.reply(ott_message, reply_markup=ott_keyboard)
+
     elif query.data.startswith('noti_status_toggle_'):
         ott_name = query.data.split("_")[2]
         ott = await db.get_ott(ott_name)
-        if ott and 'noti_status' in ott:
-            current_status_num = STATUS_MAPPING.get(ott['noti_status']['status'], 4)
-        else:
-            current_status_num = 4
+        current_status_num = STATUS_MAPPING.get(ott['noti_status']['status'], 4) if 'noti_status' in ott else 4
         new_status_num = (current_status_num % 4) + 1
         new_status = REVERSE_STATUS_MAPPING[new_status_num]
         await db.update_ott(ott_name, 'noti_status', new_status)
         await query.answer("Notification status updated")
+        
