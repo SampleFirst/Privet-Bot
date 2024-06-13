@@ -5,14 +5,18 @@ from pyrogram import Client, filters
 
 def get_command_list(module_path):
     command_list = []
-    spec = importlib.util.spec_from_file_location("module.name", module_path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    for name, obj in vars(module).items():
-        if callable(obj) and hasattr(obj, "filters"):
-            for filter in obj.filters:
-                if isinstance(filter, filters.command):
-                    command_list.append(filter.commands)
+    try:
+        spec = importlib.util.spec_from_file_location("module.name", module_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        
+        for name, obj in vars(module).items():
+            if callable(obj) and hasattr(obj, "filters"):
+                for filter in obj.filters:
+                    if isinstance(filter, filters.command):
+                        command_list.append(filter.commands)
+    except Exception as e:
+        print(f"Error loading commands from {module_path}: {e}")
     return command_list
 
 
@@ -34,5 +38,3 @@ async def show_commands(client, message):
         await message.reply_text(f"Available Commands:\n\n" + "\n".join(flattened_commands))
     else:
         await message.reply_text("No commands found.")
-
-
