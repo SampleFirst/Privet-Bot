@@ -11,10 +11,10 @@ async def list_filters(client, message):
     await message.reply_text("List of all filters:\n" + "\n".join(filters_list))
 
 @Client.on_message(filters.command("show_commands"))
-async def show_commands(client, message):
+def show_commands(client, message):
     commands = []
     for filters in dir(Client):
-        if callable(getattr(Client, filters)) and filters.with("command"):
+        if callable(getattr(Client, filters) and filters.with("command")):
             commands.append(filters[4:])
     response = "Available commands:\n"
     for command in commands:
