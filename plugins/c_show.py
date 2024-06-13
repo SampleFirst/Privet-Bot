@@ -1,40 +1,65 @@
 import os
-import importlib.util
 from pyrogram import Client, filters
 
 
-def get_command_list(module_path):
-    command_list = []
-    try:
-        spec = importlib.util.spec_from_file_location("module.name", module_path)
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        
-        for name, obj in vars(module).items():
-            if callable(obj) and hasattr(obj, "filters"):
-                for filter in obj.filters:
-                    if isinstance(filter, filters.command):
-                        command_list.append(filter.commands)
-    except Exception as e:
-        print(f"Error loading commands from {module_path}: {e}")
-    return command_list
+@Client.on_message(filters.command("list_commands"))
+async def list_commands(client, message):
+    repo_path = "/path/to/your/repo"  # specify the path to your deployed repo
 
-
-def extract_commands_from_plugins_folder(folder_path):
+    # Walk through the repo directory
     commands = []
-    for filename in os.listdir(folder_path):
-        if filename.endswith(".py"):
-            module_path = os.path.join(folder_path, filename)
-            command_list = get_command_list(module_path)
-            commands.extend(command_list)
-    return commands
+    for root, dirs, files in os.walk(repo_path):
+        for file in files:
+            if file.endswith(".py"):  # adjust this filter based on the file types you want to include
+                file_path = os.path.join(root, file)
+                with open(file_path, 'r') as f:
+                    lines = f.readlines()
+                    for line in lines:
+                        if line.strip().startswith('@Client.on_message'):
+                            command = line.strip()
+                            commands.append(command)
+
+    # Send the list of commands as a message
+    if commands:
+        response = "List of commands found in the repo:\n\n" + "\n".join(commands)
+    else:
+        response = "No commands found in the repo."
+
+    await message.reply_text(response)
 
 
 @Client.on_message(filters.command("show_commands"))
 async def show_commands(client, message):
-    commands = extract_commands_from_plugins_folder("plugins")
-    flattened_commands = [cmd for sublist in commands for cmd in sublist]
-    if flattened_commands:
-        await message.reply_text(f"Available Commands:\n\n" + "\n".join(flattened_commands))
+    # Get the argument from the message (assuming the format is /list_commands <repo_path>)
+    if len(message.command) < 2:
+        await message.reply_text("Please provide the repository path. Usage: /list_commands repo_path")
+        return
+
+    repo_path = message.command[1]
+
+    # Check if the path exists
+    if not os.path.exists(repo_path):
+        await message.reply_text("The specified path does not exist. Please provide a valid path.")
+        return
+
+    # Walk through the repo directory
+    commands = []
+    for root, dirs, files in os.walk(repo_path):
+        for file in files:
+            if file.endswith(".py"):  # adjust this filter based on the file types you want to include
+                file_path = os.path.join(root, file)
+                with open(file_path, 'r') as f:
+                    lines = f.readlines()
+                    for line in lines:
+                        if line.strip().startswith('@Client.on_message'):
+                            command = line.strip()
+                            commands.append(command)
+
+    # Send the list of commands as a message
+    if commands:
+        response = "List of commands found in the repo:\n\n" + "\n".join(commands)
     else:
-        await message.reply_text("No commands found.")
+        response = "No commands found in the repo."
+
+    await message.reply_text(response)
+    
