@@ -1,65 +1,46 @@
 import os
 from pyrogram import Client, filters
+import re
 
-
-@Client.on_message(filters.command("list_commands"))
+@Client.on_message(filters.command("commands"))
 async def list_commands(client, message):
-    repo_path = "/path/to/your/repo"  # specify the path to your deployed repo
+    repo_path = "plugins"  # specify the path to your deployed repo
 
     # Walk through the repo directory
-    commands = []
-    for root, dirs, files in os.walk(repo_path):
-        for file in files:
-            if file.endswith(".py"):  # adjust this filter based on the file types you want to include
-                file_path = os.path.join(root, file)
-                with open(file_path, 'r') as f:
-                    lines = f.readlines()
-                    for line in lines:
-                        if line.strip().startswith('@Client.on_message'):
-                            command = line.strip()
-                            commands.append(command)
-
-    # Send the list of commands as a message
-    if commands:
-        response = "List of commands found in the repo:\n\n" + "\n".join(commands)
-    else:
-        response = "No commands found in the repo."
-
-    await message.reply_text(response)
-
-
-@Client.on_message(filters.command("show_commands"))
-async def show_commands(client, message):
-    # Get the argument from the message (assuming the format is /list_commands <repo_path>)
-    if len(message.command) < 2:
-        await message.reply_text("Please provide the repository path. Usage: /list_commands repo_path")
-        return
-
-    repo_path = message.command[1]
-
-    # Check if the path exists
-    if not os.path.exists(repo_path):
-        await message.reply_text("The specified path does not exist. Please provide a valid path.")
-        return
-
-    # Walk through the repo directory
-    commands = []
-    for root, dirs, files in os.walk(repo_path):
-        for file in files:
-            if file.endswith(".py"):  # adjust this filter based on the file types you want to include
-                file_path = os.path.join(root, file)
-                with open(file_path, 'r') as f:
-                    lines = f.readlines()
-                    for line in lines:
-                        if line.strip().startswith('@Client.on_message'):
-                            command = line.strip()
-                            commands.append(command)
-
-    # Send the list of commands as a message
-    if commands:
-        response = "List of commands found in the repo:\n\n" + "\n".join(commands)
-    else:
-        response = "No commands found in the repo."
-
-    await message.reply_text(response)
+    command_list = []
+    button_list = []
     
+    command_pattern = re.compile(r'filters\.command\("([^"]+)"\)')
+    regex_pattern = re.compile(r'filters\.regex\(\'([^\']+)\'\)')
+
+    for root, dirs, files in os.walk(repo_path):
+        for file in files:
+            if file.endswith(".py"):  # adjust this filter based on the file types you want to include
+                file_path = os.path.join(root, file)
+                with open(file_path, 'r') as f:
+                    lines = f.readlines()
+                    for line in lines:
+                        if line.strip().startswith('@Client.on_message'):
+                            command_match = command_pattern.search(line)
+                            regex_match = regex_pattern.search(line)
+                            if command_match:
+                                command_list.append(command_match.group(1))
+                            if regex_match:
+                                button_list.append(regex_match.group(1))
+
+    # Format the response
+    response = "Buttons list\n"
+    if button_list:
+        for idx, button in enumerate(button_list, 1):
+            response += f"{idx}) {button}\n"
+    else:
+        response += "No buttons found.\n"
+
+    response += "\nCommands list\n"
+    if command_list:
+        for idx, command in enumerate(command_list, 1):
+            response += f"{idx}) /{command}\n"
+    else:
+        response += "No commands found."
+
+    await message.reply_text(response)
