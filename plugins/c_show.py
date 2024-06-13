@@ -1,5 +1,6 @@
 import os
 from pyrogram import Client, filters
+from pyrogram.handlers import MessageHandler
 import re
 
 @Client.on_message(filters.command("list_filters"))
@@ -13,7 +14,7 @@ async def list_filters(client, message):
 @Client.on_message(filters.command("list_commands"))
 async def listcommand(client, message):
     commands_list = []
-    for handler in Client.handlers:
+    for handler in client.dispatcher.handlers[message.chat.id]:
         if isinstance(handler, MessageHandler):
             commands_list.append(handler.callback.__name__)
     await message.reply_text("List of all commands:\n" + "\n".join(commands_list))
