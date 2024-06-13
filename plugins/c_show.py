@@ -15,24 +15,24 @@ async def list_commands(client, message):
 
     for root, dirs, files in os.walk(repo_path):
         for file in files:
-            if file.endswith(".py"):  # adjust this filter based on the file types you want to include
+            if file.endswith(".py"):
                 file_path = os.path.join(root, file)
+                await message.reply_text(f"Searching commands in file `{file}`")
                 with open(file_path, 'r') as f:
                     lines = f.readlines()
                     for line in lines:
-                        if line.strip().startswith('@Client.on_message'):
-                            command_match = command_pattern.search(line)
-                            regex_match = regex_pattern.search(line)
-                            if command_match:
-                                command_list.append(command_match.group(1))
-                            if regex_match:
-                                button_list.append(regex_match.group(1))
+                        command_match = command_pattern.search(line)
+                        regex_match = regex_pattern.search(line)
+                        if command_match:
+                            command_list.append(command_match.group(1))
+                        if regex_match:
+                            button_list.append(regex_match.group(1))
 
     # Format the response
     response = "Buttons list\n"
     if button_list:
         for idx, button in enumerate(button_list, 1):
-            response += f"{idx}) '{button}'\n"
+            response += f"{idx}) <code>{button}</code>\n"
     else:
         response += "No buttons found.\n"
 
@@ -44,3 +44,4 @@ async def list_commands(client, message):
         response += "No commands found."
 
     await message.reply_text(response)
+
