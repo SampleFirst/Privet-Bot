@@ -50,7 +50,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
     elif query.data.startswith('ott_status_toggle_'):
         ott_name = query.data.split("_")[2]
         ott = await db.get_ott(ott_name)
-        current_status_num = STATUS_MAPPING.get(ott['ott_status']['status'], 4) if 'ott_status' in ott else 4
+        if ott and 'ott_status' in ott:
+            current_status_num = STATUS_MAPPING.get(ott['ott_status']['status'], 4)
+        else:
+            current_status_num = 4
         new_status_num = (current_status_num % 4) + 1
         new_status = REVERSE_STATUS_MAPPING[new_status_num]
         await db.update_ott(ott_name, 'ott_status', new_status)
@@ -59,7 +62,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
     elif query.data.startswith('noti_status_toggle_'):
         ott_name = query.data.split("_")[2]
         ott = await db.get_ott(ott_name)
-        current_status_num = STATUS_MAPPING.get(ott['noti_status']['status'], 4) if 'noti_status' in ott else 4
+        if ott and 'noti_status' in ott:
+            current_status_num = STATUS_MAPPING.get(ott['noti_status']['status'], 4)
+        else:
+            current_status_num = 4
         new_status_num = (current_status_num % 4) + 1
         new_status = REVERSE_STATUS_MAPPING[new_status_num]
         await db.update_ott(ott_name, 'noti_status', new_status)
