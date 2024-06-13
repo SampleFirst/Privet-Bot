@@ -39,9 +39,9 @@ async def ott_list(client, message):
         noti_status = STATUS_MAPPING.get(ott['noti_status']['status'], 4) if 'noti_status' in ott else 4
 
         ott_buttons.append([
-            InlineKeyboardButton(f"{ott_name}", callback_data=f"ott_status_toggle_{ott_name}"),
-            InlineKeyboardButton(f"ott - {ott_status}", callback_data=f"ott_status_toggle_{ott_name}"),
-            InlineKeyboardButton(f"noti - {noti_status}", callback_data=f"noti_status_toggle_{ott_name}")
+            InlineKeyboardButton(f"{ott_name}", callback_data=f"ott_status_toggle_{ott_name}_{ott_status}"),
+            InlineKeyboardButton(f"ott - {ott_status}", callback_data=f"ott_status_toggle_{ott_name}_{ott_status}"),
+            InlineKeyboardButton(f"noti - {noti_status}", callback_data=f"noti_status_toggle_{ott_name}_{noti_status}")
         ])
 
     ott_keyboard = InlineKeyboardMarkup(ott_buttons)
