@@ -114,7 +114,7 @@ async def start(client, message):
                 user_id = int(data.split("-", 1)[1])
                 if await db.is_user_exist(user_id):
                     abc = await db.is_referred_exist(myid)
-                    is abc == True:
+                    if abc == True:
                         await client.send_message(user_id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
                     else:
                         await db.referred_by(myid)
