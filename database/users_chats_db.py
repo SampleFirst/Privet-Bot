@@ -118,8 +118,10 @@ class Database:
         await self.col.update_one({'id': int(id)}, {'$set': {'is_refer': True}})
 
     async def is_referred_exist(self, id):
-        user = await self.col.find_one({'id': int(id)}, {'$set': {'is_refer': True}})
-        return bool(user)
+        user = await self.col.find_one({'id': int(id)})
+        if user:
+            return user.get('is_refer', False)
+        return False
         
     async def add_referral(self, id):
         await self.col.update_one({'id': int(id)}, {'$inc': {'referral.referral_count': 1}})
