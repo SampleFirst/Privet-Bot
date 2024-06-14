@@ -13,10 +13,10 @@ def get_commands():
 @Client.on_message(filters.command("list_commands"))
 async def list_filters_commands(client, message):
     commands = get_commands()
-    message = 'Available commands:\n'
+    response_text = 'Available commands:\n'
     for command in commands:
-        message += f'{command}\n'
-    await message.reply_text(message)
+        response_text += f'{command}\n'
+    await message.reply_text(response_text)
     
 @Client.on_message(filters.command("list_filters"))
 async def list_filters(client, message):
