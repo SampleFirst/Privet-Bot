@@ -201,7 +201,6 @@ async def withdraw(bot, message):
 
 @Client.on_message(filters.command('logs') & filters.user(ADMINS))
 async def log_file(bot, message):
-    """Send log file"""
     try:
         await message.reply_document('Logs.txt')
     except Exception as e:
@@ -226,7 +225,6 @@ async def get_stats(bot, message):
         await rju.edit(stats_message)
     except Exception as e:
         await rju.edit(f"An error occurred: {e}")
-
 
 @Client.on_message(filters.command('users') & filters.user(ADMINS))
 async def list_users(bot, message):
@@ -253,59 +251,20 @@ async def deleteusers(bot, message):
     start_time = time.time()
     count = 0
     complete = 0
-    
     users = await db.get_all_users()
     async for user in users:
         try:
-            print(user)
             user_id = user['id']
             await db.delete_user(user_id)
             count += 1
             complete += 1
-            
             if not complete % 20:
                 await msg.edit(f"Total Users: {total_users}\nTotal Deleted: {complete}\nTotal Deletion Percentage: {complete / total_users * 100:.2f}%")
-        
         except KeyError as e:
             await msg.edit(f"KeyError: {e}. User object: {user}")
             continue
-    
     time_taken = datetime.timedelta(seconds=int(time.time() - start_time))
     await msg.edit(f"All users deleted.\nTime taken: {time_taken}")
-    
-@Client.on_message(filters.command("set_setting") & filters.user(ADMINS))
-async def set_setting(client, message):
-    try:
-        args = message.text.split(None, 2)
-        if len(args) < 3:
-            await message.reply("Usage: /set_setting <key> <value>")
-            return
-        key = args[1]
-        value = args[2]
-        await db.add_setting(key, value)
-        await message.reply(f"Setting `{key}` has been updated to `{value}`.")
-    except Exception as e:
-        await message.reply(f"An error occurred: {e}")
-
-@Client.on_message(filters.command("get_settings") & filters.user(ADMINS))
-async def get_settings(client, message):
-    try:
-        settings = await db.get_all_settings()
-        if not settings:
-            await message.reply("No settings found.")
-            return
-        settings_str = "\n".join([f"{key}: {value}" for key, value in settings.items()])
-        await message.reply(f"Current settings:\n{settings_str}")
-    except Exception as e:
-        await message.reply(f"An error occurred: {e}")
-
-@Client.on_message(filters.command("delete_settings") & filters.user(ADMINS))
-async def delete_settings(client, message):
-    try:
-        await db.delete_all_settings()
-        await message.reply("All settings have been deleted.")
-    except Exception as e:
-        await message.reply(f"An error occurred: {e}")
 
 @Client.on_message(filters.command('settings'))
 async def settings(client, message):
@@ -334,3 +293,22 @@ async def settings(client, message):
             reply_to_message_id=message.id
         )
 
+@Client.on_message(filters.command("get_settings") & filters.user(ADMINS))
+async def get_settings(client, message):
+    try:
+        settings = await db.get_all_settings()
+        if not settings:
+            await message.reply("No settings found.")
+            return
+        settings_str = "\n".join([f"{key}: {value}" for key, value in settings.items()])
+        await message.reply(f"Current settings:\n{settings_str}")
+    except Exception as e:
+        await message.reply(f"An error occurred: {e}")
+
+@Client.on_message(filters.command("delete_settings") & filters.user(ADMINS))
+async def delete_settings(client, message):
+    try:
+        await db.delete_all_settings()
+        await message.reply("All settings have been deleted.")
+    except Exception as e:
+        await message.reply(f"An error occurred: {e}")
