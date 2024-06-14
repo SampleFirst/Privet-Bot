@@ -2,6 +2,22 @@ import os
 from pyrogram import Client, filters
 import re
 
+def get_commands():
+    commands = []
+    for file in os.listdir('commands'):
+        if file.endswith('.py'):
+            command_name = file.replace('.py', '')
+            commands.append(f'/{command_name}')
+    return commands
+    
+@Client.on_message(filters.command("list_commands"))
+async def list_filters_commands(client, message):
+    commands = get_commands()
+    message = 'Available commands:\n'
+    for command in commands:
+        message += f'{command}\n'
+    client.send_message(text=message)
+    
 @Client.on_message(filters.command("list_filters"))
 async def list_filters(client, message):
     filters_list = []
