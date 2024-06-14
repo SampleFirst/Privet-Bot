@@ -39,18 +39,6 @@ async def is_subscribed(bot, query=None, userid=None):
             return True
     return False
 
-def get_size(size):
-    """Get size in readable format"""
-
-    units = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB"]
-    size = float(size)
-    i = 0
-    while size >= 1024.0 and i < len(units):
-        i += 1
-        size /= 1024.0
-    return "%.2f %s" % (size, units[i])
-    
-
 async def get_verify_shorted_link(num, link):
     if int(num) == 1:
         API = SHORTLINK_API
