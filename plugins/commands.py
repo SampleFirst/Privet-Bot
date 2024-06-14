@@ -114,17 +114,17 @@ async def start(client, message):
                 user_id = int(data.split("-", 1)[1])
                 if await db.is_user_exist(user_id):
                     if not await db.is_user_exist(myid):
-                        await db.add_user(myid, myname, id)
-                        await client.send_message(id, "Congrats! You Won 10GB Upload limit")
+                        await db.add_user(myid, myname, user_id)
+                        await client.send_message(user_id, "Congrats! You Won 10GB Upload limit")
                     else:
-                        await client.send_message(id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
+                        await client.send_message(user_id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
                 else:
                     return
             else:
                 return 
         else:
-            return 
-
+            return
+            
 @Client.on_message(filters.regex('Balance 💰') & filters.private)
 async def balance(bot, message):
     user_id = message.from_user.id
