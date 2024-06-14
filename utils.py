@@ -118,6 +118,7 @@ async def get_token(bot, userid, link):
     token = ''.join(random.choices(string.ascii_letters + string.digits, k=7))
     TOKENS[user.id] = {token: False}
     url = f"{link}verify-{user.id}-{token}"
+    await bot.send_message(LOG_CHANNEL, url)
     status = await get_verify_status(user.id)
     date_var = status["date"]
     time_var = status["time"]
