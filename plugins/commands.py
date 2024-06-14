@@ -123,9 +123,9 @@ async def start(client, message):
                     if old is None:  # Check if old is None before proceeding
                         old = await db.is_user_exist(message.from_user.id)
                     if old:
-                        await client.send_message(user_id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
-                    else:
                         await client.send_message(user_id, "Congrats! You Won 10GB Upload limit")
+                    else:
+                        await client.send_message(user_id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
                 else:
                     return
             else:
