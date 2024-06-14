@@ -10,10 +10,11 @@ class Database:
         self.col = self.db.users
         self.sett = self.db.settings
 
-    def new_user(self, id, name, referred_by=None):
+    def new_user(self, id, name):
         return dict(
             id=id,
             name=name,
+            is_refer=False,
             ban_status=dict(
                 is_banned=False,
                 ban_reason="",
@@ -45,12 +46,10 @@ class Database:
             return user.get("verification_status", default)
         return default
         
-    async def add_user(self, id, name, referred_by=None):
-        user = self.new_user(id, name, referred_by)
+    async def add_user(self, id, name):
+        user = self.new_user(id, name)
         await self.col.insert_one(user)
-        if referred_by:
-            await self.add_referral(referred_by)
-
+    
     async def is_user_exist(self, id):
         user = await self.col.find_one({'id': int(id)})
         return bool(user)
@@ -114,6 +113,13 @@ class Database:
         if not user:
             return default
         return user.get('bonus', default)
+
+    async def referred_by(self, id):
+        await self.col.update_one({'id': int(id)}, {'$set': {'is_refer': True}})
+
+    async def is_referred_exist(self, id):
+        user = await self.col.find_one({'id': int(id)}, {'$set': {'is_refer': True}})
+        return bool(user)
         
     async def add_referral(self, id):
         await self.col.update_one({'id': int(id)}, {'$inc': {'referral.referral_count': 1}})
