@@ -50,14 +50,13 @@ async def get_buttons(user_id):
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
-    old = None  # Initialize `old` with a default value
-
-    if not await db.is_user_exist(message.from_user.id):
-        old = await db.add_user(message.from_user.id, message.from_user.first_name)
+    user_exists = await db.is_user_exist(message.from_user.id)
+    if not user_exists:
+        await db.add_user(message.from_user.id, message.from_user.first_name)
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(a=message.from_user.id, b=message.from_user.username, c=message.from_user.mention))
 
     buttonz = await get_buttons(message.from_user.id)
-    
+
     if len(message.command) != 2:
         await message.reply_photo(
             photo=random.choice(PICS),
@@ -74,6 +73,7 @@ async def start(client, message):
         except ChatAdminRequired:
             logger.error("Make sure Bot is admin in Forcesub channel")
             return
+
         btn = [[InlineKeyboardButton("Join Our Back-Up Channel", url=invite_link.invite_link)]]
         await client.send_message(
             chat_id=message.from_user.id,
@@ -84,7 +84,8 @@ async def start(client, message):
         )
         return
 
-    if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help"]:
+    data = message.command[1]
+    if data in ["subscribe", "error", "okay", "help"]:
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=script.START_TXT.format(user=message.from_user.mention),
@@ -92,47 +93,31 @@ async def start(client, message):
             parse_mode=enums.ParseMode.HTML,
             quote=True
         )
+        return
 
-    data = message.command[1]
-    if data.split("-", 1)[0] == "verify":
-        userid = data.split("-", 2)[1]
-        token = data.split("-", 3)[2]
+    if data.startswith("verify"):
+        userid, token = data.split("-", 2)[1], data.split("-", 3)[2]
         if str(message.from_user.id) != str(userid):
-            return await message.reply_text(
-                text="<b>Invalid or Expired Link!</b>"
-            )
+            await message.reply_text(text="<b>Invalid or Expired Link!</b>")
+            return
+
         is_valid = await check_token(client, userid, token)
         if is_valid:
             await db.add_credits(userid, 20)
-            await message.reply_text(
-                text="Hey user You are successful verification"
-            )
-            return
+            await message.reply_text(text="Hey user You are successful verification")
         else:
-            return await message.reply_text(
-                text="<b>Invalid or Expired Link!</b>"
-            )
-    else:
-        myid = message.from_user.id
-        myname = message.from_user.first_name
-        settings = await db.get_settings()
-        if settings['refer_on']:
-            if data.split("-", 1)[0] == "refer":
-                user_id = int(data.split("-", 1)[1])
-                if await db.is_user_exist(user_id):
-                    if old is None:  # Check if old is None before proceeding
-                        old = await db.is_user_exist(message.from_user.id)
-                    if old:
-                        await client.send_message(user_id, "Congrats! You Won 10GB Upload limit")
-                    else:
-                        await client.send_message(user_id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
-                else:
-                    return
-            else:
-                return
-        else:
-            return
+            await message.reply_text(text="<b>Invalid or Expired Link!</b>")
+        return
 
+    if data.startswith("refer"):
+        user_id = int(data.split("-", 1)[1])
+        if await db.is_user_exist(user_id):
+            if user_exists:
+                await client.send_message(user_id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
+            else:
+                await client.send_message(user_id, "Congrats! You Won 10GB Upload limit")
+        return
+        
 
 @Client.on_message(filters.regex('Balance 💰') & filters.private)
 async def balance(bot, message):
