@@ -114,6 +114,7 @@ async def start(client, message):
                 user_id = int(data.split("-", 1)[1])
                 if await db.is_user_exist(user_id):
                     if new == True:
+                        await db.delete_user(myid)
                         await db.add_user(myid, myname, user_id)
                         await client.send_message(user_id, "Congrats! You Won 10GB Upload limit")
                     else:
