@@ -106,15 +106,20 @@ async def start(client, message):
                 text="<b>Invalid or Expired Link!</b>"
             )
     else:
+        myid = message.from_user.id
+        myname = message.from_user.first_name
         settings = await db.get_settings()
         if settings['refer_on']:
-            id = message.text.split(' ')[1]
-            if id:
-                if not await db.is_user_exist(message.from_user.id):
-                    await db.add_user(message.from_user.id, message.from_user.first_name, id)
+            if data.split("-", 1)[0] == "refer":
+                user_id = int(data.split("-", 1)[1])
+                if await db.is_user_exist(user_id):
+                if not await db.is_user_exist(myid):
+                    await db.add_user(myid, myname, id)
                     await client.send_message(id, "Congrats! You Won 10GB Upload limit")
                 else:
                     await client.send_message(id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
+            else:
+                return 
         else:
             return 
 
@@ -135,7 +140,7 @@ async def referral(bot, message):
     
     if settings['refer_on']:
         total_referrals = await db.get_referral(user_id)
-        referral_link = f"https://t.me/{temp.U_NAME}?start={user_id}"
+        referral_link = f"https://telegram.me/{temp.U_NAME}?start=refer-{user_id}"
         await message.reply(
             f"💰 Per Refer: Upto 50 Coins\n\n📝 Total Referrals: {total_referrals}\n\n🔍 Your Referral Link: {referral_link}",
             disable_web_page_preview=True,
