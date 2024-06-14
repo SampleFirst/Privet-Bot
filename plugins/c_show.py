@@ -16,7 +16,7 @@ async def list_filters_commands(client, message):
     message = 'Available commands:\n'
     for command in commands:
         message += f'{command}\n'
-    client.send_message(text=message)
+    client.send_message(message.chat.id, message)
     
 @Client.on_message(filters.command("list_filters"))
 async def list_filters(client, message):
