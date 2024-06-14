@@ -130,11 +130,12 @@ async def balance(bot, message):
     user_id = message.from_user.id
     username = message.from_user.username or "N/A"
     balance = await db.get_credits(user_id)
+    refer = await db.get_referral(user_id)
     await message.reply(
-        f"🆔 User: {username}\n\n💳 Credits: {balance} ",
+        f"🆔 User: {username}\n\n💲 Refer Earn:{refer}\n\n💳 Credits: {balance}",
         quote=True
     )
-
+    
 @Client.on_message(filters.regex('🗣 Referral') & filters.private)
 async def referral(bot, message):
     settings = await db.get_settings()
