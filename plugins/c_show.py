@@ -1,22 +1,39 @@
 import os
-from pyrogram import Client, filters
 import re
+from pyrogram import Client, filters
+from pyrogram.types import Message
 
-def get_commands():
+
+# Function to extract 'filters.command' from a given file
+def extract_commands_from_file(file_path):
     commands = []
-    for file in os.listdir('plugins'):
-        if file.endswith('.py'):
-            command_name = file.replace('.py', '')
-            commands.append(f'/{command_name}')
+    with open(file_path, 'r', encoding='utf-8') as file:
+        for line in file:
+            match = re.search(r'filters\.command\(["\'](\w+)["\']', line)
+            if match:
+                commands.Clientend(match.group(1))
     return commands
-    
+
+# Command handler to search the repository for 'filters.command' and return them in a list
 @Client.on_message(filters.command("list_commands"))
-async def list_filters_commands(client, message):
-    commands = get_commands()
-    response_text = 'Available commands:\n'
-    for command in commands:
-        response_text += f'{command}\n'
-    await message.reply_text(response_text)
+async def list_filters_commands(client: Client, message: Message):
+    repo_path = "plugins"  # Set the path to your repository here
+    all_commands = []
+
+    # Walk through the repo and look for .py files
+    for root, dirs, files in os.walk(repo_path):
+        for file in files:
+            if file.endswith(".py"):
+                file_path = os.path.join(root, file)
+                all_commands.extend(extract_commands_from_file(file_path))
+
+    # Remove duplicates and sort the commands
+    unique_commands = sorted(set(all_commands))
+
+    # Send the list of commands as a message
+    await message.reply_text("\n".join(unique_commands))
+
+
     
 @Client.on_message(filters.command("list_filters"))
 async def list_filters(client, message):
