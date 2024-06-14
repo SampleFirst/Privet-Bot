@@ -20,7 +20,7 @@ class Database:
                 ban_reason="",
             ),
             referral=dict(
-                referred_by=referred_by,
+                referred_by=None,
                 referral_count=0,
             ),
             bonus=dict(
