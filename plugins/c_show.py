@@ -4,7 +4,7 @@ import re
 
 def get_commands():
     commands = []
-    for file in os.listdir('commands'):
+    for file in os.listdir('plugins'):
         if file.endswith('.py'):
             command_name = file.replace('.py', '')
             commands.append(f'/{command_name}')
