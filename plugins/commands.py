@@ -119,6 +119,7 @@ async def start(client, message):
                     else:
                         await client.send_message(id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
                 else:
+                    return
             else:
                 return 
         else:
