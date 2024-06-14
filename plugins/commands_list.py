@@ -14,8 +14,8 @@ def extract_commands_from_file(file_path):
     return commands
 
 
-@Client.on_message(filters.command("list_commands"))
-async def list_filters_commands(client: Client, message: Message):
+@Client.on_message(filters.command("commands"))
+async def list_commands(client: Client, message: Message):
     repo_path = "plugins"
     all_commands = []
 
