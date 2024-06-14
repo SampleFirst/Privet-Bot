@@ -50,10 +50,14 @@ async def get_buttons(user_id):
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
+    old = None  # Initialize `old` with a default value
+
     if not await db.is_user_exist(message.from_user.id):
         old = await db.add_user(message.from_user.id, message.from_user.first_name)
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(a=message.from_user.id, b=message.from_user.username, c=message.from_user.mention))
+
     buttonz = await get_buttons(message.from_user.id)
+    
     if len(message.command) != 2:
         await message.reply_photo(
             photo=random.choice(PICS),
@@ -63,6 +67,7 @@ async def start(client, message):
             quote=True
         )
         return
+    
     if AUTH_CHANNEL and not await is_subscribed(client, message):
         try:
             invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL))
@@ -78,6 +83,7 @@ async def start(client, message):
             quote=True
         )
         return
+
     if len(message.command) == 2 and message.command[1] in ["subscribe", "error", "okay", "help"]:
         await message.reply_photo(
             photo=random.choice(PICS),
@@ -86,7 +92,8 @@ async def start(client, message):
             parse_mode=enums.ParseMode.HTML,
             quote=True
         )
-    data = message.command[1]    
+
+    data = message.command[1]
     if data.split("-", 1)[0] == "verify":
         userid = data.split("-", 2)[1]
         token = data.split("-", 3)[2]
@@ -113,17 +120,20 @@ async def start(client, message):
             if data.split("-", 1)[0] == "refer":
                 user_id = int(data.split("-", 1)[1])
                 if await db.is_user_exist(user_id):
-                    if old == True:
+                    if old is None:  # Check if old is None before proceeding
+                        old = await db.is_user_exist(message.from_user.id)
+                    if old:
                         await client.send_message(user_id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
                     else:
                         await client.send_message(user_id, "Congrats! You Won 10GB Upload limit")
                 else:
                     return
             else:
-                return 
+                return
         else:
             return
-            
+
+
 @Client.on_message(filters.regex('Balance 💰') & filters.private)
 async def balance(bot, message):
     user_id = message.from_user.id
