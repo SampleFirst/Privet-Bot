@@ -100,8 +100,6 @@ class Database:
     async def get_db_size(self):
         return (await self.db.command("dbstats"))['dataSize']
 
-    # New functions for referral and credits management
-
     async def got_bonus_status(self, user_id):
         bonus = dict(
             got_bonus=True
@@ -146,9 +144,6 @@ class Database:
         if result:
             return result[0].get('totalCredits', 0)
         return 0
-        
-    async def add_setting(self, key, value):
-        await self.sett.update_one({}, {'$set': {key: value}}, upsert=True)
         
     async def get_all_settings(self):
         settings = await self.sett.find_one({})
