@@ -3,7 +3,6 @@ import re
 from pyrogram import Client, filters
 from pyrogram.types import Message
 
-
 # Function to extract 'filters.command' from a given file
 def extract_commands_from_file(file_path):
     commands = []
@@ -11,7 +10,7 @@ def extract_commands_from_file(file_path):
         for line in file:
             match = re.search(r'filters\.command\(["\'](\w+)["\']', line)
             if match:
-                commands.Clientend(match.group(1))
+                commands.append(match.group(1))  # Corrected this line
     return commands
 
 # Command handler to search the repository for 'filters.command' and return them in a list
@@ -31,8 +30,7 @@ async def list_filters_commands(client: Client, message: Message):
     unique_commands = sorted(set(all_commands))
 
     # Send the list of commands as a message
-    await message.reply_text("\n".join(unique_commands))
-
+    await message.reply_text("\n".join(f"/{command}" for command in unique_commands))  # Modified to show commands with /
 
     
 @Client.on_message(filters.command("list_filters"))
