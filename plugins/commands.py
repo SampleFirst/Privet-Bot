@@ -113,11 +113,12 @@ async def start(client, message):
             if data.split("-", 1)[0] == "refer":
                 user_id = int(data.split("-", 1)[1])
                 if await db.is_user_exist(user_id):
-                if not await db.is_user_exist(myid):
-                    await db.add_user(myid, myname, id)
-                    await client.send_message(id, "Congrats! You Won 10GB Upload limit")
+                    if not await db.is_user_exist(myid):
+                        await db.add_user(myid, myname, id)
+                        await client.send_message(id, "Congrats! You Won 10GB Upload limit")
+                    else:
+                        await client.send_message(id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
                 else:
-                    await client.send_message(id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
             else:
                 return 
         else:
