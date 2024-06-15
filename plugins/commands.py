@@ -7,7 +7,7 @@ from pyrogram.errors import ChatAdminRequired
 from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
-from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, REFER_ON, DAILY_BONUS, WITHDRAW_BTN
+from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, REFER_ON, DAILY_BONUS, MYSTORE 
 from utils import is_subscribed, temp, get_size, check_verification, get_token, check_token
 from Script import script
 import time
@@ -29,8 +29,8 @@ async def get_buttons(user_id):
         buttons.append(["Bonus 🎁"])
     
     user_coins = await db.get_coins(user_id)
-    if settings["withdraw_btn"] or user_coins >= 100:
-        buttons[-1].append("📤 Withdraw")
+    if settings["mystore"] or user_coins >= 100:
+        buttons[-1].append("My Store 🛒")
 
     # Flatten the buttons list
     flat_buttons = [btn for row in buttons for btn in row]
@@ -211,11 +211,11 @@ async def earn_coins(client, message):
     except Exception as e:
         await message.reply(str(e))
         
-@Client.on_message(filters.regex('📤 Withdraw') & filters.private)
-async def withdraw(bot, message):
+@Client.on_message(filters.regex('My Store 🛒') & filters.private)
+async def mystore(bot, message):
     try:
         await message.reply_text(
-            text=script.WITHDRAW_TEXT.format(),
+            text=script.MYSTORE_TEXT.format(),
             quote=True
         )
     except Exception as e:
@@ -308,8 +308,8 @@ async def settings(client, message):
                 InlineKeyboardButton('✅ ON' if settings["daily_bonus"] else '❌ OFF', callback_data="toggle_bonus")
             ],
             [
-                InlineKeyboardButton('Withdraw BTN', callback_data="withdraw"),
-                InlineKeyboardButton('✅ Always ON' if settings["withdraw_btn"] else '❌ After 100 Coins', callback_data="toggle_withdraw")
+                InlineKeyboardButton('My Store BTN', callback_data="store"),
+                InlineKeyboardButton('✅ Always ON' if settings["mystore"] else '❌ After 100 Coins', callback_data="toggle_store")
             ],
         ]
         reply_markup = InlineKeyboardMarkup(buttons)
