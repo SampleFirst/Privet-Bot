@@ -262,7 +262,7 @@ async def get_stats(bot, message):
         size = get_size(size)
         free = get_size(free)
         
-        await msg.edit(script.STATS_TEXT.format(total_users, size, free)
+        await msg.edit(script.STATS_TEXT.format(total_users, size, free))
     except Exception as e:
         await msg.edit(f"An error occurred: {e}")
 
