@@ -234,8 +234,7 @@ async def list_users(bot, message):
     users = await db.get_all_users()
     out = "Users Saved In DB Are:\n\n"
     async for user in users:
-        user_id = user['id']
-        out += f"<a href=tg://user?id={user_id}>{user['name']}</a>"
+        out += f"<a href=tg://user?id={user['id']}>{user['name']}</a>"
         if user['ban_status']['is_banned']:
             out += '( Banned User )'
         out += '\n'
