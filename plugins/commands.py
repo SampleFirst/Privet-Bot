@@ -176,7 +176,7 @@ async def bonus(bot, message):
             reply_markup=buttonz,
             quote=True
         )
-        await bot.send_message(LOG_CHANNEL, script.BONUSFLOOD_TEXT.format(user_id=user_id, username=username)
+        await bot.send_message(LOG_CHANNEL, script.BONUSFLOOD_TEXT.format(user_id=user_id, username=username))
     else:
         await db.got_bonus_status(user_id)
         await db.add_coins(user_id, 10)
@@ -262,7 +262,7 @@ async def get_stats(bot, message):
         size = get_size(size)
         free = get_size(free)
         
-        await msg.edit(script.STATS_TEXT.format(total_users=total_users, size=size, free=free)
+        await msg.edit(script.STATS_TEXT.format(total_users=total_users, size=size, free=free))
     except Exception as e:
         await msg.edit(f"An error occurred: {e}")
 
