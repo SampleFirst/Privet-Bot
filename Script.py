@@ -1,4 +1,4 @@
-class Script(object):
+class script(object):
     START_TXT = """Hello {user}!\nWelcome to the Bot.\n
 Watch Ads and Earn\n
 Earn 20 Coins per Ad\n
