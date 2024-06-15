@@ -16,7 +16,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             settings['refer_on'] = not settings.get('refer_on', False)
         elif setting == "bonus":
             settings['daily_bonus'] = not settings.get('daily_bonus', False)
-        elif setting == "withdraw":
+        elif setting == "store":
             settings['mystore'] = not settings.get('mystore', False)
         
         await db.update_settings(settings)
@@ -31,7 +31,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 InlineKeyboardButton('✅ ON' if settings["daily_bonus"] else '❌ OFF', callback_data="toggle_bonus")
             ],
             [
-                InlineKeyboardButton('My Store BTN', callback_data="store"),
+                InlineKeyboardButton('My Store', callback_data="store"),
                 InlineKeyboardButton('✅ Always ON' if settings["mystore"] else '❌ After Earn', callback_data="toggle_store")
             ],
         ]
