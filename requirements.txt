@@ -10,7 +10,5 @@ python-dotenv
 pytz
 urllib3
 tldextract
-Flask
-gunicorn
 aiohttp
 pip
