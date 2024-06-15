@@ -126,7 +126,7 @@ async def balance(bot, message):
     balance = await db.get_coins(user_id)
     refer = await db.get_referral(user_id)
     await message.reply_text(
-        text=script.BALANCE_TEXT.format(username, refer, balance),
+        text=script.BALANCE_TEXT.format(username=username, refer=refer, balance=balance),
         quote=True
     )
 
@@ -147,7 +147,7 @@ async def referral(bot, message):
             ]
         )
         await message.reply_text(
-            text=script.REFER_TEXT.format(user, total_referrals),
+            text=script.REFER_TEXT.format(user=user, total_referrals=total_referrals),
             reply_markup=reply_markup,
             disable_web_page_preview=True,
             quote=True
@@ -155,7 +155,7 @@ async def referral(bot, message):
     else:
         buttonz = await get_buttons(message.from_user.id)
         msg = await message.reply_text(
-            text=script.REFEROFF_TEXT.format(user),
+            text=script.REFEROFF_TEXT.format(user=user),
             reply_markup=buttonz,
             quote=True
         )
@@ -172,17 +172,17 @@ async def bonus(bot, message):
     if bonus["got_bonus"] == True:
         buttonz = await get_buttons(user_id)
         await message.reply_text(
-            text=script.BONUSOFF_TEXT.format(user),
+            text=script.BONUSOFF_TEXT.format(user=user),
             reply_markup=buttonz,
             quote=True
         )
-        await bot.send_message(LOG_CHANNEL, script.BONUSFLOOD_TEXT.format(user_id, username))
+        await bot.send_message(LOG_CHANNEL, script.BONUSFLOOD_TEXT.format(user_id=user_id, username=username)
     else:
         await db.got_bonus_status(user_id)
         await db.add_coins(user_id, 10)
         buttonz = await get_buttons(user_id)
         await message.reply_text(
-            text=script.BONUS_TEXT.format(user),
+            text=script.BONUS_TEXT.format(user=user),
             reply_markup=buttonz,
             quote=True
         )
@@ -198,7 +198,7 @@ async def earn_coins(client, message):
             ]]
             await client.send_message(
                 chat_id=message.from_user.id,
-                text=script.EARNCOIN_TEXT.format(user),
+                text=script.EARNCOIN_TEXT.format(user=user),
                 disable_web_page_preview=True,
                 reply_markup=InlineKeyboardMarkup(btn)
             )
@@ -206,7 +206,7 @@ async def earn_coins(client, message):
         else:
             await client.send_message(
                 chat_id=message.from_user.id,
-                text=script.EARNCOINS_TEXT.format(user)
+                text=script.EARNCOINS_TEXT.format(user=user)
             )
     except Exception as e:
         await message.reply(str(e))
@@ -215,7 +215,7 @@ async def earn_coins(client, message):
 async def withdraw(bot, message):
     try:
         await message.reply_text(
-            text=script.WITHDRAW_TEXT.format(),
+            text=script.WITHDRAW_TEXT.format()
             quote=True
         )
     except Exception as e:
@@ -262,7 +262,7 @@ async def get_stats(bot, message):
         size = get_size(size)
         free = get_size(free)
         
-        await msg.edit(script.STATS_TEXT.format(total_users, size, free))
+        await msg.edit(script.STATS_TEXT.format(total_users=total_users, size=size, free=free)
     except Exception as e:
         await msg.edit(f"An error occurred: {e}")
 
