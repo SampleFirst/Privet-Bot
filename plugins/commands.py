@@ -119,7 +119,7 @@ async def start(client, message):
         return
         
 
-@Client.on_message(filters.regex('Balance 💰') & filters.private)
+@Client.on_message((filters.command("balance") | filters.regex('Balance 💰')) & filters.private)
 async def balance(bot, message):
     user_id = message.from_user.id
     username = message.from_user.username or "N/A"
@@ -130,7 +130,7 @@ async def balance(bot, message):
         quote=True
     )
 
-@Client.on_message(filters.regex('🗣 Referral') & filters.private)
+@Client.on_message((filters.command("referral") | filters.regex('🗣 Referral')) & filters.private)
 async def referral(bot, message):
     settings = await db.get_settings()
     user_id = message.from_user.id
@@ -163,7 +163,7 @@ async def referral(bot, message):
         await bot.delete_messages(chat_id=message.chat.id, message_ids=[msg.id, message.id])
 
 
-@Client.on_message(filters.regex('Bonus 🎁') & filters.private)
+@Client.on_message((filters.command("bonus") | filters.regex('Bonus 🎁')) & filters.private)
 async def bonus(bot, message):
     user_id = message.from_user.id
     user = message.from_user.first_name
@@ -187,7 +187,7 @@ async def bonus(bot, message):
             quote=True
         )
 
-@Client.on_message(filters.regex('Earn Coins 💵') & filters.private)
+@Client.on_message((filters.command("earn_coins") | filters.regex('Earn Coins 💵')) & filters.private)
 async def earn_coins(client, message):
     user = message.from_user.mention
     try:
@@ -211,7 +211,7 @@ async def earn_coins(client, message):
     except Exception as e:
         await message.reply(str(e))
         
-@Client.on_message(filters.regex('My Store 🛒') & filters.private)
+@Client.on_message((filters.command("mystore") | filters.regex('My Store 🛒')) & filters.private)
 async def mystore(bot, message):
     try:
         await message.reply_text(
