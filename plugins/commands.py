@@ -215,7 +215,7 @@ async def earn_coins(client, message):
 async def withdraw(bot, message):
     try:
         await message.reply_text(
-            text=script.WITHDRAW_TEXT.format()
+            text=script.WITHDRAW_TEXT.format(),
             quote=True
         )
     except Exception as e:
