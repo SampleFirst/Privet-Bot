@@ -26,7 +26,7 @@ class Database:
             bonus=dict(
                 got_bonus=False,
             ),
-            credits=0,
+            coins=0,
         )
         
     async def update_verification(self, id, date, time):
@@ -67,6 +67,9 @@ class Database:
     async def delete_user(self, user_id):
         await self.col.delete_many({'id': int(user_id)})
 
+    async def delete_all_users(self):
+        await self.col.delete_many({})
+        
     async def remove_ban(self, id):
         ban_status = dict(
             is_banned=False,
@@ -132,25 +135,25 @@ class Database:
             return 0
         return user.get('referral', {}).get('referral_count', 0)
 
-    async def add_credits(self, id, credits):
-        await self.col.update_one({'id': int(id)}, {'$inc': {'credits': credits}})
+    async def add_coins(self, id, coins):
+        await self.col.update_one({'id': int(id)}, {'$inc': {'coins': coins}})
 
-    async def get_credits(self, id):
-        user = await self.col.find_one({'id': int(id)}, {'credits': 1})
+    async def get_coins(self, id):
+        user = await self.col.find_one({'id': int(id)}, {'coins': 1})
         if not user:
             return 0
-        return user.get('credits', 0)
+        return user.get('coins', 0)
 
-    async def use_credits(self, id, credits):
-        await self.col.update_one({'id': int(id)}, {'$inc': {'credits': -credits}})
+    async def use_coins(self, id, coins):
+        await self.col.update_one({'id': int(id)}, {'$inc': {'coins': -coins}})
 
-    async def get_total_credits(self):
+    async def get_total_coins(self):
         pipeline = [
-            {"$group": {"id": None, "totalCredits": {"$sum": "$credits"}}}
+            {"$group": {"id": None, "totalCoins": {"$sum": "$coins"}}}
         ]
         result = await self.col.aggregate(pipeline).to_list(length=None)
         if result:
-            return result[0].get('totalCredits', 0)
+            return result[0].get('totalCoins', 0)
         return 0
         
     async def get_all_settings(self):
