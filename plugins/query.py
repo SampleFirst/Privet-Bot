@@ -17,7 +17,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
         elif setting == "bonus":
             settings['daily_bonus'] = not settings.get('daily_bonus', False)
         elif setting == "withdraw":
-            settings['withdraw_btn'] = not settings.get('withdraw_btn', False)
+            settings['mystore'] = not settings.get('mystore', False)
         
         await db.update_settings(settings)
         
@@ -31,8 +31,8 @@ async def cb_handler(client: Client, query: CallbackQuery):
                 InlineKeyboardButton('✅ ON' if settings["daily_bonus"] else '❌ OFF', callback_data="toggle_bonus")
             ],
             [
-                InlineKeyboardButton('Withdraw BTN', callback_data="withdraw"),
-                InlineKeyboardButton('✅ Always ON' if settings["withdraw_btn"] else '❌ After Earn', callback_data="toggle_withdraw")
+                InlineKeyboardButton('My Store BTN', callback_data="store"),
+                InlineKeyboardButton('✅ Always ON' if settings["mystore"] else '❌ After Earn', callback_data="toggle_store")
             ],
         ]
         reply_markup = InlineKeyboardMarkup(buttons)
