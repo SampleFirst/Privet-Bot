@@ -308,8 +308,8 @@ async def settings(client, message):
                 InlineKeyboardButton('✅ ON' if settings["daily_bonus"] else '❌ OFF', callback_data="toggle_bonus")
             ],
             [
-                InlineKeyboardButton('My Store BTN', callback_data="store"),
-                InlineKeyboardButton('✅ Always ON' if settings["mystore"] else '❌ After 100 Coins', callback_data="toggle_store")
+                InlineKeyboardButton('My Store', callback_data="store"),
+                InlineKeyboardButton('✅ Always ON' if settings["mystore"] else '❌ After Earn', callback_data="toggle_store")
             ],
         ]
         reply_markup = InlineKeyboardMarkup(buttons)
