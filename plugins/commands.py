@@ -288,25 +288,11 @@ async def list_users(bot, message):
         
 @Client.on_message(filters.command('deleteusers') & filters.user(ADMINS))
 async def deleteusers(bot, message):
-    msg = await message.reply('Starting deletion of users...')
-    total_users = await db.total_users_count()
-    start_time = time.time()
-    count = 0
-    complete = 0
-    users = await db.get_all_users()
-    async for user in users:
-        try:
-            user_id = user['id']
-            await db.delete_user(user_id)
-            count += 1
-            complete += 1
-            if not complete % 20:
-                await msg.edit(f"Total Users: {total_users}\nTotal Deleted: {complete}\nTotal Deletion Percentage: {complete / total_users * 100:.2f}%")
-        except KeyError as e:
-            await msg.edit(f"KeyError: {e}. User object: {user}")
-            continue
-    time_taken = datetime.timedelta(seconds=int(time.time() - start_time))
-    await msg.edit(f"All users deleted.\nTime taken: {time_taken}")
+    try:
+        await db.delete_all_users()
+        await message.reply("All user have been deleted.")
+    except Exception as e:
+        await message.reply(f"An error occurred: {e}")
 
 @Client.on_message(filters.command('settings'))
 async def settings(client, message):
