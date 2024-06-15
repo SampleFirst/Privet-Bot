@@ -211,21 +211,27 @@ async def log_file(bot, message):
 # Handle the /help command
 @Client.on_message(filters.command("help"))
 async def help(client, message):
-    user = message.from_user.first_name
-    message.reply_text(
-        text=script.HELP_TXT.format(user=user),
-        quote=True
-    )
-
+    try:
+        user = message.from_user.first_name
+        await message.reply_text(
+            text=script.HELP_TXT.format(user=user),
+            quote=True
+        )
+    except Exception as e:
+        await message.reply(str(e))
+        
 # Handle the /about command
 @Client.on_message(filters.command("about"))
 async def about(client, message):
-    user = message.from_user.first_name
-    about_text = script.ABOUT_TXT.format(user=user)
-    message.reply_text(
-        text=script.ABOUT_TXT.format(user=user),
-        quote=True
-    )
+    try:
+        user = message.from_user.first_name
+        about_text = script.ABOUT_TXT.format(user=user)
+        await message.reply_text(
+            text=script.ABOUT_TXT.format(user=user),
+            quote=True
+        )
+    except Exception as e:
+        await message.reply(str(e))
     
 @Client.on_message(filters.command('stats') & filters.incoming)
 async def get_stats(bot, message):
