@@ -14,14 +14,14 @@ class Database:
         return dict(
             id=id,
             name=name,
-            is_refer=False,
             ban_status=dict(
                 is_banned=False,
                 ban_reason="",
             ),
-            referral=dict(
-                referred_by=None,
-                referral_count=0,
+            referrals=dict(
+                referred_id=referred_id,
+                referred_name=referred_name,
+                referral_used=False,
             ),
             bonus=dict(
                 got_bonus=False,
@@ -117,23 +117,34 @@ class Database:
             return default
         return user.get('bonus', default)
 
-    async def referred_by(self, id):
-        await self.col.update_one({'id': int(id)}, {'$set': {'is_refer': True}})
+    async def add_referred_user(self, referrer_id, referred_id, referred_name):
+        referral = dict(
+            referred_id=referred_id,
+            referred_name=referred_name,
+            referral_used=False
+        )
+        await self.col.update_one(
+            {'id': int(referrer_id)},
+            {'$push': {'referrals': referral}}
+        )
 
-    async def is_referred_exist(self, id):
-        user = await self.col.find_one({'id': int(id)})
+    async def get_total_referrals(self, referrer_id):
+        user = await self.col.find_one({'id': int(referrer_id)}, {'referrals': 1})
         if user:
-            return user.get('is_refer', False)
-        return False
-        
-    async def add_referral(self, id):
-        await self.col.update_one({'id': int(id)}, {'$inc': {'referral.referral_count': 1}})
+            return len(user.get('referrals', []))
+        return 0
 
-    async def get_referral(self, id):
-        user = await self.col.find_one({'id': int(id)}, {'referral.referral_count': 1})
-        if not user:
-            return 0
-        return user.get('referral', {}).get('referral_count', 0)
+    async def get_referral_used(self, referred_id):
+        user = await self.col.find_one({'referrals.referred_id': int(referred_id)}, {'referrals.$': 1})
+        if user:
+            return user['referrals'][0].get('referral_used', False)
+        return None
+
+    async def update_referral_used(self, referrer_id, referred_id):
+        await self.col.update_one(
+            {'id': int(referrer_id), 'referrals.referred_id': int(referred_id)},
+            {'$set': {'referrals.$.referral_used': True}}
+        )
 
     async def add_coins(self, id, coins):
         await self.col.update_one({'id': int(id)}, {'$inc': {'coins': coins}})
