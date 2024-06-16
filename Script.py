@@ -1,6 +1,8 @@
 class script(object):
     START_TEXT = """Hello {user}! Welcome to the Bot.\n
-Watch Ads, Earn Coins, Buy Subscription of Premium Bots\n
+✅ Watch Ads
+✅ Earn Coins
+✅ Buy Subscription of Premium Bots\n
 
 /help - information on how to earn coins
 /about - View available items in my store
@@ -9,9 +11,9 @@ Watch Ads, Earn Coins, Buy Subscription of Premium Bots\n
     HELP_TEXT = """Hello {user}!\nHere's a step-by-step guide to using the bot:\n
 ⭐ Send the /start command to the bot.
 ⭐ Click the <code>Earn Coins 🪙</code> button or send /earn_coins.
-⭐ Watch ad and get 20 Coins
-⭐ You can watch up to 20 ads per day.
-⭐ Earn 20 coins for each ad you watch.
+⭐ Watch ad and get 10 Coins
+⭐ You can watch up to 10 ads per day.
+⭐ Earn 10 coins for each ad you watch.
 ⭐ Check your total coins by clicking the <code>Balance 💰</code> button or sending the /balance command.
 ⭐ Once you've collected enough coins, check the available items in the store by clicking the <code>My Store 🛒</code> button or sending the /mystore command.
 
@@ -24,7 +26,7 @@ Note: Purchases are only available on Saturdays."""
 3) 4GB Rename Bot
 4) 4GB Uploader Bot
 
-Earn 20 Coins per Ad, Once you reach the threshold, you can buy items from my store.
+Earn 10 Coins per Ad, Once you reach the threshold, you can buy items from my store.
 
 For any queries, ask @xyz."""
 
