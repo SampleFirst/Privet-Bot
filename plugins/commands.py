@@ -29,7 +29,7 @@ async def get_buttons(user_id):
         buttons.append(["Bonus 🎁"])
     
     user_coins = await db.get_coins(user_id)
-    if settings["mystore"] or user_coins >= 100:
+    if settings["mystore"] or user_coins >= 1000:
         buttons[-1].append("My Store 🛒")
 
     # Flatten the buttons list
@@ -55,8 +55,31 @@ async def start(client, message):
         await db.add_user(message.from_user.id, message.from_user.first_name)
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(a=message.from_user.id, b=message.from_user.username, c=message.from_user.mention))
 
-    buttonz = await get_buttons(message.from_user.id)
+    if AUTH_CHANNEL and not await is_subscribed(client, message):
+        try:
+            invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL))
+        except ChatAdminRequired:
+            logger.error("Make sure Bot is admin in Forcesub channel")
+            return
 
+        btn = [
+            [
+                InlineKeyboardButton("Join Our Back-Up Channel", url="https://t.me/addlist/HbZqccej2BQ2MmY9")
+            ],
+            [
+                InlineKeyboardButton("Join Our Back-Up Channel", url=invite_link.invite_link)
+            ]
+        ]
+        await client.send_message(
+            chat_id=message.from_user.id,
+            text=script.FORCESUB_TEXT.format(user=message.from_user.mention),
+            reply_markup=InlineKeyboardMarkup(btn),
+            parse_mode=enums.ParseMode.MARKDOWN,
+            quote=True
+        )
+        return
+        
+    buttonz = await get_buttons(message.from_user.id)
     if len(message.command) != 2:
         await message.reply_photo(
             photo=random.choice(PICS),
@@ -67,23 +90,6 @@ async def start(client, message):
         )
         return
     
-    if AUTH_CHANNEL and not await is_subscribed(client, message):
-        try:
-            invite_link = await client.create_chat_invite_link(int(AUTH_CHANNEL))
-        except ChatAdminRequired:
-            logger.error("Make sure Bot is admin in Forcesub channel")
-            return
-
-        btn = [[InlineKeyboardButton("Join Our Back-Up Channel", url=invite_link.invite_link)]]
-        await client.send_message(
-            chat_id=message.from_user.id,
-            text=script.FORCESUB_TEXT.format(user=message.from_user.mention),
-            reply_markup=InlineKeyboardMarkup(btn),
-            parse_mode=enums.ParseMode.MARKDOWN,
-            quote=True
-        )
-        return
-
     data = message.command[1]
     if data in ["subscribe", "error", "okay", "help"]:
         await message.reply_photo(
@@ -103,8 +109,8 @@ async def start(client, message):
 
         is_valid = await check_token(client, userid, token)
         if is_valid:
-            await db.add_coins(userid, 20)
-            await message.reply_text(text="Hey user You are successful verification")
+            await db.add_coins(userid, 10)
+            await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
         else:
             await message.reply_text(text="<b>Invalid or Expired Link!</b>")
         return
@@ -113,9 +119,19 @@ async def start(client, message):
         user_id = int(data.split("-", 1)[1])
         if await db.is_user_exist(user_id):
             if user_exists:
-                await client.send_message(user_id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
+                await client.send_message(user_id, "Your friend is already using our bot.")
+                await message.reply_text("Your are existing user\n\n/start")
             else:
-                await client.send_message(user_id, "Congrats! You Won 10GB Upload limit")
+                await client.send_message(user_id, "Congratulations! You have successfully referred one user using your link.")
+                buttonz = await get_buttons(message.from_user.id)
+                await message.reply_photo(
+                    photo=random.choice(PICS),
+                    caption=script.START_TEXT.format(user=message.from_user.mention),
+                    reply_markup=buttonz,
+                    parse_mode=enums.ParseMode.HTML,
+                    quote=True
+                )
+                return
         return
         
 
@@ -198,7 +214,7 @@ async def earn_coins(client, message):
             ]]
             await client.send_message(
                 chat_id=message.from_user.id,
-                text=script.EARNCOIN_TEXT.format(user=user),
+                text=script.ADS_TEXT.format(user=user),
                 disable_web_page_preview=True,
                 reply_markup=InlineKeyboardMarkup(btn)
             )
@@ -206,7 +222,7 @@ async def earn_coins(client, message):
         else:
             await client.send_message(
                 chat_id=message.from_user.id,
-                text=script.EARNCOINS_TEXT.format(user=user)
+                text=script.EARNCOIN_TEXT.format(user=user)
             )
     except Exception as e:
         await message.reply(str(e))
