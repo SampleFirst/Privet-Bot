@@ -10,6 +10,7 @@ class script(object):
     
     HELP_TEXT = """Hello {user}!\nHere's a step-by-step guide to using the bot:\n
 ⭐ Send the /start command to the bot.
+⭐ Click the <code>Bonus 🎁</code> button or send /bonus for Daily bonus.
 ⭐ Click the <code>Earn Coins 🪙</code> button or send /earn_coins.
 ⭐ Watch ad and get 10 Coins
 ⭐ You can watch up to 10 ads per day.
