@@ -117,19 +117,19 @@ class Database:
             return default
         return user.get('bonus', default)
 
-    async def add_referred_user(self, referrer_id, referred_id, referred_name):
+    async def add_referred_user(self, id, referred_id, referred_name):
         referral = dict(
             referred_id=referred_id,
             referred_name=referred_name,
             referral_used=False
         )
         await self.col.update_one(
-            {'id': int(referrer_id)},
+            {'id': int(id)},
             {'$push': {'referrals': referral}}
         )
 
-    async def get_total_referrals(self, referrer_id):
-        user = await self.col.find_one({'id': int(referrer_id)}, {'referrals': 1})
+    async def get_total_referrals(self, id):
+        user = await self.col.find_one({'id': int(id)}, {'referrals': 1})
         if user:
             return len(user.get('referrals', []))
         return 0
@@ -140,9 +140,9 @@ class Database:
             return user['referrals'][0].get('referral_used', False)
         return None
 
-    async def update_referral_used(self, referrer_id, referred_id):
+    async def update_referral_used(self, id, referred_id):
         await self.col.update_one(
-            {'id': int(referrer_id), 'referrals.referred_id': int(referred_id)},
+            {'id': int(id), 'referrals.referred_id': int(referred_id)},
             {'$set': {'referrals.$.referral_used': True}}
         )
 
