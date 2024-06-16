@@ -141,7 +141,7 @@ async def balance(bot, message):
     user_id = message.from_user.id
     username = message.from_user.username or "N/A"
     balance = await db.get_coins(user_id)
-    refer = await db.get_referral(user_id)
+    refer = await db.get_total_referrals(user_id)
     await message.reply_text(
         text=script.BALANCE_TEXT.format(username=username, refer=refer, balance=balance),
         quote=True
