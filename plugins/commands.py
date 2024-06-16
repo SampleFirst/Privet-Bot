@@ -122,6 +122,7 @@ async def start(client, message):
                 await client.send_message(user_id, "Your friend is already using our bot.")
                 await message.reply_text("Your are existing user\n\n/start")
             else:
+                await db.add_referred_user(user_id, message.from_user.id, message.from_user.first_name) #Referrer: who shares the referral link. Referral: who joins using the referral link.
                 await client.send_message(user_id, "Congratulations! You have successfully referred one user using your link.")
                 buttonz = await get_buttons(message.from_user.id)
                 await message.reply_photo(
@@ -153,7 +154,7 @@ async def referral(bot, message):
     user = message.from_user.first_name
     
     if settings['refer_on']:
-        total_referrals = await db.get_referral(user_id)
+        total_referrals = await db.get_total_referrals(user_id)
         referral_link = f"https://telegram.me/{temp.U_NAME}?start=refer-{user_id}"
         reply_markup = InlineKeyboardMarkup(
             [
