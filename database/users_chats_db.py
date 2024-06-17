@@ -93,9 +93,6 @@ class Database:
         b_users = [user['id'] async for user in users]
         return b_users
 
-    async def get_db_size(self):
-        return (await self.db.command("dbstats"))['dataSize']
-
     async def got_bonus_status(self, user_id):
         bonus = dict(
             got_bonus=True
@@ -117,10 +114,7 @@ class Database:
             referred_name=referred_name,
             referral_used=False
         )
-        await self.col.update_one(
-            {'id': int(id)},
-            {'$push': {'referrals': referral}}
-        )
+        await self.col.update_one({'id': int(id)}, {'$push': {'referrals': referral}})
 
     async def get_total_referrals(self, id):
         user = await self.col.find_one({'id': int(id)}, {'referrals': 1})
@@ -134,12 +128,6 @@ class Database:
             return user['referrals']
         return []
         
-    async def get_referral_used(self, referred_id):
-        user = await self.col.find_one({'referrals.referred_id': int(referred_id)}, {'referrals.$': 1})
-        if user:
-            return user['referrals'][0].get('referral_used', False)
-        return None
-
     async def update_referral_used(self, id, referred_id):
         await self.col.update_one(
             {'id': int(id), 'referrals.referred_id': int(referred_id)},
@@ -190,10 +178,32 @@ class Database:
             return settings
         return default
         
+    async def get_db_size(self):
+        return (await self.db.command("dbstats"))['dataSize']
+
     async def reset_database(self):
         collections = await self.db.list_collection_names()
         for collection in collections:
             await self.db[collection].drop()
         print("Database has been reset.")
+
+    # New function to add a referrer
+    async def add_referrer(self, id, ref_id):
+        referrer_info = dict(
+            ref_id=ref_id,
+            status=False
+        )
+        await self.col.update_one({'id': int(id)}, {'$set': {'referrer_info': referrer_info}})
+    
+    # New function to get the referrer info
+    async def get_referrer_info(self, id):
+        user = await self.col.find_one({'id': int(id)}, {'referrer_info': 1})
+        if user and 'referrer_info' in user:
+            return user['referrer_info']
+        return None
+
+    # New function to update the referrer status
+    async def update_referrer_status(self, id, status):
+        await self.col.update_one({'id': int(id)}, {'$set': {'referrer_info.status': status}})
 
 db = Database(DATABASE_URI, DATABASE_NAME)
