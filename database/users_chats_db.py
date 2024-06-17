@@ -193,7 +193,6 @@ class Database:
     async def reset_database(self):
         collections = await self.db.list_collection_names()
         for collection in collections:
-            await self.db[collection].delete_many({})
-
+            await self.db[collection].drop()
 
 db = Database(DATABASE_URI, DATABASE_NAME)
