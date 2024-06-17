@@ -367,3 +367,20 @@ async def reset_database(bot, message):
     except Exception as e:
         logger.error(f"Error resetting database: {e}")
         await rju.edit(f"An error occurred while resetting the database: {e}")
+
+@Client.on_message(filters.command("referrals") & filters.private)
+async def get_referrals(client, message):
+    user_id = message.from_user.id
+    try:
+        if await db.is_user_exist(user_id):
+            referrals = await db.get_referral_list(user_id)
+            if referrals:
+                referral_info = "\n".join([f"ID: {ref['referred_id']}, Name: {ref['referred_name']}, Used: {ref['referral_used']}" for ref in referrals])
+                await message.reply(f"Your referrals:\n{referral_info}")
+            else:
+                await message.reply("You have no referrals.")
+        else:
+            await message.reply("User not found in the database.")
+    except Exception as e:
+        logger.error(f"Error: {e}")
+        await message.reply(f"An error occurred: {e}")
