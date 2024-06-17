@@ -374,23 +374,13 @@ async def get_referrals(client, message):
     try:
         if await db.is_user_exist(user_id):
             referrals = await db.get_referral_list(user_id)
-            if referrals and isinstance(referrals, list):
-                referral_info = []
-                for ref in referrals:
-                    if isinstance(ref, dict):
-                        referred_id = ref.get('referred_id', 'N/A')
-                        referred_name = ref.get('referred_name', 'N/A')
-                        referral_used = ref.get('referral_used', 'N/A')
-                        referral_info.append(f"ID: {referred_id}, Name: {referred_name}, Used: {referral_used}")
-                    else:
-                        logger.error(f"Unexpected referral structure: {ref}")
-                        referral_info.append("Invalid referral data")
-                await message.reply(f"Your referrals:\n" + "\n".join(referral_info))
+            if referrals:
+                referral_info = "\n".join([f"ID: {ref['referred_id']}, Name: {ref['referred_name']}, Used: {ref['referral_used']}" for ref in referrals])
+                await message.reply(f"Your referrals:\n{referral_info}")
             else:
-                await message.reply("You have no referrals or invalid data structure.")
+                await message.reply("You have no referrals.")
         else:
             await message.reply("User not found in the database.")
     except Exception as e:
         logger.error(f"Error: {e}")
         await message.reply(f"An error occurred: {e}")
-        
