@@ -384,3 +384,15 @@ async def get_referrals(client, message):
     except Exception as e:
         logger.error(f"Error: {e}")
         await message.reply(f"An error occurred: {e}")
+
+@Client.on_message(filters.command("referrer"))
+async def show_referrer(client, message):
+    user_id = message.from_user.id
+    referrer_info = await db.get_referrer_info(user_id)
+    if referrer_info:
+        ref_id = referrer_info.get("ref_id", "Not referred")
+        status = referrer_info.get("status", False)
+        await message.reply(f"Referrer ID: {ref_id}\nStatus: {status}")
+    else:
+        await message.reply("No referrer information found.")
+
