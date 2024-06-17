@@ -190,4 +190,10 @@ class Database:
             return settings
         return default
         
+    async def reset_database(self):
+        collections = await self.db.list_collection_names()
+        for collection in collections:
+            await self.db[collection].delete_many({})
+
+
 db = Database(DATABASE_URI, DATABASE_NAME)
