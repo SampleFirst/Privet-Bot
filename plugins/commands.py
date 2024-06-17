@@ -122,6 +122,9 @@ async def start(client, message):
                     await db.update_referrer_status(userid, True)
                     await db.add_coins(userid, 10)
                     await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
+            else:
+                await db.add_coins(userid, 10)
+                await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
         else:
             await message.reply_text(text="<b>Invalid or Expired Link!</b>")
         return
