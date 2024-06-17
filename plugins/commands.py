@@ -109,8 +109,19 @@ async def start(client, message):
 
         is_valid = await check_token(client, userid, token)
         if is_valid:
-            await db.add_coins(userid, 10)
-            await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
+            referrer_info = await db.get_referrer_info(user_id)
+            if referrer_info:
+                ref_id = referrer_info.get("ref_id", "Not referred")
+                status = referrer_info.get("status", False)
+                if status == True:
+                    await db.add_coins(userid, 10)
+                    await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
+                else:
+                    await db.add_coins(ref_id, 10)
+                    await client.send_message(ref_id, text="Congratulations! 🎉\nYou have earned 10 coins from refer.\n\nGenerate a new ad link: /earn_coins")
+                    await db.update_referrer_status(userid, True)
+                    await db.add_coins(userid, 10)
+                    await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
         else:
             await message.reply_text(text="<b>Invalid or Expired Link!</b>")
         return
