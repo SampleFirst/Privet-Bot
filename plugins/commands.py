@@ -357,3 +357,13 @@ async def delete_settings(client, message):
         await message.reply("All settings have been deleted.")
     except Exception as e:
         await message.reply(f"An error occurred: {e}")
+
+@Client.on_message(filters.command('resetdb') & filters.user(ADMINS))
+async def reset_database(bot, message):
+    rju = await message.reply('Resetting database...')
+    try:
+        await db.reset_database()
+        await rju.edit('Database has been reset successfully.')
+    except Exception as e:
+        logger.error(f"Error resetting database: {e}")
+        await rju.edit(f"An error occurred while resetting the database: {e}")
