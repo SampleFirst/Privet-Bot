@@ -133,6 +133,12 @@ class Database:
         if user:
             return len(user.get('referrals', []))
         return 0
+        
+    async def get_referral_list(self, id):
+        user = await self.col.find_one({'id': int(id)}, {'referrals': 1})
+        if user and 'referrals' in user:
+            return user['referrals']
+        return []
 
     async def get_referral_used(self, referred_id):
         user = await self.col.find_one({'referrals.referred_id': int(referred_id)}, {'referrals.$': 1})
