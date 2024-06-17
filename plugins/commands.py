@@ -109,7 +109,7 @@ async def start(client, message):
 
         is_valid = await check_token(client, userid, token)
         if is_valid:
-            referrer_info = await db.get_referrer_info(user_id)
+            referrer_info = await db.get_referrer_info(userid)
             if referrer_info:
                 ref_id = referrer_info.get("ref_id", "Not referred")
                 status = referrer_info.get("status", False)
