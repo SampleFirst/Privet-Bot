@@ -123,6 +123,7 @@ async def start(client, message):
                 await message.reply_text("Your are existing user\n\n/start")
             else:
                 await db.add_referred_user(user_id, message.from_user.id, message.from_user.first_name) #Referrer: who shares the referral link. Referral: who joins using the referral link.
+                await db.add_referrer(message.from_user.id, user_id)
                 await client.send_message(user_id, "Congratulations! You have successfully referred one user using your link.")
                 buttonz = await get_buttons(message.from_user.id)
                 await message.reply_photo(
