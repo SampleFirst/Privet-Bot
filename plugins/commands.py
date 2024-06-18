@@ -8,7 +8,7 @@ from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
 from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, REFER_ON, DAILY_BONUS, MYSTORE 
-from utils import is_subscribed, temp, get_size, check_verification, get_token, check_token
+from utils import is_subscribed, temp, get_size, check_verification, get_token, verify_user, check_token
 from Script import script
 import time
 import datetime
@@ -379,13 +379,17 @@ async def delete_settings(client, message):
 async def reset_database(bot, message):
     # Define the buttons
     buttons = [
-        InlineKeyboardButton("Yes, reset", callback_data="confirm_reset"),
-        InlineKeyboardButton("No, cancel", callback_data="cancel_reset"),
-        InlineKeyboardButton("I am testing", callback_data="testing")
+        [InlineKeyboardButton("Yes, reset", callback_data="confirm_reset")],
+        [InlineKeyboardButton("No, cancel", callback_data="cancel_reset")],
+        [InlineKeyboardButton("I am testing", callback_data="testing")]
     ]
-    # Shuffle the buttons to randomize their order
-    random.shuffle(buttons)
-    confirmation_keyboard = InlineKeyboardMarkup([buttons])
+    
+    # Flatten the list, shuffle, and convert back to a list of lists with single buttons
+    flat_buttons = [button for sublist in buttons for button in sublist]
+    random.shuffle(flat_buttons)
+    shuffled_buttons = [[button] for button in flat_buttons]
+
+    confirmation_keyboard = InlineKeyboardMarkup(shuffled_buttons)
     await message.reply("Are you sure you want to reset the database?", reply_markup=confirmation_keyboard)
 
 @Client.on_message(filters.command("referrals") & filters.private)
