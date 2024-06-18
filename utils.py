@@ -4,6 +4,11 @@ import pytz
 import random 
 import re
 import os
+import asyncio
+import pytz
+import time, re
+from datetime import datetime
+from pyrogram.errors import FloodWait
 from datetime import datetime, timedelta, date, time
 import string
 from typing import List
@@ -24,6 +29,7 @@ class temp(object):
     ME = None
     U_NAME = None
     B_NAME = None
+    USERS_CANCEL = False
 
 async def is_subscribed(bot, query=None, userid=None):
     try:
@@ -47,6 +53,28 @@ def get_size(size):
         i += 1
         size /= 1024.0
     return "%.2f %s" % (size, units[i])
+
+async def broadcast_messages(user_id, message, pin):
+    try:
+        m = await message.copy(chat_id=user_id)
+        if pin:
+            await m.pin(both_sides=True)
+        return "Success"
+    except FloodWait as e:
+        await asyncio.sleep(e.value)
+        return await broadcast_messages(user_id, message, pin)
+    except Exception as e:
+        await db.delete_user(int(user_id))
+        return "Error"
+
+def get_readable_time(seconds):
+    periods = [('d', 86400), ('h', 3600), ('m', 60), ('s', 1)]
+    result = ''
+    for period_name, period_seconds in periods:
+        if seconds >= period_seconds:
+            period_value, seconds = divmod(seconds, period_seconds)
+            result += f'{int(period_value)}{period_name}'
+    return result
     
 async def get_verify_shorted_link(num, link):
     if int(num) == 1:
