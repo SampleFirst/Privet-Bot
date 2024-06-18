@@ -38,3 +38,16 @@ async def cb_handler(client: Client, query: CallbackQuery):
         reply_markup = InlineKeyboardMarkup(buttons)
         await query.message.edit_reply_markup(reply_markup=reply_markup)
         
+    elif query.data == "confirm_reset":
+        rju = await query.message.edit("Resetting database...")
+        try:
+            await db.reset_database()
+            await rju.edit("Database has been reset successfully.")
+        except Exception as e:
+            logger.error(f"Error resetting database: {e}")
+            await rju.edit(f"An error occurred while resetting the database: {e}")
+    elif query.data == "cancel_reset":
+        await query.message.edit("Database reset has been canceled.")
+    elif query.data == "testing":
+        await query.message.edit("You have selected the testing option.")
+
