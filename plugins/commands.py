@@ -21,13 +21,13 @@ async def get_buttons(user_id):
     settings = await db.get_settings()
     row = ["Balance 💰", "🗣 Referral"] if settings['refer_on'] else ["Balance 💰"]
     buttons.append(row)
-    
+
     bonus = await db.get_bonus_status(user_id)
     if bonus["got_bonus"]:
         buttons.append(["Earn Coins 💵"])
     else:
         buttons.append(["Bonus 🎁"])
-    
+
     user_coins = await db.get_coins(user_id)
     if settings["mystore"] or user_coins >= 1000:
         buttons[-1].append("My Store 🛒")
@@ -44,9 +44,8 @@ async def get_buttons(user_id):
         arranged_buttons = [[flat_buttons[0], flat_buttons[1]], [flat_buttons[2]]]
     elif len(flat_buttons) >= 4:
         arranged_buttons = [[flat_buttons[0], flat_buttons[1]], [flat_buttons[2], flat_buttons[3]]]
-    
-    return ReplyKeyboardMarkup(arranged_buttons, resize_keyboard=True)
 
+    return ReplyKeyboardMarkup(arranged_buttons, resize_keyboard=True)
 
 @Client.on_message(filters.command("start") & filters.incoming)
 async def start(client, message):
@@ -78,7 +77,7 @@ async def start(client, message):
             quote=True
         )
         return
-        
+
     buttonz = await get_buttons(message.from_user.id)
     if len(message.command) != 2:
         await message.reply_photo(
@@ -89,7 +88,7 @@ async def start(client, message):
             quote=True
         )
         return
-    
+
     data = message.command[1]
     if data in ["subscribe", "error", "okay", "help"]:
         await message.reply_photo(
@@ -113,16 +112,19 @@ async def start(client, message):
             if referrer_info:
                 ref_id = referrer_info.get("ref_id", "Not referred")
                 status = referrer_info.get("status", False)
-                if status == True:
+                if status:
+                    await verify_user(client, userid, token)
                     await db.add_coins(userid, 10)
                     await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
                 else:
+                    await verify_user(client, userid, token)
                     await db.add_coins(ref_id, 10)
                     await client.send_message(ref_id, text="Congratulations! 🎉\nYou have earned 10 coins from refer.\n\nGenerate a new ad link: /earn_coins")
                     await db.update_referrer_status(userid, True)
                     await db.add_coins(userid, 10)
                     await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
             else:
+                await verify_user(client, userid, token)
                 await db.add_coins(userid, 10)
                 await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
         else:
@@ -134,9 +136,9 @@ async def start(client, message):
         if await db.is_user_exist(user_id):
             if user_exists:
                 await client.send_message(user_id, "Your friend is already using our bot.")
-                await message.reply_text("Your are existing user\n\n/start")
+                await message.reply_text("You are an existing user\n/start")
             else:
-                await db.add_referred_user(user_id, message.from_user.id, message.from_user.first_name) #Referrer: who shares the referral link. Referral: who joins using the referral link.
+                await db.add_referred_user(user_id, message.from_user.id, message.from_user.first_name) # Referrer: who shares the referral link. Referral: who joins using the referral link.
                 await db.add_referrer(message.from_user.id, user_id)
                 await client.send_message(user_id, "Congratulations! You have successfully referred one user using your link.")
                 buttonz = await get_buttons(message.from_user.id)
@@ -375,13 +377,16 @@ async def delete_settings(client, message):
 
 @Client.on_message(filters.command('resetdb') & filters.user(ADMINS))
 async def reset_database(bot, message):
-    rju = await message.reply('Resetting database...')
-    try:
-        await db.reset_database()
-        await rju.edit('Database has been reset successfully.')
-    except Exception as e:
-        logger.error(f"Error resetting database: {e}")
-        await rju.edit(f"An error occurred while resetting the database: {e}")
+    # Define the buttons
+    buttons = [
+        InlineKeyboardButton("Yes, reset", callback_data="confirm_reset"),
+        InlineKeyboardButton("No, cancel", callback_data="cancel_reset"),
+        InlineKeyboardButton("I am testing", callback_data="testing")
+    ]
+    # Shuffle the buttons to randomize their order
+    random.shuffle(buttons)
+    confirmation_keyboard = InlineKeyboardMarkup([buttons])
+    await message.reply("Are you sure you want to reset the database?", reply_markup=confirmation_keyboard)
 
 @Client.on_message(filters.command("referrals") & filters.private)
 async def get_referrals(client, message):
