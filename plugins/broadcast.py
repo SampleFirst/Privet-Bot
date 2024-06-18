@@ -17,7 +17,7 @@ async def broadcast_cancel(bot, query):
         temp.USERS_CANCEL = True
     elif ident == 'groups':
         await query.message.edit("Trying to cancel groups broadcasting...")
-               
+
 @Client.on_message(filters.command(["broadcast", "pin_broadcast"]) & filters.user(ADMINS) & filters.reply)
 async def users_broadcast(bot, message):
     if lock.locked():
@@ -42,7 +42,7 @@ async def users_broadcast(bot, message):
                 temp.USERS_CANCEL = False
                 await b_sts.edit(f"Users broadcast Cancelled!\nCompleted in {time_taken}\n\nTotal Users: <code>{total_users}</code>\nCompleted: <code>{done} / {total_users}</code>\nSuccess: <code>{success}</code>")
                 return
-            sts = await broadcast_messages(int(user['id']), b_msg, pin)
+            sts = await broadcast_messages(bot, int(user['id']), b_msg, pin)
             if sts == 'Success':
                 success += 1
             elif sts == 'Error':
@@ -54,4 +54,3 @@ async def users_broadcast(bot, message):
                 ]]
                 await b_sts.edit(f"Users broadcast in progress...\n\nTotal Users: <code>{total_users}</code>\nCompleted: <code>{done} / {total_users}</code>\nSuccess: <code>{success}</code>", reply_markup=InlineKeyboardMarkup(btn))
         await b_sts.edit(f"Users broadcast completed.\nCompleted in {time_taken}\n\nTotal Users: <code>{total_users}</code>\nCompleted: <code>{done} / {total_users}</code>\nSuccess: <code>{success}</code>")
-        
