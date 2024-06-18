@@ -64,19 +64,13 @@ async def broadcast_messages(bot, user_id, message, pin):
         await asyncio.sleep(e.value)
         return await broadcast_messages(bot, user_id, message, pin)
     except UserIsBlocked:
-        try:
-            await bot.unban_chat_member(user_id, bot.id)
-            m = await message.copy(chat_id=user_id)
-            if pin:
-                await m.pin(both_sides=True)
-            return "Success"
-        except Exception:
-            await db.delete_user(int(user_id))
-            return "Error"
+        await bot.unban_chat_member(user_id, bot.id)
+        m = await message.copy(chat_id=user_id)
+        if pin:
+            await m.pin(both_sides=True)
+        return "Success"
     except Exception as e:
-        await db.delete_user(int(user_id))
         return "Error"
-
 
 def get_readable_time(seconds):
     periods = [('d', 86400), ('h', 3600), ('m', 60), ('s', 1)]
