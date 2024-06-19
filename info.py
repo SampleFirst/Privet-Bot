@@ -44,7 +44,32 @@ MYSTORE = is_enabled(environ.get('MYSTORE', "False"), False)
 MAIN_CHANNEL = int(environ.get('MAIN_CHANNEL', 0))
 IS_VERIFY = is_enabled((environ.get('IS_VERIFY', 'False')), False)
 HOW_TO_VERIFY = environ.get('HOW_TO_VERIFY', "https://t.me/c/1845700490/3")
-VERIFY2_URL = environ.get('VERIFY2_URL', "clicksfly.com")
-VERIFY2_API = environ.get('VERIFY2_API', "c2150e28189cefefd05f8a9c5c5770cc462033e3")
-SHORTLINK_URL = environ.get('SHORTLINK_URL', 'clicksfly.com')
-SHORTLINK_API = environ.get('SHORTLINK_API', 'c2150e28189cefefd05f8a9c5c5770cc462033e3')
+SHORTLINK_URL = environ.get('SHORTLINK_URL', "")
+SHORTLINK_API = environ.get('SHORTLINK_API', "")
+
+VERIFY2_URL = environ.get('VERIFY2_URL', "")
+VERIFY2_API = environ.get('VERIFY2_API', "")
+
+VERIFY3_URL = environ.get('VERIFY3_URL', "")
+VERIFY3_API = environ.get('VERIFY3_API', "")
+
+VERIFY4_URL = environ.get('VERIFY4_URL', "")
+VERIFY4_API = environ.get('VERIFY4_API', "")
+
+VERIFY5_URL = environ.get('VERIFY5_URL', "")
+VERIFY5_API = environ.get('VERIFY5_API', "")
+
+VERIFY6_URL = environ.get('VERIFY6_URL', "")
+VERIFY6_API = environ.get('VERIFY6_API', "")
+
+VERIFY7_URL = environ.get('VERIFY7_URL', "")
+VERIFY7_API = environ.get('VERIFY7_API', "")
+
+VERIFY8_URL = environ.get('VERIFY8_URL', "")
+VERIFY8_API = environ.get('VERIFY8_API', "")
+
+VERIFY9_URL = environ.get('VERIFY9_URL', "")
+VERIFY9_API = environ.get('VERIFY9_API', "")
+
+VERIFY10_URL = environ.get('VERIFY10_URL', "")
+VERIFY10_API = environ.get('VERIFY10_API', "")
