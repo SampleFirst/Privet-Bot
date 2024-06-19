@@ -85,9 +85,33 @@ async def get_verify_shorted_link(num, link):
     if int(num) == 1:
         API = SHORTLINK_API
         URL = SHORTLINK_URL
-    else:
+    elif int(num) == 2:
         API = VERIFY2_API
         URL = VERIFY2_URL
+    elif int(num) == 3:
+        API = VERIFY3_API
+        URL = VERIFY3_URL
+    elif int(num) == 4:
+        API = VERIFY4_API
+        URL = VERIFY4_URL
+    elif int(num) == 5:
+        API = VERIFY5_API
+        URL = VERIFY5_URL
+    elif int(num) == 6:
+        API = VERIFY6_API
+        URL = VERIFY6_URL
+    elif int(num) == 7:
+        API = VERIFY7_API
+        URL = VERIFY7_URL
+    elif int(num) == 8:
+        API = VERIFY8_API
+        URL = VERIFY8_URL
+    elif int(num) == 9:
+        API = VERIFY9_API
+        URL = VERIFY9_URL
+    else:
+        API = VERIFY10_API
+        URL = VERIFY10_URL
     https = link.split(":")[0]
     if "http" == https:
         https = "https"
@@ -164,15 +188,17 @@ async def get_token(bot, userid, link):
     status = await get_verify_status(user.id)
     date_var = status["date"]
     time_var = status["time"]
+    num_var = status["num"]
+    num = int(num_var)
     hour, minute, second = time_var.split(":")
     year, month, day = date_var.split("-")
     last_date, last_time = str((datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second)))-timedelta(hours=12)).split(" ")
     tz = pytz.timezone('Asia/Kolkata')
     curr_date, curr_time = str(datetime.now(tz)).split(" ")
-    if last_date == curr_date:
-        vr_num = 2
+    if num == 10:
+        new = 1
     else:
-        vr_num = 1
+        new = num + 1
     shortened_verify_url = await get_verify_shorted_link(vr_num, url)
     return str(shortened_verify_url)
 
@@ -183,12 +209,13 @@ async def get_verify_status(userid):
         temp.VERIFY[userid] = status
     return status
     
-async def update_verify_status(userid, date_temp, time_temp):
+async def update_verify_status(userid, date_temp, time_temp, num_temp):
     status = await get_verify_status(userid)
     status["date"] = date_temp
     status["time"] = time_temp
+    status["num"] = num_temp
     temp.VERIFY[userid] = status
-    await db.update_verification(userid, date_temp, time_temp)
+    await db.update_verification(userid, date_temp, time_temp, num_temp)
 
 async def verify_user(bot, userid, token):
     user = await bot.get_users(int(userid))
@@ -196,10 +223,15 @@ async def verify_user(bot, userid, token):
         await db.add_user(user.id, user.first_name)
         await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
     TOKENS[user.id] = {token: True}
-    tz = pytz.timezone('Asia/Kolkata')
-    date_var = datetime.now(tz)+timedelta(hours=12)
-    temp_time = date_var.strftime("%H:%M:%S")
-    date_var, time_var = str(date_var).split(" ")
+    status = await get_verify_status(user.id)
+    date_var = status["date"]
+    time_var = status["time"]
+    num_var = status["num"]
+    num = int(num_var)
+    if num == 10:
+        num_temp = 1
+    else:
+        num_temp = num + 1
     await update_verify_status(user.id, date_var, temp_time)
 
 async def check_verification(bot, userid):
