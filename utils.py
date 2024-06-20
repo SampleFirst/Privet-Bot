@@ -260,7 +260,7 @@ async def check_verification(bot, userid):
     comp_date = date(int(years), int(month), int(day))
     hour, minute, second = time_var.split(":")
     comp_time = time(int(hour), int(minute), int(second))
-    if int(num_var) <= 10:
+    if int(num_var) == 10:
         if comp_date < today:
             return False
         elif comp_date == today:
