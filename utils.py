@@ -196,9 +196,9 @@ async def get_token(bot, userid, link):
     tz = pytz.timezone('Asia/Kolkata')
     curr_date, curr_time = str(datetime.now(tz)).split(" ")
     if num == 10:
-        new = 1
+        vr_num = 1
     else:
-        new = num + 1
+        vr_num = num + 1
     shortened_verify_url = await get_verify_shorted_link(vr_num, url)
     return str(shortened_verify_url)
 
@@ -232,7 +232,7 @@ async def verify_user(bot, userid, token):
         num_temp = 1
     else:
         num_temp = num + 1
-    await update_verify_status(user.id, date_var, temp_time)
+    await update_verify_status(user.id, date_var, temp_time, num_temp)
 
 async def check_verification(bot, userid):
     user = await bot.get_users(int(userid))
