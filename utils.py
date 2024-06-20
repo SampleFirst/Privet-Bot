@@ -232,7 +232,7 @@ async def verify_user(bot, userid, token):
         num_temp = 1
     else:
         num_temp = num + 1
-    await update_verify_status(user.id, date_var, temp_time, num_temp)
+    await update_verify_status(user.id, date_var, time_var, num_temp)
 
 async def check_verification(bot, userid):
     user = await bot.get_users(int(userid))
