@@ -422,7 +422,8 @@ async def show_referrer(client, message):
 
 @Client.on_message(filters.command("mystatus") & filters.private)
 async def mystatus(bot, message):
-    status = await get_verify_status(user.id)
+    user_id = message.from_user.id
+    status = await get_verify_status(user_id)
     date_var = status["date"]
     time_var = status["time"]
     num_var = status["num"]
