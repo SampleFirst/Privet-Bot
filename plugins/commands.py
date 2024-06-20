@@ -430,9 +430,8 @@ async def verification(client, message):
     expire_time = verify_status["time"]
     
     text = "Status: Verified ☑\n\n"
-        text += f"Verified Short: {last_short}\n"
-        text += f"Expire Date: {expire_date}\n"
-        text += f"Expire Time: {expire_time}\n"
+    text += f"Verified Short: {last_short}\n"
+    text += f"Expire Date: {expire_date}\n"
+    text += f"Expire Time: {expire_time}\n"
     
     await message.reply_text(text)
-    
