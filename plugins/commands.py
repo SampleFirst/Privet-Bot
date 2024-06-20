@@ -420,14 +420,19 @@ async def show_referrer(client, message):
     else:
         await message.reply("No referrer information found.")
 
-@Client.on_message(filters.command("mystatus") & filters.private)
-async def mystatus(bot, message):
-    user_id = message.from_user.id
-    status = await get_verify_status(user_id)
-    date_var = status["date"]
-    time_var = status["time"]
-    num_var = status["num"]
-    await message.reply_text(
-        text="Date: {date_var}\nTime: {time_var}\nNum: {num_var}",
-        quote=True
-    )
+@Client.on_message(filters.command("verification") & filters.private)
+async def verification(client, message):
+    userid = message.from_user.id
+
+    verify_status = await get_verify_status(userid)
+    last_short = verify_status["num"]
+    expire_date = verify_status["date"]
+    expire_time = verify_status["time"]
+    
+    text = "Status: Verified ☑\n\n"
+        text += f"Verified Short: {last_short}\n"
+        text += f"Expire Date: {expire_date}\n"
+        text += f"Expire Time: {expire_time}\n"
+    
+    await message.reply_text(text)
+    
