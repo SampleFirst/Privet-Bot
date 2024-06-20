@@ -8,7 +8,7 @@ from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
 from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, REFER_ON, DAILY_BONUS, MYSTORE 
-from utils import is_subscribed, temp, get_size, check_verification, get_token, verify_user, check_token
+from utils import is_subscribed, get_verify_status, temp, get_size, check_verification, get_token, verify_user, check_token
 from Script import script
 import time
 import datetime
@@ -420,3 +420,13 @@ async def show_referrer(client, message):
     else:
         await message.reply("No referrer information found.")
 
+@Client.on_message(filters.command("mystatus") & filters.private)
+async def mystatus(bot, message):
+    status = await get_verify_status(user.id)
+    date_var = status["date"]
+    time_var = status["time"]
+    num_var = status["num"]
+    await message.reply_text(
+        text="Date: {date_var}\nTime: {time_var}\nNum: {num_var}",
+        quote=True
+    )
