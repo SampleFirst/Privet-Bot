@@ -192,10 +192,12 @@ async def get_token(bot, userid, link):
     num = int(num_var)
     hour, minute, second = time_var.split(":")
     year, month, day = date_var.split("-")
-    last_date, last_time = str((datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second)))-timedelta(hours=12)).split(" ")
+    last_date, last_time = str((datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))) - timedelta(minute=1)).split(" ")
     tz = pytz.timezone('Asia/Kolkata')
     curr_date, curr_time = str(datetime.now(tz)).split(" ")
     if num == 10:
+        vr_num = 1
+    elif (date_var == curr_date and time_var <= curr_time):
         vr_num = 1
     else:
         vr_num = num + 1
@@ -208,7 +210,7 @@ async def get_verify_status(userid):
         status = await db.get_verified(userid)
         temp.VERIFY[userid] = status
     return status
-    
+
 async def update_verify_status(userid, date_temp, time_temp, num_temp):
     status = await get_verify_status(userid)
     status["date"] = date_temp
@@ -232,6 +234,11 @@ async def verify_user(bot, userid, token):
         num_temp = 1
     else:
         num_temp = num + 1
+    if num_temp == 1:
+        tz = pytz.timezone('Asia/Kolkata')
+        now = datetime.now(tz)
+        date_var = now.strftime("%Y-%m-%d")
+        time_var = now.strftime("%H:%M:%S")
     await update_verify_status(user.id, date_var, time_var, num_temp)
 
 async def check_verification(bot, userid):
@@ -248,17 +255,20 @@ async def check_verification(bot, userid):
     status = await get_verify_status(user.id)
     date_var = status["date"]
     time_var = status["time"]
+    num_var = status["num"]
     years, month, day = date_var.split('-')
     comp_date = date(int(years), int(month), int(day))
     hour, minute, second = time_var.split(":")
     comp_time = time(int(hour), int(minute), int(second))
-    if comp_date<today:
-        return False
-    else:
-        if comp_date == today:
-            if comp_time<curr_time:
+    if int(num_var) <= 10:
+        if comp_date < today:
+            return False
+        elif comp_date == today:
+            if comp_time < curr_time:
                 return False
             else:
                 return True
         else:
             return True
+    else:
+        return False
