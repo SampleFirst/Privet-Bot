@@ -23,17 +23,19 @@ class Database:
             coins=0,
         )
 
-    async def update_verification(self, id, date, time):
+    async def update_verification(self, id, date, time, num):
         status = {
             'date': str(date),
-            'time': str(time)
+            'time': str(time),
+            'num': str(num)
         }
         await self.col.update_one({'id': int(id)}, {'$set': {'verification_status': status}})
     
     async def get_verified(self, id):
         default = {
             'date': "1999-12-31",
-            'time': "23:59:59"
+            'time': "23:59:59",
+            'num': "1"
         }
         user = await self.col.find_one({'id': int(id)})
         if user:
