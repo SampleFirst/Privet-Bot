@@ -249,7 +249,7 @@ async def check_verification(bot, userid):
     status = await get_verify_status(user.id)
     num_var = status["num"]
     if num_var == 10:
-        return False
-    else:
         return True
+    else:
+        return False
         
