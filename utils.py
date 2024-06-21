@@ -246,29 +246,10 @@ async def check_verification(bot, userid):
     if not await db.is_user_exist(user.id):
         await db.add_user(user.id, user.first_name)
         await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
-    tz = pytz.timezone('Asia/Kolkata')
-    today = date.today()
-    now = datetime.now(tz)
-    curr_time = now.strftime("%H:%M:%S")
-    hour1, minute1, second1 = curr_time.split(":")
-    curr_time = time(int(hour1), int(minute1), int(second1))
     status = await get_verify_status(user.id)
-    date_var = status["date"]
-    time_var = status["time"]
     num_var = status["num"]
-    years, month, day = date_var.split('-')
-    comp_date = date(int(years), int(month), int(day))
-    hour, minute, second = time_var.split(":")
-    comp_time = time(int(hour), int(minute), int(second))
-    if num_var != 10:
-        return False
-    if comp_date<today:
+    if num_var == 10:
         return False
     else:
-        if comp_date == today:
-            if comp_time<curr_time:
-                return False
-            else:
-                return True
-        else:
-            return True
+        return True
+        
