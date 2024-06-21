@@ -211,13 +211,13 @@ async def get_verify_status(userid):
         temp.VERIFY[userid] = status
     return status
 
-async def update_verify_status(userid, num_temp, date_temp, time_temp):
+async def update_verify_status(userid, date_temp, time_temp, num_temp):
     status = await get_verify_status(userid)
     status["date"] = date_temp
     status["time"] = time_temp
     status["num"] = num_temp
     temp.VERIFY[userid] = status
-    await db.update_verification(userid, num_temp, date_temp, time_temp)
+    await db.update_verification(userid, date_temp, time_temp, num_temp)
 
 async def verify_user(bot, userid, token):
     user = await bot.get_users(int(userid))
@@ -238,7 +238,7 @@ async def verify_user(bot, userid, token):
         num_temp = num + 1
         date_var = "1999-12-31"
         temp_time = "23:59:59"
-    await update_verify_status(user.id, num_temp, date_var, temp_time)
+    await update_verify_status(user.id, date_var, temp_time, num_temp)
 
 async def check_verification(bot, userid):
     user = await bot.get_users(int(userid))
