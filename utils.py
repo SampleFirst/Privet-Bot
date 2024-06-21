@@ -228,16 +228,16 @@ async def verify_user(bot, userid, token):
     status = await get_verify_status(user.id)
     num_var = status["num"]
     num = int(num_var)
-    if num == 10:
-        num_temp = num + 1
-        date_var = "1999-12-31"
-        temp_time = "23:59:59"
-    else:
+    if num == 10 or num >= 10:
         num_temp = 1
         tz = pytz.timezone('Asia/Kolkata')
         date_var = datetime.now(tz)+timedelta(minutes=1)
         temp_time = date_var.strftime("%H:%M:%S")
         date_var, time_var = str(date_var).split(" ")
+    else:
+        num_temp = num + 1
+        date_var = "1999-12-31"
+        temp_time = "23:59:59"
     await update_verify_status(user.id, num_temp, date_var, temp_time)
 
 async def check_verification(bot, userid):
