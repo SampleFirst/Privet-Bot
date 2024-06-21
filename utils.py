@@ -226,30 +226,43 @@ async def verify_user(bot, userid, token):
         await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
     TOKENS[user.id] = {token: True}
     status = await get_verify_status(user.id)
-    date_var = status["date"]
-    time_var = status["time"]
     num_var = status["num"]
     num = int(num_var)
     if num == 10:
-        num_temp = 1
-    else:
         num_temp = num + 1
-    if num_temp == 1:
+    else:
+        num_temp = 1
         tz = pytz.timezone('Asia/Kolkata')
-        now = datetime.now(tz)
-        date_var = now.strftime("%Y-%m-%d")
-        time_var = now.strftime("%H:%M:%S")
-    await update_verify_status(user.id, date_var, time_var, num_temp)
+        date_var = datetime.now(tz)+timedelta(minutes=1)
+        temp_time = date_var.strftime("%H:%M:%S")
+        date_var, time_var = str(date_var).split(" ")
+    await update_verify_status(user.id, date_var, temp_time, num_temp)
 
 async def check_verification(bot, userid):
     user = await bot.get_users(int(userid))
     if not await db.is_user_exist(user.id):
         await db.add_user(user.id, user.first_name)
         await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
+    tz = pytz.timezone('Asia/Kolkata')
+    today = date.today()
+    now = datetime.now(tz)
+    curr_time = now.strftime("%H:%M:%S")
+    hour1, minute1, second1 = curr_time.split(":")
+    curr_time = time(int(hour1), int(minute1), int(second1))
     status = await get_verify_status(user.id)
-    num_var = status["num"]
-    if num_var == 10:
-        return True
-    else:
+    date_var = status["date"]
+    time_var = status["time"]
+    years, month, day = date_var.split('-')
+    comp_date = date(int(years), int(month), int(day))
+    hour, minute, second = time_var.split(":")
+    comp_time = time(int(hour), int(minute), int(second))
+    if comp_date<today:
         return False
-        
+    else:
+        if comp_date == today:
+            if comp_time<curr_time:
+                return False
+            else:
+                return True
+        else:
+            return True
