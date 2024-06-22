@@ -53,9 +53,9 @@ Share your referral link below:"""
     
     BONUSFLOOD_TEXT = """Hey Admin\nid: {user_id}\nName: {username}\nTrying Again For Bonus"""
     
-    ADS_TEXT = """"Hey {user} 💕\n\nComplete This Ad And Earn 10 Coins."""
+    ADS_TEXT = """Hey {user} 💕\n\nComplete This Ad And Earn 10 Coins."""
     
-    EARNCOIN_TEXT = """"Congratulations! You've complete the daily coins limit set by our coins management system, Please try again after 24 hours."""
+    EARNCOIN_TEXT = """Congratulations! You've complete the daily coins limit set by our coins management system, Please try again after 24 hours."""
     
     MYSTORE_TEXT = """📤 You can withdraw your balance once you reach the minimum threshold. Please contact support for more details."""
     
