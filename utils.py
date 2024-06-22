@@ -192,7 +192,7 @@ async def get_token(bot, userid, link):
     num = int(num_var)
     hour, minute, second = time_var.split(":")
     year, month, day = date_var.split("-")
-    last_date, last_time = str((datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))) - timedelta(minutes=1)).split(" ")
+    last_date, last_time = str((datetime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute), second=int(second))) - timedelta(hours=24)).split(" ")
     tz = pytz.timezone('Asia/Kolkata')
     curr_date, curr_time = str(datetime.now(tz)).split(" ")
     if num == 10:
@@ -231,7 +231,7 @@ async def verify_user(bot, userid, token):
     if num == 10 or num >= 10:
         num_temp = 1
         tz = pytz.timezone('Asia/Kolkata')
-        date_var = datetime.now(tz)+timedelta(minutes=1)
+        date_var = datetime.now(tz)+timedelta(hours=24)
         temp_time = date_var.strftime("%H:%M:%S")
         date_var, time_var = str(date_var).split(" ")
     else:
