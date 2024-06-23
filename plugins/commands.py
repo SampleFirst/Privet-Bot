@@ -227,8 +227,8 @@ async def earn_coins(client, message):
     try:
         if not await check_verification(client, message.from_user.id):
             btn = [[
-                InlineKeyboardButton(f"Verify", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=")),
-                InlineKeyboardButton("How To Verify", url="https://t.me/+IvrcMfPKCMxkNjVl")
+                InlineKeyboardButton(f"Earn Coins 💰", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=")),
+                InlineKeyboardButton("How To Get Coins", url="https://t.me/+IvrcMfPKCMxkNjVl")
             ]]
             await client.send_message(
                 chat_id=message.from_user.id,
