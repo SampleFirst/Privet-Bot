@@ -4,6 +4,8 @@ class script(object):
 ✅ Earn Coins
 ✅ Buy Subscription of Premium Bots\n
 
+Besic Premium Plans Start 900 Coins Only
+
 /help - information on how to earn coins
 /about - View available items in my store
 /bonus - send Command and get bonus"""
