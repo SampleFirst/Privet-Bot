@@ -7,6 +7,7 @@ import os
 import asyncio
 import pytz
 import time, re
+from Script import script
 from datetime import datetime
 from pyrogram.errors import FloodWait, UserIsBlocked
 from datetime import datetime, timedelta, date, time
