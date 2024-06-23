@@ -30,7 +30,6 @@ class temp(object):
     U_NAME = None
     B_NAME = None
     USERS_CANCEL = False
-    SEND_MESSAGE = False
 
 async def is_subscribed(bot, query=None, userid=None):
     try:
