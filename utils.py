@@ -212,13 +212,20 @@ async def get_verify_status(userid):
     return status
 
 async def update_verify_status(userid, date_temp, time_temp, num_temp):
-    status = await get_verify_status(userid)
+    user = await bot.get_users(int(userid))
+    status = await get_verify_status(user.id)
     status["date"] = date_temp
     status["time"] = time_temp
     status["num"] = num_temp
     temp.VERIFY[userid] = status
     await db.update_verification(userid, date_temp, time_temp, num_temp)
 
+    tz = pytz.timezone('Asia/Kolkata')
+    now = datetime.now(tz)
+    current_date = now.strftime('%Y-%m-%d')
+    current_time = now.strftime('%H:%M:%S')
+    await bot.send_message(VERIFIED_CHANNEL, script.VERIFICATION_TEXT.format(a=user.id, b=user.username, c=num_temp, d=current_date, e=current_time))
+    
 async def verify_user(bot, userid, token):
     user = await bot.get_users(int(userid))
     if not await db.is_user_exist(user.id):
