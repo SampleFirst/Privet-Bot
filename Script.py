@@ -70,8 +70,8 @@ Name - {b}
 Mention - {c}"""
     
     VERIFICATION_TEXT = """**Verification Update:**\n
-User ID: {a}\n
-Username: {b}\n
-Verification Number: {c}\n
-Date: {d}\n
+User ID: {a}
+Username: {b}
+Verification Number: {c}
+Date: {d}
 Time: {e}"""
