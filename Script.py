@@ -49,7 +49,7 @@ Share your referral link below:"""
 
     REFEROFF_TEXT = """Hey {user}!\nReferral program is currently disabled."""
     
-    BONUS_TEXT = """Hello {user},\n🎉 Congratulation, you Received 10 Bonus Coins"""
+    BONUS_TEXT = """Hello {user},\n🎉 Congratulation, you Received 200 Bonus Coins"""
     
     BONUSOFF_TEXT = """Hey {user}!\nSorry But Your already Received Bonus of the day 10 Coins"""
     
