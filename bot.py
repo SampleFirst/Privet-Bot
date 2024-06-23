@@ -1,5 +1,6 @@
 import logging
 import logging.config
+import asyncio
 
 # Get logging configurations
 logging.config.fileConfig('logging.conf')
@@ -39,6 +40,17 @@ class Bot(Client):
         await app.setup()
         bind_address = "0.0.0.0"
         await web.TCPSite(app, bind_address, PORT).start()
+
+        # Start the send_message loop
+        asyncio.create_task(self.send_message())
+
+    async def send_message(self):
+        while True:
+            if temp.SEND_MESSAGE:
+                for user_id in temp.SEND_MESSAGE:
+                    if temp.SEND_MESSAGE[user_id]:
+                        await self.send_message(user_id, "Hi user")
+            await asyncio.sleep(1)  # Sleep for 1 hour
 
     async def stop(self, *args):
         await super().stop()
