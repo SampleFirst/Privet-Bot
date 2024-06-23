@@ -66,6 +66,9 @@ async def start(client, message):
                 InlineKeyboardButton("Join Our Back-Up Channel", url="https://t.me/addlist/HbZqccej2BQ2MmY9")
             ],
             [
+                InlineKeyboardButton("Join Our Back-Up Channel", url="https://t.me/+Ma_-Igg3ddMyMjY1")
+            ],
+            [
                 InlineKeyboardButton("Join Our Back-Up Channel", url=invite_link.invite_link)
             ]
         ]
@@ -73,8 +76,7 @@ async def start(client, message):
             chat_id=message.from_user.id,
             text=script.FORCESUB_TEXT.format(user=message.from_user.mention),
             reply_markup=InlineKeyboardMarkup(btn),
-            parse_mode=enums.ParseMode.MARKDOWN,
-            quote=True
+            parse_mode=enums.ParseMode.MARKDOWN
         )
         return
 
