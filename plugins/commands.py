@@ -215,7 +215,7 @@ async def bonus(bot, message):
         await bot.send_message(LOG_CHANNEL, script.BONUSFLOOD_TEXT.format(user_id=user_id, username=username))
     else:
         await db.got_bonus_status(user_id)
-        await db.add_coins(user_id, 10)
+        await db.add_coins(user_id, 200)
         buttonz = await get_buttons(user_id)
         await message.reply_text(
             text=script.BONUS_TEXT.format(user=user),
