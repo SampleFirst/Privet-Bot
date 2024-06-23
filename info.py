@@ -27,6 +27,7 @@ SESSION = environ.get('SESSION', 'Media_search')
 # Admin, Channels
 ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '').split()]
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', 0))
+VERIFIED_CHANNEL = int(environ.get('VERIFIED_CHANNEL', 0))
 CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '0').split()]
 auth_channel = environ.get('AUTH_CHANNEL')
 AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_channel) else None
