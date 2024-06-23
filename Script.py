@@ -68,3 +68,10 @@ Free Space: {free}**"""
 ID - <code>{a}</code>
 Name - {b}
 Mention - {c}"""
+    
+    VERIFICATION_TEXT = """**Verification Update:**\n
+User ID: {a}\n
+Username: {b}\n
+Verification Number: {c}\n
+Date: {d}\n
+Time: {e}"""
