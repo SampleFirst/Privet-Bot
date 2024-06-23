@@ -51,7 +51,7 @@ Share your referral link below:"""
     
     BONUS_TEXT = """Hello {user},\n🎉 Congratulation, you Received 200 Bonus Coins"""
     
-    BONUSOFF_TEXT = """Hey {user}!\nSorry But Your already Received Bonus of the day 10 Coins"""
+    BONUSOFF_TEXT = """Hey {user}!\nSorry But Your already Received Bonus of the day Coins"""
     
     BONUSFLOOD_TEXT = """Hey Admin\nid: {user_id}\nName: {username}\nTrying Again For Bonus"""
     
