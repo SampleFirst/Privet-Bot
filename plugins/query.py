@@ -6,9 +6,42 @@ from info import ADMINS
 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
+    qdata = callback_query.data.split("_")
     if query.data == "close_data":
         await query.message.delete()
     
+    elif qdata[0] == "prev" or qdata[0] == "next":
+        page = int(qdata[1])
+        sort_by = qdata[2]
+        if qdata[0] == "prev":
+            page = max(1, page - 1)
+        elif qdata[0] == "next":
+            page += 1
+        
+        user_list, total_users = await get_user_list(page, sort_by)
+        text = "\n".join([f"{user['name']} - Coins: {user['coins']}" for user in user_list])
+        
+        keyboard = [
+            [InlineKeyboardButton("Previous", callback_data=f"prev_{page}_{sort_by}"), InlineKeyboardButton("Next", callback_data=f"next_{page}_{sort_by}")],
+            [InlineKeyboardButton("Sort by Highest Coins", callback_data="sort_highest"), InlineKeyboardButton("Sort by Lowest Coins", callback_data="sort_lowest")]
+        ]
+        
+        await callback_query.message.edit(text, reply_markup=InlineKeyboardMarkup(keyboard))
+
+    elif qdata[0] == "sort":
+        sort_by = qdata[1]
+        page = 1
+        user_list, total_users = await get_user_list(page, sort_by)
+        
+        text = "\n".join([f"{user['name']} - Coins: {user['coins']}" for user in user_list])
+        
+        keyboard = [
+            [InlineKeyboardButton("Previous", callback_data=f"prev_{page}_{sort_by}"), InlineKeyboardButton("Next", callback_data=f"next_{page}_{sort_by}")],
+            [InlineKeyboardButton("Sort by Highest Coins", callback_data="sort_highest"), InlineKeyboardButton("Sort by Lowest Coins", callback_data="sort_lowest")]
+        ]
+        
+        await callback_query.message.edit(text, reply_markup=InlineKeyboardMarkup(keyboard))
+
     elif query.data.startswith('toggle_'):
         setting = query.data.split('_')[1]
         settings = await db.get_settings()
