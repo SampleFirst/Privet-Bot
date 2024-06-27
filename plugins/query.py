@@ -26,7 +26,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             [InlineKeyboardButton("Sort by Highest Coins", callback_data="sort_highest"), InlineKeyboardButton("Sort by Lowest Coins", callback_data="sort_lowest")]
         ]
         
-        await callback_query.message.edit(text, reply_markup=InlineKeyboardMarkup(keyboard))
+        await query.message.edit(text, reply_markup=InlineKeyboardMarkup(keyboard))
 
     elif qdata[0] == "sort":
         sort_by = qdata[1]
@@ -40,7 +40,7 @@ async def cb_handler(client: Client, query: CallbackQuery):
             [InlineKeyboardButton("Sort by Highest Coins", callback_data="sort_highest"), InlineKeyboardButton("Sort by Lowest Coins", callback_data="sort_lowest")]
         ]
         
-        await callback_query.message.edit(text, reply_markup=InlineKeyboardMarkup(keyboard))
+        await query.message.edit(text, reply_markup=InlineKeyboardMarkup(keyboard))
 
     elif query.data.startswith('toggle_'):
         setting = query.data.split('_')[1]
