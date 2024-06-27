@@ -6,7 +6,7 @@ from info import ADMINS
 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
-    qdata = callback_query.data.split("_")
+    qdata = query.data.split("_")
     if query.data == "close_data":
         await query.message.delete()
     
