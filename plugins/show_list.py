@@ -5,7 +5,7 @@ from database.users_chats_db import db
 
 # Function to get user list with pagination and sorting
 async def get_user_list(page, sort_by):
-    users_cursor = db.get_all_users()
+    users_cursor = await db.get_all_users()
     users = await users_cursor.to_list(length=100)  # Fetching all users for sorting and pagination
 
     if sort_by == "highest_coins":
@@ -31,3 +31,4 @@ async def show_users(client, message):
     ]
 
     await message.reply(text, reply_markup=InlineKeyboardMarkup(keyboard))
+
