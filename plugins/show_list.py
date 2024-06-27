@@ -8,9 +8,9 @@ async def get_user_list(page, sort_by):
     users_cursor = await db.get_all_users()
     users = await users_cursor.to_list(length=100)  # Fetching all users for sorting and pagination
 
-    if sort_by == "highest_coins":
+    if sort_by == "highest":
         users = sorted(users, key=lambda x: x['coins'], reverse=True)
-    elif sort_by == "lowest_coins":
+    elif sort_by == "lowest":
         users = sorted(users, key=lambda x: x['coins'])
     
     start_index = (page - 1) * 10
