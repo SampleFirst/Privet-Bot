@@ -7,7 +7,7 @@ from pyrogram.errors import ChatAdminRequired
 from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
-from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, REFER_ON, DAILY_BONUS, MYSTORE 
+from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, BONUS_CHANNEL, PICS, REFER_ON, DAILY_BONUS, MYSTORE 
 from utils import is_subscribed, get_verify_status, temp, get_size, check_verification, get_token, verify_user, check_token
 from Script import script
 import time
@@ -217,6 +217,7 @@ async def bonus(bot, message):
         await db.got_bonus_status(user_id)
         await db.add_coins(user_id, 200)
         buttonz = await get_buttons(user_id)
+        await bot.send_message(BONUS_CHANNEL, script.BONUSLOG_TEXT.format(user_id=user_id))
         await message.reply_text(
             text=script.BONUS_TEXT.format(user=user),
             reply_markup=buttonz,
@@ -435,5 +436,4 @@ async def verification(client, message):
     text += f"Verified Short: {last_short}\n"
     text += f"Expire Date: {expire_date}\n"
     text += f"Expire Time: {expire_time}\n"
-    
     await message.reply_text(text)
