@@ -20,15 +20,12 @@ async def cb_handler(client: Client, query: CallbackQuery):
         
         user_list, total_users, total_coins = await get_user_list(page, sort_by)
         text = f"Total Users: {total_users}\nTotal Coins Earned: {total_coins}\n\n"
-        text += "\n".join([
-            f"<code>{i}. {user['coins']} : {user['name']}</code>"
-            for i, user in enumerate(user_list, start=(page - 1) * 10 + 1)
-        ])
+        text += "\n".join([f"{i}. {user['name']} : {user['coins']} 🌑" for i, user in enumerate(user_list, start=(page - 1) * 10 + 1)])
         
         keyboard = []
         if page > 1:
             keyboard.append(InlineKeyboardButton("Previous", callback_data=f"prev_{page}_{sort_by}"))
-        if len(user_list) == 10:  # Assuming 10 users per page
+        if len(user_list) == 10:
             keyboard.append(InlineKeyboardButton("Next", callback_data=f"next_{page}_{sort_by}"))
         keyboard = [keyboard]
         
@@ -37,7 +34,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             InlineKeyboardButton(f"Sort by Lowest Coins{' ✅' if sort_by == 'lowest' else ''}", callback_data="sort_lowest")
         ]
         keyboard.append(sort_buttons)
-        
         await query.message.edit(text, reply_markup=InlineKeyboardMarkup(keyboard))
 
     elif qdata[0] == "sort":
@@ -46,14 +42,12 @@ async def cb_handler(client: Client, query: CallbackQuery):
         user_list, total_users, total_coins = await get_user_list(page, sort_by)
         
         text = f"Total Users: {total_users}\nTotal Coins Earned: {total_coins}\n\n"
-        text += "\n".join([
-            f"<code>{i}. {user['coins']} : {user['name']}</code>"
-            for i, user in enumerate(user_list, start=(page - 1) * 10 + 1)
-        ])
+        text += "\n".join([f"{i}. {user['name']} : {user['coins']} 🌑" for i, user in enumerate(user_list, start=(page - 1) * 10 + 1)])
+        
         keyboard = []
         if page > 1:
             keyboard.append(InlineKeyboardButton("Previous", callback_data=f"prev_{page}_{sort_by}"))
-        if len(user_list) == 10:  # Assuming 10 users per page
+        if len(user_list) == 10:
             keyboard.append(InlineKeyboardButton("Next", callback_data=f"next_{page}_{sort_by}"))
         keyboard = [keyboard]
         
@@ -62,7 +56,6 @@ async def cb_handler(client: Client, query: CallbackQuery):
             InlineKeyboardButton(f"Sort by Lowest Coins{' ✅' if sort_by == 'lowest' else ''}", callback_data="sort_lowest")
         ]
         keyboard.append(sort_buttons)
-        
         await query.message.edit(text, reply_markup=InlineKeyboardMarkup(keyboard))
 
 
