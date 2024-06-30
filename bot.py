@@ -6,6 +6,7 @@ import asyncio
 logging.config.fileConfig('logging.conf')
 logging.getLogger().setLevel(logging.INFO)
 
+import os
 from aiohttp import web
 from pyrogram import Client, __version__
 from pyrogram.raw.all import layer
@@ -14,7 +15,6 @@ from plugins import web_server
 from utils import temp
 
 class Bot(Client):
-
     def __init__(self):
         super().__init__(
             name=SESSION,
@@ -33,9 +33,7 @@ class Bot(Client):
         temp.U_NAME = me.username
         temp.B_NAME = me.first_name
         self.username = me.username
-        logging.info(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on {me.username}.")
         await self.send_message(chat_id=LOG_CHANNEL, text=(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on {me.username}."))
-                                
         app = web.AppRunner(await web_server())
         await app.setup()
         bind_address = "0.0.0.0"
@@ -44,7 +42,6 @@ class Bot(Client):
     async def stop(self, *args):
         await super().stop()
         logging.info("Bot Restarting.......")
-
 
 app = Bot()
 app.run()
