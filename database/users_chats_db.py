@@ -101,6 +101,12 @@ class Database:
         )
         await self.col.update_one({'id': user_id}, {'$set': {'bonus': bonus}})
         
+    async def re_bonus_status(self, user_id):
+        bonus = dict(
+            got_bonus=False
+        )
+        await self.col.update_one({'id': user_id}, {'$set': {'bonus': bonus}})
+        
     async def get_bonus_status(self, id):
         default = dict(
             got_bonus=False
