@@ -6,7 +6,6 @@ logging.config.fileConfig('logging.conf')
 logging.getLogger().setLevel(logging.INFO)
 logging.getLogger("pyrogram").setLevel(logging.ERROR)
 
-
 from pyrogram import Client, __version__, filters
 from pyrogram.raw.all import layer
 from database.users_chats_db import db
@@ -21,7 +20,6 @@ from aiohttp import web
 from plugins import web_server
 
 class Bot(Client):
-
     def __init__(self):
         super().__init__(
             name=SESSION,
@@ -45,7 +43,7 @@ class Bot(Client):
         today = date.today()
         now = datetime.now(tz)
         time = now.strftime("%H:%M:%S %p")
-        await self.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(today, time))
+        await self.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(a=today, b=time, c=temp.U_NAME))
         app = web.AppRunner(await web_server())
         await app.setup()
         bind_address = "0.0.0.0"
