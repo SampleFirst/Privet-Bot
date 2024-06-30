@@ -222,7 +222,6 @@ async def bonus(bot, message):
     user = message.from_user.first_name
     username = message.from_user.username or "N/A"
     bonus = await db.get_bonus_status(user_id)
-    
     if bonus["got_bonus"] == True:
         buttonz = await get_buttons(user_id)
         await message.reply_text(
@@ -232,9 +231,9 @@ async def bonus(bot, message):
         )
         await bot.send_message(LOG_CHANNEL, script.BONUSFLOOD_TEXT.format(user_id=user_id, username=username))
     else:
-        await db.got_bonus_status(user_id)
         coins_added = random.randint(1, 150)  # Generate a random number of coins between 1 and 150
         await db.add_coins(user_id, coins_added)
+        await db.got_bonus_status(user_id)
         buttonz = await get_buttons(user_id)
         await bot.send_message(BONUS_CHANNEL, script.BONUSLOG_TEXT.format(user=user_id, coins=coins_added, bot=temp.B_NAME))
         await message.reply_text(
