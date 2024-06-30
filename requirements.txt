@@ -8,3 +8,5 @@ umongo
 bs4
 pytz
 aiohttp
+urllib3
+tldextract
