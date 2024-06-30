@@ -216,13 +216,13 @@ async def referral(bot, message):
         await asyncio.sleep(5)
         await bot.delete_messages(chat_id=message.chat.id, message_ids=[msg.id, message.id])
 
-
 @Client.on_message((filters.command("bonus") | filters.regex('Bonus 🎁')) & filters.private)
 async def bonus(bot, message):
     user_id = message.from_user.id
     user = message.from_user.first_name
     username = message.from_user.username or "N/A"
     bonus = await db.get_bonus_status(user_id)
+    
     if bonus["got_bonus"] == True:
         buttonz = await get_buttons(user_id)
         await message.reply_text(
@@ -233,11 +233,12 @@ async def bonus(bot, message):
         await bot.send_message(LOG_CHANNEL, script.BONUSFLOOD_TEXT.format(user_id=user_id, username=username))
     else:
         await db.got_bonus_status(user_id)
-        await db.add_coins(user_id, 200)
+        coins_added = random.randint(1, 150)  # Generate a random number of coins between 1 and 150
+        await db.add_coins(user_id, coins_added)
         buttonz = await get_buttons(user_id)
         await bot.send_message(BONUS_CHANNEL, script.BONUSLOG_TEXT.format(user_id=user_id))
         await message.reply_text(
-            text=script.BONUS_TEXT.format(user=user),
+            text=script.BONUS_TEXT.format(user=user, coins=coins_added),  # Update the script to include the coins added
             reply_markup=buttonz,
             quote=True
         )
