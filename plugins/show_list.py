@@ -1,7 +1,6 @@
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 import asyncio
-from openpyxl import Workbook
 from database.users_chats_db import db 
 
 # Function to get user list with pagination and sorting
@@ -27,10 +26,7 @@ async def show_users(client, message):
     
     text = f"Total Users: {total_users}\nTotal Coins Earned: {total_coins}\n\n"
     text += "\n".join([
-        f"<code>{i}. {user['name'][:20]}{' ' * max(0, 20 - len(user['name']))} {user['coins']} 🌑</code>"
-        if len(user['name']) <= 20 else
-        f"<code>{i}. {user['name'][:20]}</code>\n"
-        f"<code>{' ' * 4}{user['name'][20:]}{' ' * max(0, 20 - len(user['name'][20:]))} {user['coins']} 🌑</code>"
+        f"<code>{i}. {user['coins']} : {user['name']}</code>"
         for i, user in enumerate(user_list, start=(page - 1) * 10 + 1)
     ])
     
@@ -46,38 +42,5 @@ async def show_users(client, message):
         InlineKeyboardButton(f"Sort by Lowest Coins{' ✅' if sort_by == 'lowest' else ''}", callback_data="sort_lowest")
     ]
     keyboard.append(sort_buttons)
+
     await message.reply(text, reply_markup=InlineKeyboardMarkup(keyboard))
-
-@Client.on_message(filters.command("usersxl"))
-async def usersx(client, message):
-    page = 1
-    sort_by = "default"
-    user_list, total_users, total_coins = await get_user_list(page, sort_by)
-    
-    # Creating an Excel workbook
-    workbook = Workbook()
-    sheet = workbook.active
-    sheet.title = "Users"
-    
-    # Writing headers
-    sheet['A1'] = "User Name"
-    sheet['B1'] = "Coins Earned"
-    
-    # Writing user data
-    for i, user in enumerate(user_list, start=(page - 1) * 10 + 2):
-        sheet[f"A{i}"] = user['name']
-        sheet[f"B{i}"] = user['coins']
-    
-    # Save the workbook
-    workbook.save("Users.xlsx")
-    
-    # Sending a message with total users and total coins
-    text = f"Total Users: {total_users}\nTotal Coins Earned: {total_coins}"
-    await message.reply(text)
-
-    # Sending the Excel file
-    with open("Users.xlsx", "rb") as file:
-        await message.reply_document(file)
-
-    # Clean up the file after sending
-    os.remove("Users.xlsx")
