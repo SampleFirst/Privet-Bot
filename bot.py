@@ -1,35 +1,36 @@
-import os
-import math
 import logging
+import logging.config
+
+# Get logging configurations
+logging.config.fileConfig('logging.conf')
+logging.getLogger().setLevel(logging.INFO)
+logging.getLogger("pyrogram").setLevel(logging.ERROR)
+
+
+from pyrogram import Client, __version__, filters
+from pyrogram.raw.all import layer
+from database.users_chats_db import db
+from info import SESSION, API_ID, API_HASH, BOT_TOKEN, LOG_CHANNEL, PORT
+from utils import temp
+from typing import Union, Optional, AsyncGenerator
+from pyrogram import types
+from Script import script 
 from datetime import date, datetime 
 import pytz
-import asyncio
-import pytz
-from typing import Union, Optional, AsyncGenerator
-
 from aiohttp import web
-from pyrogram import Client, types
-from pyrogram.errors import BadRequest, Unauthorized
-
-from database.users_chats_db import db
-from info import API_ID, API_HASH, BOT_TOKEN, LOG_CHANNEL, UPTIME, PORT
-from utils import temp
 from plugins import web_server
-from Script import script 
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 class Bot(Client):
+
     def __init__(self):
         super().__init__(
-            name="Professor-Bot",
+            name=SESSION,
             api_id=API_ID,
             api_hash=API_HASH,
             bot_token=BOT_TOKEN,
-            workers=200,
+            workers=150,
             plugins={"root": "plugins"},
-            sleep_threshold=10,
+            sleep_threshold=5,
         )
 
     async def start(self):
@@ -38,14 +39,13 @@ class Bot(Client):
         temp.ME = me.id
         temp.U_NAME = me.username
         temp.B_NAME = me.first_name
-        self.id = me.id
-        self.mention = me.mention
-        self.uptime = UPTIME
+        self.username = '@' + me.username
+        logging.info(f"{me.first_name} with for Pyrogram v{__version__} (Layer {layer}) started on {me.username}.")
         tz = pytz.timezone('Asia/Kolkata')
         today = date.today()
         now = datetime.now(tz)
         time = now.strftime("%H:%M:%S %p")
-        await self.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(a=today, b=time, c=temp.U_NAME))
+        await self.send_message(chat_id=LOG_CHANNEL, text=script.RESTART_TXT.format(today, time))
         app = web.AppRunner(await web_server())
         await app.setup()
         bind_address = "0.0.0.0"
@@ -53,19 +53,7 @@ class Bot(Client):
 
     async def stop(self, *args):
         await super().stop()
-        me = await self.get_me()
-        logger.info(f"{me.first_name} is restarting...")
-
-    async def iter_messages(self, chat_id: Union[int, str], limit: int, offset: int = 0) -> Optional[AsyncGenerator["types.Message", None]]:
-        current = offset
-        while True:
-            new_diff = min(200, limit - current)
-            if new_diff <= 0:
-                return
-            messages = await self.get_messages(chat_id, list(range(current, current+new_diff+1)))
-            for message in messages:
-                yield message
-                current += 1
+        logging.info("Bot stopped. Bye.")
 
 app = Bot()
 app.run()
