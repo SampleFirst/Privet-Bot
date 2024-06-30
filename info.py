@@ -32,7 +32,7 @@ AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_chan
 PICS = environ.get('PICS', 'https://telegra.ph/file/6d98a444198fdac6322c2.jpg').split()
 
 # MongoDB information
-DATABASE_URI = environ.get('DATABASE_URI', "")
+DATABASE_URL = environ.get('DATABASE_URL', "")
 DATABASE_NAME = environ.get('DATABASE_NAME', "")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 
@@ -40,6 +40,7 @@ PORT = environ.get("PORT", "8080")
 REFER_ON = is_enabled(environ.get('REFER_ON', "False"), False)
 DAILY_BONUS = is_enabled(environ.get('DAILY_BONUS', "False"), False)
 MYSTORE = is_enabled(environ.get('MYSTORE', "False"), False)
+
 MAIN_CHANNEL = int(environ.get('MAIN_CHANNEL', 0))
 IS_VERIFY = is_enabled((environ.get('IS_VERIFY', 'False')), False)
 HOW_TO_VERIFY = environ.get('HOW_TO_VERIFY', "https://t.me/c/1845700490/3")
