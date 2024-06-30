@@ -104,6 +104,7 @@ async def start(client, message):
 
         is_valid = await check_token(client, userid, token)
         if is_valid:
+            buttonz = await get_buttons(message.from_user.id)
             referrer_info = await db.get_referrer_info(userid)
             if referrer_info:
                 ref_id = referrer_info.get("ref_id", "Not referred")
@@ -112,9 +113,15 @@ async def start(client, message):
                     await verify_user(client, userid, token)
                     await db.add_coins(userid, 10)
                     if not await check_verification(client, message.from_user.id):
-                        await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
+                        await message.reply_text(
+                            text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins,",
+                            reply_markup=buttonz
+                        )
                     else:
-                        await message.reply_text(text="You have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
+                        await message.reply_text(
+                            text="You have earned 10 coins.\n\nGenerate a new ad link: /earn_coins",
+                            reply_markup=buttonz
+                        )
                 else:
                     await verify_user(client, userid, token)
                     await db.add_coins(ref_id, 10)
@@ -122,16 +129,28 @@ async def start(client, message):
                     await db.update_referrer_status(userid, True)
                     await db.add_coins(userid, 10)
                     if not await check_verification(client, message.from_user.id):
-                        await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
+                        await message.reply_text(
+                            text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins,",
+                            reply_markup=buttonz
+                        )
                     else:
-                        await message.reply_text(text="You have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
+                        await message.reply_text(
+                            text="You have earned 10 coins.\n\nGenerate a new ad link: /earn_coins",
+                            reply_markup=buttonz
+                        )
             else:
                 await verify_user(client, userid, token)
                 await db.add_coins(userid, 10)
                 if not await check_verification(client, message.from_user.id):
-                    await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
+                    await message.reply_text(
+                        text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins,",
+                        reply_markup=buttonz
+                    )
                 else:
-                    await message.reply_text(text="You have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
+                    await message.reply_text(
+                        text="You have earned 10 coins.\n\nGenerate a new ad link: /earn_coins",
+                        reply_markup=buttonz
+                    )
         else:
             await message.reply_text(text="<b>Invalid or Expired Link!</b>")
         return
