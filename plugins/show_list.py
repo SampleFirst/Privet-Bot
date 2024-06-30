@@ -15,7 +15,7 @@ async def get_user_list(page, sort_by):
     
     start_index = (page - 1) * 10
     end_index = start_index + 10
-    total_coins = sum(user['coins'] for user in users) + (200 * len(users))
+    total_coins = sum(user['coins'] for user in users)
     return users[start_index:end_index], len(users), total_coins
 
 @Client.on_message(filters.command("show_users"))
