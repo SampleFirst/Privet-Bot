@@ -20,7 +20,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
         
         user_list, total_users, total_coins = await get_user_list(page, sort_by)
         text = f"Total Users: {total_users}\nTotal Coins Earned: {total_coins}\n\n"
-        text += "\n".join([f"{i+1}. {user['name']} {'_'*(20-len(user['name']))} {user['coins']} 🌑" for i, user in enumerate(user_list, start=(page-1)*10+1)])
+        text += "\n".join([
+            f"<code>{i}. {user['coins']} : {user['name']}</code>"
+            for i, user in enumerate(user_list, start=(page - 1) * 10 + 1)
+        ])
         
         keyboard = []
         if page > 1:
@@ -43,8 +46,10 @@ async def cb_handler(client: Client, query: CallbackQuery):
         user_list, total_users, total_coins = await get_user_list(page, sort_by)
         
         text = f"Total Users: {total_users}\nTotal Coins Earned: {total_coins}\n\n"
-        text += "\n".join([f"{i+1}. {user['name']} {'_'*(20-len(user['name']))} {user['coins']} 🌑" for i, user in enumerate(user_list, start=(page-1)*10+1)])
-        
+        text += "\n".join([
+            f"<code>{i}. {user['coins']} : {user['name']}</code>"
+            for i, user in enumerate(user_list, start=(page - 1) * 10 + 1)
+        ])
         keyboard = []
         if page > 1:
             keyboard.append(InlineKeyboardButton("Previous", callback_data=f"prev_{page}_{sort_by}"))
