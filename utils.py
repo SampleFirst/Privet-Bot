@@ -239,6 +239,7 @@ async def verify_user(bot, userid, token):
     if num == 10 or num >= 10:
         num_temp = 1
         tz = pytz.timezone('Asia/Kolkata')
+        await db.re_bonus_status(user.id)
         date_var = datetime.now(tz)+timedelta(hours=24)
         temp_time = date_var.strftime("%H:%M:%S")
         date_var, time_var = str(date_var).split(" ")
