@@ -7,6 +7,7 @@ logging.config.fileConfig('logging.conf')
 logging.getLogger().setLevel(logging.INFO)
 
 import os
+from Script import script
 from datetime import date, datetime 
 import pytz
 from aiohttp import web
