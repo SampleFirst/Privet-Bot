@@ -61,6 +61,11 @@ Share your referral link below:"""
     
     MYSTORE_TEXT = """📤 You can withdraw your balance once you reach the minimum threshold. Please contact support for more details."""
     
+    BONUSLOG_TEXT = """🎉 New User Claimed Bonus 🎉\n
+🆔 User ID = {user}
+👁️‍🗨️ Coins = {coins}\n
+👮🏻‍♂ Bot = {bot}"""
+    
     STATS_TEXT = """**Bot Stats\n
 Total Users: {total_users}
 Database Size: {size}
