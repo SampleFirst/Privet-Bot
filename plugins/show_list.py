@@ -25,10 +25,7 @@ async def show_users(client, message):
     user_list, total_users, total_coins = await get_user_list(page, sort_by)
     
     text = f"Total Users: {total_users}\nTotal Coins Earned: {total_coins}\n\n"
-    text += "\n".join(
-        [f"{i+1}. {user['name']} {'_'*(30-len(user['name'])-len(str(user['coins'])))} {user['coins']} 🌑"
-         for i, user in enumerate(user_list, start=(page-1)*10+1)]
-    )
+    text += "\n".join([f"<code>{i}. {user['name']} {user['coins']} 🌑</code>" for i, user in enumerate(user_list, start=(page-1)*10+1)])
     
     keyboard = []
     if page > 1:
