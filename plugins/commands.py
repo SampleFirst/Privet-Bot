@@ -236,7 +236,7 @@ async def bonus(bot, message):
         coins_added = random.randint(1, 150)  # Generate a random number of coins between 1 and 150
         await db.add_coins(user_id, coins_added)
         buttonz = await get_buttons(user_id)
-        await bot.send_message(BONUS_CHANNEL, script.BONUSLOG_TEXT.format(user_id=user_id))
+        await bot.send_message(BONUS_CHANNEL, script.BONUSLOG_TEXT.format(user=user_id, coins=coins_added, bot=B_NAME))
         await message.reply_text(
             text=script.BONUS_TEXT.format(user=user, coins=coins_added),  # Update the script to include the coins added
             reply_markup=buttonz,
