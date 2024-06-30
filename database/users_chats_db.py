@@ -1,5 +1,5 @@
 import motor.motor_asyncio
-from info import DATABASE_NAME, DATABASE_URI, REFER_ON, DAILY_BONUS, MYSTORE
+from info import DATABASE_NAME, DATABASE_URL, REFER_ON, DAILY_BONUS, MYSTORE
 
 class Database:
     def __init__(self, uri, database_name):
@@ -214,4 +214,4 @@ class Database:
     async def update_referrer_status(self, id, status):
         await self.col.update_one({'id': int(id)}, {'$set': {'referrer_info.status': status}})
 
-db = Database(DATABASE_URI, DATABASE_NAME)
+db = Database(DATABASE_URL, DATABASE_NAME)
