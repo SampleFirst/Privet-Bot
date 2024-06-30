@@ -4,11 +4,7 @@ requests
 pymongo
 motor
 marshmallow
-python-dotenv
 umongo
 bs4
 pytz
-urllib3
-tldextract
 aiohttp
-pip
