@@ -1,7 +1,7 @@
 pyrogram                          
 tgcrypto
 requests
-pymongo[srv]
+pymongo
 motor
 marshmallow
 umongo
