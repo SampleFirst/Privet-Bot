@@ -10,5 +10,6 @@ python-dotenv
 pytz
 urllib3
 tldextract
+openpyxl
 aiohttp
 pip
