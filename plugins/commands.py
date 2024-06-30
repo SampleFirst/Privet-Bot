@@ -111,31 +111,33 @@ async def start(client, message):
                 status = referrer_info.get("status", False)
                 if status:
                     await verify_user(client, userid, token)
-                    await db.add_coins(userid, 10)
+                    coinz = random.randint(1, 20) 
+                    await db.add_coins(userid, coinz)
                     if not await check_verification(client, message.from_user.id):
                         await message.reply_text(
-                            text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins,",
+                            text="Congratulations! 🎉\nYou have earned {coinz} coins.\n\nGenerate a new ad link: /earn_coins,",
                             reply_markup=buttonz
                         )
                     else:
                         await message.reply_text(
-                            text="You have earned 10 coins.\n\nGenerate a new ad link: /earn_coins",
+                            text="You have earned random coins.\n\nGenerate a new ad link: /earn_coins",
                             reply_markup=buttonz
                         )
                 else:
                     await verify_user(client, userid, token)
-                    await db.add_coins(ref_id, 10)
-                    await client.send_message(ref_id, text="Congratulations! 🎉\nYou have earned 10 coins from refer.\n\nGenerate a new ad link: /earn_coins")
+                    await db.add_coins(ref_id, 20)
+                    await client.send_message(ref_id, text="Congratulations! 🎉\nYou have earned 20 coins from refer.\n\nGenerate a new ad link: /earn_coins")
                     await db.update_referrer_status(userid, True)
-                    await db.add_coins(userid, 10)
+                    coinz = random.randint(1, 20) 
+                    await db.add_coins(userid, coinz)
                     if not await check_verification(client, message.from_user.id):
                         await message.reply_text(
-                            text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins,",
+                            text=f"Congratulations! 🎉\nYou have earned {coinz} coins.\n\nGenerate a new ad link: /earn_coins,",
                             reply_markup=buttonz
                         )
                     else:
                         await message.reply_text(
-                            text="You have earned 10 coins.\n\nGenerate a new ad link: /earn_coins",
+                            text="You have earned random coins.\n\nGenerate a new ad link: /earn_coins",
                             reply_markup=buttonz
                         )
             else:
