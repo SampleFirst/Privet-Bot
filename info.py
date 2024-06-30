@@ -1,14 +1,14 @@
 # info.py
 import re
-import logging
+import time
 from os import environ
 
 id_pattern = re.compile(r'^.\d+$')
 
 def is_enabled(value, default):
-    if value.lower() in ["true", "yes", "1", "enable", "y"]:
+    if value.strip().lower() in ["on", "true", "yes", "1", "enable", "y"]:
         return True
-    elif value.lower() in ["false", "no", "0", "disable", "n"]:
+    elif value.strip().lower() in ["off", "false", "no", "0", "disable", "n"]:
         return False
     else:
         return default
@@ -21,8 +21,10 @@ BOT_TOKEN = environ['BOT_TOKEN']
 SESSION = environ.get('SESSION', 'Media_search')
 
 # Admin, Channels
+UPTIME = time.time()
 ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '').split()]
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', 0))
+BONUS_CHANNEL = int(environ.get('BONUS_CHANNEL', 0))
 VERIFIED_CHANNEL = int(environ.get('VERIFIED_CHANNEL', 0))
 CHANNELS = [int(ch) if id_pattern.search(ch) else ch for ch in environ.get('CHANNELS', '0').split()]
 auth_channel = environ.get('AUTH_CHANNEL')
@@ -30,7 +32,7 @@ AUTH_CHANNEL = int(auth_channel) if auth_channel and id_pattern.search(auth_chan
 PICS = environ.get('PICS', 'https://telegra.ph/file/6d98a444198fdac6322c2.jpg').split()
 
 # MongoDB information
-DATABASE_URL = environ.get('DATABASE_URL', "")
+DATABASE_URI = environ.get('DATABASE_URI', "")
 DATABASE_NAME = environ.get('DATABASE_NAME', "")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Telegram_files')
 
@@ -38,8 +40,8 @@ PORT = environ.get("PORT", "8080")
 REFER_ON = is_enabled(environ.get('REFER_ON', "False"), False)
 DAILY_BONUS = is_enabled(environ.get('DAILY_BONUS', "False"), False)
 MYSTORE = is_enabled(environ.get('MYSTORE', "False"), False)
+MAIN_CHANNEL = int(environ.get('MAIN_CHANNEL', 0))
 IS_VERIFY = is_enabled((environ.get('IS_VERIFY', 'False')), False)
-
 HOW_TO_VERIFY = environ.get('HOW_TO_VERIFY', "https://t.me/c/1845700490/3")
 SHORTLINK_URL = environ.get('SHORTLINK_URL', "runurl.in") # runurlx
 SHORTLINK_API = environ.get('SHORTLINK_API', "868966540ff18e4c2ad2e73343cb2f33181acedb")
