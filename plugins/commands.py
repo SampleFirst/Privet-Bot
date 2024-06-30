@@ -62,15 +62,9 @@ async def start(client, message):
             return
 
         btn = [
-            [
-                InlineKeyboardButton("Join Our Back-Up Channel", url="https://t.me/addlist/HbZqccej2BQ2MmY9")
-            ],
-            [
-                InlineKeyboardButton("Join Our Back-Up Channel", url="https://t.me/+Ma_-Igg3ddMyMjY1")
-            ],
-            [
-                InlineKeyboardButton("Join Our Back-Up Channel", url=invite_link.invite_link)
-            ]
+            [InlineKeyboardButton("Join Our Back-Up Channel", url="https://t.me/addlist/HbZqccej2BQ2MmY9")],
+            [InlineKeyboardButton("Join Our Back-Up Channel", url="https://t.me/+Ma_-Igg3ddMyMjY1")],
+            [InlineKeyboardButton("Join Our Back-Up Channel", url=invite_link.invite_link)]
         ]
         await client.send_message(
             chat_id=message.from_user.id,
@@ -117,18 +111,27 @@ async def start(client, message):
                 if status:
                     await verify_user(client, userid, token)
                     await db.add_coins(userid, 10)
-                    await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
+                    if not await check_verification(client, message.from_user.id):
+                        await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
+                    else:
+                        await message.reply_text(text="You have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
                 else:
                     await verify_user(client, userid, token)
                     await db.add_coins(ref_id, 10)
                     await client.send_message(ref_id, text="Congratulations! 🎉\nYou have earned 10 coins from refer.\n\nGenerate a new ad link: /earn_coins")
                     await db.update_referrer_status(userid, True)
                     await db.add_coins(userid, 10)
-                    await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
+                    if not await check_verification(client, message.from_user.id):
+                        await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
+                    else:
+                        await message.reply_text(text="You have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
             else:
                 await verify_user(client, userid, token)
                 await db.add_coins(userid, 10)
-                await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
+                if not await check_verification(client, message.from_user.id):
+                    await message.reply_text(text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
+                else:
+                    await message.reply_text(text="You have earned 10 coins.\n\nGenerate a new ad link: /earn_coins")
         else:
             await message.reply_text(text="<b>Invalid or Expired Link!</b>")
         return
@@ -176,11 +179,7 @@ async def referral(bot, message):
         total_referrals = await db.get_total_referrals(user_id)
         referral_link = f"https://telegram.me/{temp.U_NAME}?start=refer-{user_id}"
         reply_markup = InlineKeyboardMarkup(
-            [
-                [
-                    InlineKeyboardButton("Share Your Link", url=f"https://t.me/share/url?url={referral_link}")
-                ]
-            ]
+            [[InlineKeyboardButton("Share Your Link", url=f"https://t.me/share/url?url={referral_link}")]]
         )
         await message.reply_text(
             text=script.REFER_TEXT.format(user=user, total_referrals=total_referrals),
@@ -386,7 +385,6 @@ async def reset_database(bot, message):
         [InlineKeyboardButton("No, cancel", callback_data="cancel_reset")],
         [InlineKeyboardButton("I am testing", callback_data="testing")]
     ]
-    
     # Flatten the list, shuffle, and convert back to a list of lists with single buttons
     flat_buttons = [button for sublist in buttons for button in sublist]
     random.shuffle(flat_buttons)
@@ -426,7 +424,6 @@ async def show_referrer(client, message):
 @Client.on_message(filters.command("verification") & filters.private)
 async def verification(client, message):
     userid = message.from_user.id
-
     verify_status = await get_verify_status(userid)
     last_short = verify_status["num"]
     expire_date = verify_status["date"]
