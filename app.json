@@ -1,0 +1,60 @@
+{
+    "name": "PROFESSOR-BOT",
+    "description": "The Telegram Autofilter Bot",
+    "logo": "https://graph.org/file/b7e8484f6395a180b6380.jpg",
+    "keywords": [
+        "Telegram",
+        "auto-filter",
+        "MrMKN"
+    ],
+    "repository": "https://github.com/MrMKN/PROFESSOR-BOT",
+    "env": {
+        "BOT_TOKEN": {
+            "description": "Your bot token.",
+            "required": true
+        },
+        "API_ID": {
+            "description": "Get this value from https://my.telegram.org",
+            "required": true
+        },
+        "API_HASH": {
+            "description": "Get this value from https://my.telegram.org",
+            "required": true
+        },
+        "CHANNELS": {
+            "description": "Username or ID of channel or group. Separate multiple IDs by space.",
+            "required": false
+        },
+        "ADMINS": {
+            "description": "Username or ID of Admin. Separate multiple Admins by space.",
+            "required": true
+        },
+        "PICS": {
+            "description": "Add some telegraph link of pictures .",
+            "required": false
+        },
+        "LOG_CHANNEL": {
+            "description": "Bot Logs,Give a channel id with -100xxxxxxx",
+            "required": true
+        },
+        "DATABASE_URl": {
+            "description": "mongoDB URI.",
+            "required": true
+        },
+        "DATABASE_NAME": {
+            "description": "Name of the database in mongoDB.",
+            "value": "Cluster0",
+            "required": false
+        },
+        "SUPPORT_CHAT": {
+            "description": "Updated Channel Username Without @ Not Chanel ID",
+            "value": "MKN_BOTZ_DISCUSSION_GROUP",
+            "required": false
+        }
+    },
+    "buildpacks": [
+        {
+            "url": "heroku/python"
+        }
+    ]
+}
