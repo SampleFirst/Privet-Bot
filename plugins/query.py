@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from database.users_chats_db import db
 from info import ADMINS
-from plugins.show_list import get_user_list
+from utils import get_user_list
 
 @Client.on_callback_query()
 async def cb_handler(client: Client, query: CallbackQuery):
