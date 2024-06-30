@@ -25,11 +25,10 @@ async def show_users(client, message):
     user_list, total_users, total_coins = await get_user_list(page, sort_by)
     
     text = f"Total Users: {total_users}\nTotal Coins Earned: {total_coins}\n\n"
-    for i, user in enumerate(user_list, start=(page-1)*10+1):
-        username = user['name']
-        if len(username) > 20:  # Adjust length for long usernames
-            username = '\n'.join([username[j:j+20] for j in range(0, len(username), 20)])
-        text += f"<code>{i}. {username}{' ' * (20 - len(username))}{user['coins']} 🌑</code>\n"
+    text += "\n".join([
+        f"<code>{i}. {user['name']}\n   {' ' * (20 - len(user['name']) - len(str(user['coins'])))} {user['coins']} 🌑</code>"
+        for i, user in enumerate(user_list, start=(page - 1) * 10 + 1)
+    ])
     
     keyboard = []
     if page > 1:
@@ -43,5 +42,4 @@ async def show_users(client, message):
         InlineKeyboardButton(f"Sort by Lowest Coins{' ✅' if sort_by == 'lowest' else ''}", callback_data="sort_lowest")
     ]
     keyboard.append(sort_buttons)
-
     await message.reply(text, reply_markup=InlineKeyboardMarkup(keyboard))
