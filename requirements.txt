@@ -1,15 +1,8 @@
-git+https://github.com/MrMKN/pyrogram                          
+pyrogram                          
 tgcrypto
 requests
 pymongo[srv]
 motor
-marshmallow
 umongo
-bs4
-python-dotenv
-pytz
-urllib3
-tldextract
-openpyxl
 aiohttp
 pip
