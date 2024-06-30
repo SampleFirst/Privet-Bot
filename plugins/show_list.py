@@ -26,7 +26,10 @@ async def show_users(client, message):
     
     text = f"Total Users: {total_users}\nTotal Coins Earned: {total_coins}\n\n"
     text += "\n".join([
-        f"<code>{i}. {user['name']}\n   {' ' * (20 - len(user['name']) - len(str(user['coins'])))} {user['coins']} 🌑</code>"
+        f"<code>{i}. {user['name'][:20]}{' ' * max(0, 20 - len(user['name']))} {user['coins']} 🌑</code>"
+        if len(user['name']) <= 20 else
+        f"<code>{i}. {user['name'][:20]}</code>\n"
+        f"<code>{' ' * 4}{user['name'][20:]}{' ' * max(0, 20 - len(user['name'][20:]))} {user['coins']} 🌑</code>"
         for i, user in enumerate(user_list, start=(page - 1) * 10 + 1)
     ])
     
