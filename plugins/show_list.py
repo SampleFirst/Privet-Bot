@@ -27,9 +27,9 @@ async def show_users(client, message):
     text = f"Total Users: {total_users}\nTotal Coins Earned: {total_coins}\n\n"
     for i, user in enumerate(user_list, start=(page-1)*10+1):
         username = user['name']
-        if len(username) > 25:  # Adjust length for long usernames
-            username = '\n'.join([username[j:j+25] for j in range(0, len(username), 25)])
-        text += f"<code>{i}. {username}{' ' * (25 - len(username))}{user['coins']} 🌑</code>\n"
+        if len(username) > 20:  # Adjust length for long usernames
+            username = '\n'.join([username[j:j+20] for j in range(0, len(username), 20)])
+        text += f"<code>{i}. {username}{' ' * (20 - len(username))}{user['coins']} 🌑</code>\n"
     
     keyboard = []
     if page > 1:
