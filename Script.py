@@ -4,8 +4,6 @@ class script(object):
 ✅ Earn Coins
 ✅ Buy Subscription of Premium Bots\n
 
-Besic Premium Plans Start 900 Coins Only
-
 /help - information on how to earn coins
 /about - View available items in my store
 /bonus - send Command and get bonus"""
@@ -24,8 +22,8 @@ Note: After watching 20 ads in a day, you will be eligible for a random bonus by
 Note: Purchases are only available on Saturdays."""
 
     ABOUT_TEXT = """Hello {user}!\nI am the MyStore Bot. Here, you can buy subscriptions to different bots:\n
-1) DRM Downloader Bot (Limited OTT)
-2) OTT Notification Bot (Limited OTT)
+1) DRM Downloader Bot (OTT List /ott)
+2) OTT Notification Bot (OTT List /nott)
 3) 4GB Rename Bot
 4) 4GB Uploader Bot
 
@@ -49,7 +47,7 @@ Share your referral link below:"""
 
     REFEROFF_TEXT = """Hey {user}!\nReferral program is currently disabled."""
     
-    BONUS_TEXT = """Hello {user},\n🎉 Congratulation, you Received 200 Bonus Coins"""
+    BONUS_TEXT = """Hello {user},\n🎉 Congratulation, you Received {coins} Bonus Coins"""
     
     BONUSOFF_TEXT = """Hey {user}!\nSorry But Your already Received Bonus of the day Coins"""
     
@@ -64,7 +62,7 @@ Share your referral link below:"""
     BONUSLOG_TEXT = """🎉 New User Claimed Bonus 🎉\n
 🆔 User ID = {user}
 👁️‍🗨️ Coins = {coins}\n
-👮🏻‍♂ Bot = {bot}"""
+👮🏻‍♂ Bot = @{bot}"""
     
     STATS_TEXT = """**Bot Stats\n
 Total Users: {total_users}
