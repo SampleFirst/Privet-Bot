@@ -46,6 +46,29 @@ async def is_subscribed(bot, query=None, userid=None):
             return True
     return False
 
+def extract_commands(file_path):
+    commands = []
+    with open(file_path, 'r', encoding='utf-8') as file:
+        for line in file:
+            match = re.search(r'filters\.command\(["\'](\w+)["\']', line)
+            if match:
+                commands.append(match.group(1))
+    return commands
+
+async def get_user_list(page, sort_by):
+    users_cursor = await db.get_all_users()
+    users = await users_cursor.to_list(length=None)
+
+    if sort_by == "highest":
+        users = sorted(users, key=lambda x: x['coins'], reverse=True)
+    elif sort_by == "lowest":
+        users = sorted(users, key=lambda x: x['coins'])
+    
+    start_index = (page - 1) * 10
+    end_index = start_index + 10
+    total_coins = sum(user['coins'] for user in users)
+    return users[start_index:end_index], len(users), total_coins
+
 def get_size(size):
     units = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB"]
     size = float(size)
