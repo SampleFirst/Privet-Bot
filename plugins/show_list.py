@@ -6,7 +6,7 @@ from database.users_chats_db import db
 # Function to get user list with pagination and sorting
 async def get_user_list(page, sort_by):
     users_cursor = await db.get_all_users()
-    users = await users_cursor.to_list(length=100)  # Fetching all users for sorting and pagination
+    users = await users_cursor.to_list(length=None)  # Fetching all users for sorting and pagination
 
     if sort_by == "highest":
         users = sorted(users, key=lambda x: x['coins'], reverse=True)
@@ -25,7 +25,7 @@ async def show_users(client, message):
     user_list, total_users, total_coins = await get_user_list(page, sort_by)
     
     text = f"Total Users: {total_users}\nTotal Coins Earned: {total_coins}\n\n"
-    text += "\n".join([f"<code>{i}. {user['name']} {user['coins']} 🌑</code>" for i, user in enumerate(user_list, start=(page-1)*10+1)])
+    text += "\n".join([f"```{i}. {user['name']} {user['coins']} 🌑```" for i, user in enumerate(user_list, start=(page-1)*10+1)])
     
     keyboard = []
     if page > 1:
