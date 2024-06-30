@@ -4,6 +4,7 @@ requests
 pymongo
 motor
 marshmallow
+python-dotenv
 umongo
 bs4
 pytz
