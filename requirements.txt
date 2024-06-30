@@ -1,4 +1,4 @@
-pyrogram                          
+pyrogram
 tgcrypto
 requests
 pymongo
@@ -6,9 +6,7 @@ motor
 marshmallow
 umongo
 bs4
-python-dotenv
 pytz
 urllib3
 tldextract
 aiohttp
-pip
