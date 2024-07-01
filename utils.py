@@ -6,7 +6,7 @@ import os
 import asyncio
 from Script import script
 from pyrogram.errors import FloodWait, UserIsBlocked
-from datetime import datetime, timedelta, date, time
+from datetime import datetime, timedelta
 import pytz
 import string
 from typing import List
@@ -24,6 +24,7 @@ VERIFIED = {}
 # temp db for banned 
 class temp(object):
     VERIFY = {}
+    UPTIME = {}
     ME = None
     U_NAME = None
     B_NAME = None
