@@ -247,26 +247,23 @@ async def bonus(bot, message):
 @Client.on_message((filters.command("earn_coins") | filters.regex('Earn Coins 💵')) & filters.private)
 async def earn_coins(client, message):
     user = message.from_user.mention
-    try:
-        if not await check_verification(client, message.from_user.id):
-            btn = [[
-                InlineKeyboardButton(f"Earn Coins 💰", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=")),
-                InlineKeyboardButton("How To Get Coins", url="https://t.me/+IvrcMfPKCMxkNjVl")
-            ]]
-            await client.send_message(
-                chat_id=message.from_user.id,
-                text=script.ADS_TEXT.format(user=user),
-                disable_web_page_preview=True,
-                reply_markup=InlineKeyboardMarkup(btn)
-            )
-            return
-        else:
-            await client.send_message(
-                chat_id=message.from_user.id,
-                text=script.EARNCOIN_TEXT.format(user=user)
-            )
-    except Exception as e:
-        await message.reply(str(e))
+    if not await check_verification(client, message.from_user.id):
+        btn = [[
+            InlineKeyboardButton(f"Earn Coins 💰", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=")),
+            InlineKeyboardButton("How To Get Coins", url="https://t.me/+IvrcMfPKCMxkNjVl")
+        ]]
+        await client.send_message(
+            chat_id=message.from_user.id,
+            text=script.ADS_TEXT.format(user=user),
+            disable_web_page_preview=True,
+            reply_markup=InlineKeyboardMarkup(btn)
+        )
+        return
+    else:
+        await client.send_message(
+            chat_id=message.from_user.id,
+            text=script.EARNCOIN_TEXT.format(user=user)
+        )
         
 @Client.on_message((filters.command("mystore") | filters.regex('My Store 🛒')) & filters.private)
 async def mystore(bot, message):
