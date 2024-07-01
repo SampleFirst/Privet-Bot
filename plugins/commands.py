@@ -7,7 +7,7 @@ from pyrogram.errors import ChatAdminRequired
 from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
-from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, BONUS_CHANNEL, PICS, REFER_ON, DAILY_BONUS, MYSTORE
+from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, BONUS_CHANNEL, PICS, REFER_ON, DAILY_BONUS, MYSTORE, UPTIME
 from utils import is_subscribed, get_verify_status, temp, get_size, check_verification, get_token, verify_user, check_token
 from Script import script
 import time
@@ -78,7 +78,7 @@ async def start(client, message):
     if len(message.command) != 2:
         await message.reply_photo(
             photo=random.choice(PICS),
-            caption=script.START_TEXT.format(user=message.from_user.mention, now=temp.UPTIME),
+            caption=script.START_TEXT.format(user=message.from_user.mention, now=UPTIME),
             reply_markup=buttonz,
             parse_mode=enums.ParseMode.HTML,
             quote=True
@@ -89,7 +89,7 @@ async def start(client, message):
     if data in ["subscribe", "error", "okay", "help"]:
         await message.reply_photo(
             photo=random.choice(PICS),
-            caption=script.START_TEXT.format(user=message.from_user.mention, now=temp.UPTIME),
+            caption=script.START_TEXT.format(user=message.from_user.mention, now=UPTIME),
             reply_markup=buttonz,
             parse_mode=enums.ParseMode.HTML,
             quote=True
@@ -104,15 +104,13 @@ async def start(client, message):
 
         is_valid = await check_token(client, userid, token)
         if is_valid:
-            buttonz = await get_buttons(message.from_user.id)
             referrer_info = await db.get_referrer_info(userid)
             if referrer_info:
                 ref_id = referrer_info.get("ref_id", "Not referred")
                 status = referrer_info.get("status", False)
                 if status:
+                    buttonz = await get_buttons(message.from_user.id)
                     await verify_user(client, userid, token)
-                    coinz = random.randint(1, 20) 
-                    await db.add_coins(userid, coinz)
                     if not await check_verification(client, message.from_user.id):
                         await message.reply_text(
                             text="Congratulations! 🎉\nYou have earned {coinz} coins.\n\nGenerate a new ad link: /earn_coins,",
@@ -124,12 +122,11 @@ async def start(client, message):
                             reply_markup=buttonz
                         )
                 else:
+                    buttonz = await get_buttons(message.from_user.id)
                     await verify_user(client, userid, token)
                     await db.add_coins(ref_id, 20)
-                    await client.send_message(ref_id, text="Congratulations! 🎉\nYou have earned 20 coins from refer.\n\nGenerate a new ad link: /earn_coins")
                     await db.update_referrer_status(userid, True)
-                    coinz = random.randint(1, 20) 
-                    await db.add_coins(userid, coinz)
+                    await client.send_message(ref_id, text="Congratulations! 🎉\nYou have earned 20 coins from refer.\n\nGenerate a new ad link: /earn_coins")
                     if not await check_verification(client, message.from_user.id):
                         await message.reply_text(
                             text=f"Congratulations! 🎉\nYou have earned {coinz} coins.\n\nGenerate a new ad link: /earn_coins,",
@@ -141,8 +138,8 @@ async def start(client, message):
                             reply_markup=buttonz
                         )
             else:
+                buttonz = await get_buttons(message.from_user.id)
                 await verify_user(client, userid, token)
-                await db.add_coins(userid, 10)
                 if not await check_verification(client, message.from_user.id):
                     await message.reply_text(
                         text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins,",
@@ -170,7 +167,7 @@ async def start(client, message):
                 buttonz = await get_buttons(message.from_user.id)
                 await message.reply_photo(
                     photo=random.choice(PICS),
-                    caption=script.START_TEXT.format(user=message.from_user.mention, now=temp.UPTIME),
+                    caption=script.START_TEXT.format(user=message.from_user.mention, now=UPTIME),
                     reply_markup=buttonz,
                     parse_mode=enums.ParseMode.HTML,
                     quote=True
