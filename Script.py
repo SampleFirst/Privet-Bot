@@ -6,7 +6,8 @@ class script(object):
 
 /help - information on how to earn coins
 /about - View available items in my store
-/bonus - send Command and get bonus"""
+/bonus - send Command and get bonus
+{now}"""
     
     HELP_TEXT = """Hello {user}!\nHere's a step-by-step guide to using the bot:\n
 ⭐ Send the /start command to the bot.
