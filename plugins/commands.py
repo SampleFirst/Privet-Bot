@@ -78,7 +78,7 @@ async def start(client, message):
     if len(message.command) != 2:
         await message.reply_photo(
             photo=random.choice(PICS),
-            caption=script.START_TEXT.format(user=message.from_user.mention, now=UPTIME),
+            caption=script.START_TEXT.format(user=message.from_user.mention, now=temp.UPTIME),
             reply_markup=buttonz,
             parse_mode=enums.ParseMode.HTML,
             quote=True
@@ -89,7 +89,7 @@ async def start(client, message):
     if data in ["subscribe", "error", "okay", "help"]:
         await message.reply_photo(
             photo=random.choice(PICS),
-            caption=script.START_TEXT.format(user=message.from_user.mention, now=UPTIME),
+            caption=script.START_TEXT.format(user=message.from_user.mention, now=temp.UPTIME),
             reply_markup=buttonz,
             parse_mode=enums.ParseMode.HTML,
             quote=True
