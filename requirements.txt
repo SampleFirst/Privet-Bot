@@ -3,7 +3,6 @@ tgcrypto
 requests
 pymongo
 motor
-datetime
 marshmallow
 umongo
 bs4
