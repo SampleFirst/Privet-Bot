@@ -75,12 +75,10 @@ ID - <code>{a}</code>
 Name - {b}
 Mention - {c}"""
     
-    VERIFICATION_TEXT = """**Verification Update:**\n
-User ID: {a}
-Username: {b}
-Verification Number: {c}
-Date: {d}
-Time: {e}"""
+    VERIFICATION_TEXT = """🎉 New User Earned Coins 🎉\n
+🆔 User ID = {user}
+👁️‍🗨️ Coins = {coins}\n
+👮🏻‍♂ Bot = @{bot}"""
 
     RESTART_TXT = """#Restarted
 
