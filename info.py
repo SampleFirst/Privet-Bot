@@ -1,5 +1,6 @@
 # info.py
 import re
+import time
 from os import environ
 
 id_pattern = re.compile(r'^.\d+$')
@@ -20,6 +21,7 @@ BOT_TOKEN = environ['BOT_TOKEN']
 SESSION = environ.get('SESSION', 'Media_search')
 
 # Admin, Channels
+UPTIME = time.time()
 ADMINS = [int(admin) if id_pattern.search(admin) else admin for admin in environ.get('ADMINS', '').split()]
 LOG_CHANNEL = int(environ.get('LOG_CHANNEL', 0))
 BONUS_CHANNEL = int(environ.get('BONUS_CHANNEL', 0))
