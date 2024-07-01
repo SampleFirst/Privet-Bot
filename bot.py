@@ -9,7 +9,7 @@ logging.getLogger("pyrogram").setLevel(logging.ERROR)
 from pyrogram import Client, __version__, filters
 from pyrogram.raw.all import layer
 from database.users_chats_db import db
-from info import SESSION, API_ID, API_HASH, BOT_TOKEN, LOG_CHANNEL, PORT
+from info import SESSION, API_ID, API_HASH, BOT_TOKEN, LOG_CHANNEL, PORT, UPTIME
 from utils import temp
 from typing import Union, Optional, AsyncGenerator
 from pyrogram import types
