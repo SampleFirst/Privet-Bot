@@ -7,7 +7,7 @@ from pyrogram.errors import ChatAdminRequired
 from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
-from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, BONUS_CHANNEL, PICS, REFER_ON, DAILY_BONUS, MYSTORE 
+from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, UPTIME, BONUS_CHANNEL, PICS, REFER_ON, DAILY_BONUS, MYSTORE 
 from utils import is_subscribed, get_verify_status, temp, get_size, check_verification, get_token, verify_user, check_token
 from Script import script
 import time
@@ -78,7 +78,7 @@ async def start(client, message):
     if len(message.command) != 2:
         await message.reply_photo(
             photo=random.choice(PICS),
-            caption=script.START_TEXT.format(user=message.from_user.mention),
+            caption=script.START_TEXT.format(user=message.from_user.mention, now=UPTIME),
             reply_markup=buttonz,
             parse_mode=enums.ParseMode.HTML,
             quote=True
