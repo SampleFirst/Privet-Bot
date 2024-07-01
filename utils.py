@@ -6,7 +6,7 @@ import os
 import asyncio
 from Script import script
 from pyrogram.errors import FloodWait, UserIsBlocked
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import pytz
 import string
 from typing import List
