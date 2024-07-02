@@ -42,14 +42,14 @@ Please join my channels and then start me again!...**"""
 💳 Coins: {balance}"""
     
     REFER_TEXT = """Hello {user},\n
-💰 Per Refer: 10 Coins
+💰 Per Refer: 20 Coins
 📝 Total Referrals: {total_referrals}\n
 Note: Per Join User Through your referral link, when the user watches their first ad, you earn 10 Coins.\n
 Share your referral link below:"""
 
     REFEROFF_TEXT = """Hey {user}!\nReferral program is currently disabled."""
     
-    BONUS_TEXT = """Hello {user},\n🎉 Congratulation, you Received {coins} Bonus Coins"""
+    BONUS_TEXT = """Hello {user},\n🎉 Congratulation, you Received {coins} Bonus Coins of the day Try Again next day"""
     
     BONUSOFF_TEXT = """Hey {user}!\nSorry But Your already Received Bonus of the day Coins"""
     
@@ -58,6 +58,10 @@ Share your referral link below:"""
     ADS_TEXT = """Hey {user} 💕\n\nComplete This Ad And Earn 10 Coins."""
     
     EARNCOIN_TEXT = """Congratulations! You've complete the daily coins limit set by our coins management system, Please try again after 24 hours."""
+    
+    EARNED_TEXT = """Congratulations! 🎉\nYou have earned {coinz} coins.\n\nGenerate a new ad link: /earn_coins"""
+    
+    EB_TEXT = """You have Complete All Ad And earned Better coins.\n\nBonus Of the Day: /bonus\n\nCheck Total Earned Coins: /balance"""
     
     MYSTORE_TEXT = """📤 You can withdraw your balance once you reach the minimum threshold. Please contact support for more details."""
     
