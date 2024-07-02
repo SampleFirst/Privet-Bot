@@ -233,19 +233,18 @@ async def get_verify_status(userid):
         temp.VERIFY[userid] = status
     return status
 
-async def update_verify_status(bot, userid, date_temp, time_temp, num_temp):
+async def update_verify_status(bot, userid, date_temp, time_temp, num_temp, coinz):
     user = await bot.get_users(int(userid))
     status = await get_verify_status(user.id)
     status["date"] = date_temp
     status["time"] = time_temp
     status["num"] = num_temp
     temp.VERIFY[userid] = status
-    coinz = random.randint(1, 20) 
     await db.add_coins(userid, coinz)
     await db.update_verification(userid, date_temp, time_temp, num_temp)
     await bot.send_message(BONUS_CHANNEL, script.VERIFICATION_TEXT.format(user=user.id, coins=coinz, bot=temp.B_NAME))
     
-async def verify_user(bot, userid, token):
+async def verify_user(bot, userid, token, coinz):
     user = await bot.get_users(int(userid))
     if not await db.is_user_exist(user.id):
         await db.add_user(user.id, user.first_name)
@@ -265,7 +264,7 @@ async def verify_user(bot, userid, token):
         num_temp = num + 1
         date_var = "1999-12-31"
         temp_time = "23:59:59"
-    await update_verify_status(bot, user.id, date_var, temp_time, num_temp)
+    await update_verify_status(bot, user.id, date_var, temp_time, num_temp, coinz)
 
 async def check_verification(bot, userid):
     user = await bot.get_users(int(userid))
