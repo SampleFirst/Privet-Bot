@@ -109,45 +109,48 @@ async def start(client, message):
                 ref_id = referrer_info.get("ref_id", "Not referred")
                 status = referrer_info.get("status", False)
                 if status:
+                    coinz = random.randint(5, 20)
+                    await verify_user(client, userid, token, coinz)
                     buttonz = await get_buttons(message.from_user.id)
-                    await verify_user(client, userid, token)
                     if not await check_verification(client, message.from_user.id):
                         await message.reply_text(
-                            text="Congratulations! 🎉\nYou have earned {coinz} coins.\n\nGenerate a new ad link: /earn_coins,",
+                            text=script.EARNED_TEXT.format(coinz=coinz),
                             reply_markup=buttonz
                         )
                     else:
                         await message.reply_text(
-                            text="You have earned random coins.\n\nGenerate a new ad link: /earn_coins",
+                            text=script.EB_TEXT,
                             reply_markup=buttonz
                         )
                 else:
+                    coinz = random.randint(5, 20)
+                    await verify_user(client, userid, token, coinz)
                     buttonz = await get_buttons(message.from_user.id)
-                    await verify_user(client, userid, token)
                     await db.add_coins(ref_id, 20)
                     await db.update_referrer_status(userid, True)
                     await client.send_message(ref_id, text="Congratulations! 🎉\nYou have earned 20 coins from refer.\n\nGenerate a new ad link: /earn_coins")
                     if not await check_verification(client, message.from_user.id):
                         await message.reply_text(
-                            text=f"Congratulations! 🎉\nYou have earned {coinz} coins.\n\nGenerate a new ad link: /earn_coins,",
+                            text=script.EARNED_TEXT.format(coinz=coinz),
                             reply_markup=buttonz
                         )
                     else:
                         await message.reply_text(
-                            text="You have earned random coins.\n\nGenerate a new ad link: /earn_coins",
+                            text=script.EB_TEXT,
                             reply_markup=buttonz
                         )
             else:
+                coinz = random.randint(5, 20)
+                await verify_user(client, userid, token, coinz)
                 buttonz = await get_buttons(message.from_user.id)
-                await verify_user(client, userid, token)
                 if not await check_verification(client, message.from_user.id):
                     await message.reply_text(
-                        text="Congratulations! 🎉\nYou have earned 10 coins.\n\nGenerate a new ad link: /earn_coins,",
+                        text=script.EARNED_TEXT.format(coinz=coinz),
                         reply_markup=buttonz
                     )
                 else:
                     await message.reply_text(
-                        text="You have earned 10 coins.\n\nGenerate a new ad link: /earn_coins",
+                        text=script.EB_TEXT,
                         reply_markup=buttonz
                     )
         else:
@@ -230,7 +233,7 @@ async def bonus(bot, message):
         )
         await bot.send_message(LOG_CHANNEL, script.BONUSFLOOD_TEXT.format(user_id=user_id, username=username))
     else:
-        coins_added = random.randint(1, 150)  # Generate a random number of coins between 1 and 150
+        coins_added = random.randint(50, 150)  # Generate a random number of coins between 1 and 150
         await db.add_coins(user_id, coins_added)
         await db.got_bonus_status(user_id)
         buttonz = await get_buttons(user_id)
