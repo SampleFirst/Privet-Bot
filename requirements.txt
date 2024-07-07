@@ -10,3 +10,4 @@ pytz
 aiohttp
 urllib3
 tldextract
+Pillow
