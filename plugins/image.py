@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from PIL import Image, ImageDraw, ImageFont
-
+import arial.ttf
 
 # Function to create an image with text
 def create_image_with_text(text):
@@ -19,4 +19,3 @@ def generate_image(client, message):
     text = message.text.split(" ", 1)[1]
     image_path = create_image_with_text(text)
     client.send_photo(chat_id=message.chat.id, photo=image_path)
-
