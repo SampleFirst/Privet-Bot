@@ -1,6 +1,6 @@
 from pyrogram import Client, filters
 from PIL import Image, ImageDraw, ImageFont
-import arial.ttf
+import Arial.ttf
 
 # Function to create an image with text
 def create_image_with_text(text):
