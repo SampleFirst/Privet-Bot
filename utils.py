@@ -14,11 +14,7 @@ from database.users_chats_db import db
 import requests
 import aiohttp
 from info import *
-from aiohttp import ClientSession
-from telegraph import upload_file
-from io import BytesIO
 
-ai_client = ClientSession()
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -34,17 +30,7 @@ class temp(object):
     U_NAME = None
     B_NAME = None
     USERS_CANCEL = False
-
-async def make_carbon(code, tele=False):
-    url = "https://carbonara.solopov.dev/api/cook"
-    async with ai_client.post(url, json={"code": code}) as resp:
-        image = BytesIO(await resp.read())
-    image.name = "carbon.png"
-    if tele:
-        uf = upload_file(image)
-        image.close()
-        return f"https://graph.org{uf[0]}"
-    return image
+    
 
 async def is_subscribed(bot, query=None, userid=None):
     try:
