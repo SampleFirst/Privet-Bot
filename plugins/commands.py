@@ -95,7 +95,39 @@ async def start(client, message):
             quote=True
         )
         return
-
+    if data.startswith("premium"):
+        user_id = message.from_user.id
+        user = message.from_user.first_name
+        username = message.from_user.username or "N/A"
+        bonus = await db.get_bonus_status(user_id)
+        if bonus["got_bonus"] == True:
+            buttonz = await get_buttons(user_id)
+            await message.reply_photo(
+                photo=random.choice(PICS),
+                caption=script.START_TEXT.format(user=message.from_user.mention, now=temp.UPTIME),
+                reply_markup=buttonz,
+                parse_mode=enums.ParseMode.HTML,
+                quote=True
+            )
+        else:
+            coins_added = random.randint(50, 150)
+            await db.add_coins(user_id, coins_added)
+            await db.got_bonus_status(user_id)
+            buttonz = await get_buttons(user_id)
+            await bot.send_message(BONUS_CHANNEL, script.BONUSLOG_TEXT.format(user=user_id, coins=coins_added, bot=temp.B_NAME))
+            await message.reply_text(
+                text=script.BONUS_TEXT.format(user=user, coins=coins_added),
+                reply_markup=buttonz,
+                quote=True
+            )
+            await message.reply_photo(
+                photo=random.choice(PICS),
+                caption=script.START_TEXT.format(user=message.from_user.mention, now=temp.UPTIME),
+                reply_markup=buttonz,
+                parse_mode=enums.ParseMode.HTML,
+                quote=True
+            )
+            
     if data.startswith("verify"):
         userid, token = data.split("-", 2)[1], data.split("-", 3)[2]
         if str(message.from_user.id) != str(userid):
