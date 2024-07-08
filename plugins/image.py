@@ -8,7 +8,7 @@ def create_image_with_text(text):
     draw = ImageDraw.Draw(img)
     
     # Absolute path to your font file
-    font_path = str(Path(__file__).parent / "plugins" / "arial.ttf")
+    font_path = str(Path(__file__).parent / "arial.ttf")
     
     # Ensure the font file exists
     if not Path(font_path).exists():
