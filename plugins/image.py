@@ -15,7 +15,9 @@ def create_image_with_text(text):
         raise FileNotFoundError(f"Font file not found: {font_path}")
     
     font = ImageFont.truetype(font_path, 20)
-    text_width, text_height = draw.textsize(text, font=font)
+    bbox = draw.textbbox((0, 0), text, font=font)
+    text_width = bbox[2] - bbox[0]
+    text_height = bbox[3] - bbox[1]
     position = ((img.width - text_width) // 2, (img.height - text_height) // 2)
     draw.text(position, text, fill=(0, 0, 0), font=font)
     
@@ -33,4 +35,3 @@ def generate_image(client, message):
         message.reply_text("Please provide text to generate the image.")
     except Exception as e:
         message.reply_text(f"An error occurred: {e}")
-
