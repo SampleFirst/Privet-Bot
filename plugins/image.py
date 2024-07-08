@@ -1,12 +1,11 @@
 from pyrogram import Client, filters
 from PIL import Image, ImageDraw, ImageFont
-from plugins import arial.ttf
 
 # Function to create an image with text
 def create_image_with_text(text):
     img = Image.new('RGB', (500, 300), color=(255, 255, 255))
     draw = ImageDraw.Draw(img)
-    font_path = "arial.ttf"
+    font_path = "/plugins/arial.ttf"
     font = ImageFont.truetype(font_path, 20)
     text_width, text_height = draw.textsize(text, font=font)
     position = ((img.width - text_width) // 2, (img.height - text_height) // 2)
