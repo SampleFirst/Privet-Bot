@@ -31,7 +31,11 @@ async def generate_image(client, message):
     try:
         text = message.text.split(" ", 1)[1]
         image_path = create_image_with_text(text)
-        await message.reply_photo(chat_id=message.chat.id, photo=image_path)
+        await message.reply_photo(
+            photo=image_path,
+            caption="Text to Image Generate Successfully",
+            quote=True
+        )
     except IndexError:
         message.reply_text("Please provide text to generate the image.")
     except Exception as e:
