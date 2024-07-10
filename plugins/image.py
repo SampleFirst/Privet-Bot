@@ -37,6 +37,8 @@ async def generate_image(client, message):
             quote=True
         )
     except IndexError:
-        message.reply_text("Please provide text to generate the image.")
+        await message.reply_text(
+            text="Please provide text to generate the image.")
     except Exception as e:
-        message.reply_text(f"An error occurred: {e}")
+        await message.reply_text(
+            text=f"An error occurred: {e}")
