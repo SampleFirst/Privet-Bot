@@ -55,6 +55,14 @@ def extract_commands(file_path):
                 commands.append(match.group(1))
     return commands
 
+# Helper function to format the uptime difference
+def format_uptime(delta: timedelta) -> str:
+    days = delta.days
+    seconds = delta.seconds
+    hours, remainder = divmod(seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return f"{days} days {hours} hours {minutes} minutes and {seconds} seconds"
+
 async def get_user_list(page, sort_by):
     users_cursor = await db.get_all_users()
     users = await users_cursor.to_list(length=None)
