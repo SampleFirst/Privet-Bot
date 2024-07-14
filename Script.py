@@ -64,7 +64,7 @@ Left time: <code>{total_time_left}</code>"""
     
     EB_TEXT = """You have Complete All Ad And earned Better coins.\n\nBonus Of the Day: /bonus\n\nCheck Total Earned Coins: /balance"""
     
-    MYSTORE_TEXT = """📤 You can withdraw your balance once you reach the minimum threshold. Please contact support for more details."""
+    MYSTORE_TEXT = """Plans Available Soon...\nEarn Coins Fast 💎\n\nPlease contact Admin for more details."""
     
     BONUSLOG_TEXT = """🎉 New User Claimed Bonus 🎉\n
 🆔 User ID = {user}
