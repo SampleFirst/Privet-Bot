@@ -276,6 +276,43 @@ async def verify_user(bot, userid, token, coinz):
         temp_time = "23:59:59"
     await update_verify_status(bot, user.id, date_var, temp_time, num_temp, coinz)
 
+async def get_verification_datetime(bot, userid):
+    user = await bot.get_users(int(userid))
+    if not await db.is_user_exist(user.id):
+        await db.add_user(user.id, user.first_name)
+        await bot.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(user.id, user.mention))
+    
+    tz = pytz.timezone('Asia/Kolkata')
+    today = date.today()
+    now = datetime.now(tz)
+    curr_time = now.strftime("%H:%M:%S")
+    hour1, minute1, second1 = curr_time.split(":")
+    curr_time = time(int(hour1), int(minute1), int(second1))
+    
+    status = await get_verify_status(user.id)
+    date_var = status["date"]
+    time_var = status["time"]
+    
+    years, month, day = date_var.split('-')
+    comp_date = date(int(years), int(month), int(day))
+    hour, minute, second = time_var.split(":")
+    comp_time = time(int(hour), int(minute), int(second))
+    
+    comp_datetime = datetime.combine(comp_date, comp_time)
+    now_datetime = datetime.combine(today, curr_time)
+    
+    time_diff = comp_datetime - now_datetime
+    
+    days, seconds = time_diff.days, time_diff.seconds
+    hours = seconds // 3600
+    minutes = (seconds % 3600) // 60
+    seconds = seconds % 60
+    
+    total_time_left = f"{days} days, {hours} hours, {minutes} minutes and {seconds} seconds"
+    exact_date_time = time_diff.strftime("%Y-%m-%d %H:%M:%S")
+    
+    return total_time_left, exact_date_time
+
 async def check_verification(bot, userid):
     user = await bot.get_users(int(userid))
     if not await db.is_user_exist(user.id):
