@@ -309,9 +309,10 @@ async def get_verification_datetime(bot, userid):
     seconds = seconds % 60
     
     total_time_left = f"{days} days, {hours} hours, {minutes} minutes and {seconds} seconds"
-    exact_date_time = time_diff.strftime("%Y-%m-%d %H:%M:%S")
+    exact_date_time = comp_datetime.strftime("%Y-%m-%d %H:%M:%S")
     
     return total_time_left, exact_date_time
+
 
 async def check_verification(bot, userid):
     user = await bot.get_users(int(userid))
