@@ -1,8 +1,7 @@
 class script(object):
     START_TEXT = """Hello {user}! Welcome to the Bot.\n
-✅ Watch Ads
 ✅ Earn Coins
-✅ Buy Subscription of Premium Bots\n
+✅ Buy Subscription\n
 
 /help - information on how to earn coins
 /about - View available items in my store
@@ -55,7 +54,7 @@ Share your referral link below:"""
     
     BONUSFLOOD_TEXT = """Hey Admin\nid: {user_id}\nName: {username}\nTrying Again For Bonus"""
     
-    ADS_TEXT = """Hey {user} 💕\n\nComplete This Ad And Earn 10 Coins."""
+    ADS_TEXT = """Hey {user} 💕\n\nComplete This Task And Earn Random Coins."""
     
     EARNCOIN_TEXT = """Congratulations! You've complete the daily coins limit set by our coins management system, Please try again after 24 hours."""
     
