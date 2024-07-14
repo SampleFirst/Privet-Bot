@@ -8,7 +8,7 @@ from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
 from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, BONUS_CHANNEL, PICS, REFER_ON, DAILY_BONUS, MYSTORE
-from utils import is_subscribed, get_verify_status, temp, get_size, check_verification, get_token, verify_user, check_token
+from utils import is_subscribed, format_uptime, get_verify_status, temp, get_size, check_verification, get_token, verify_user, check_token
 from Script import script
 import time
 import datetime
@@ -75,10 +75,13 @@ async def start(client, message):
         return
 
     buttonz = await get_buttons(message.from_user.id)
+    now = datetime.now(pytz.timezone('Asia/Kolkata'))
+    uptime_delta = now - temp.UPTIME  # Calculate the difference
+    formatted_uptime = format_uptime(uptime_delta)  # Format the difference
     if len(message.command) != 2:
         await message.reply_photo(
             photo=random.choice(PICS),
-            caption=script.START_TEXT.format(user=message.from_user.mention, now=temp.UPTIME),
+            caption=script.START_TEXT.format(user=message.from_user.mention, now=formatted_uptime),
             reply_markup=buttonz,
             parse_mode=enums.ParseMode.HTML,
             quote=True
@@ -89,7 +92,7 @@ async def start(client, message):
     if data in ["subscribe", "error", "okay", "help"]:
         await message.reply_photo(
             photo=random.choice(PICS),
-            caption=script.START_TEXT.format(user=message.from_user.mention, now=temp.UPTIME),
+            caption=script.START_TEXT.format(user=message.from_user.mention, now=formatted_uptime),
             reply_markup=buttonz,
             parse_mode=enums.ParseMode.HTML,
             quote=True
@@ -101,10 +104,13 @@ async def start(client, message):
         username = message.from_user.username or "N/A"
         bonus = await db.get_bonus_status(user_id)
         if bonus["got_bonus"] == True:
+            now = datetime.now(pytz.timezone('Asia/Kolkata'))
+            uptime_delta = now - temp.UPTIME  # Calculate the difference
+            formatted_uptime = format_uptime(uptime_delta)  # Format the difference
             buttonz = await get_buttons(user_id)
             await message.reply_photo(
                 photo=random.choice(PICS),
-                caption=script.START_TEXT.format(user=message.from_user.mention, now=temp.UPTIME),
+                caption=script.START_TEXT.format(user=message.from_user.mention, now=formatted_uptime),
                 reply_markup=buttonz,
                 parse_mode=enums.ParseMode.HTML,
                 quote=True
@@ -113,8 +119,11 @@ async def start(client, message):
             coins_added = random.randint(50, 150)
             await db.add_coins(user_id, coins_added)
             await db.got_bonus_status(user_id)
+            now = datetime.now(pytz.timezone('Asia/Kolkata'))
+            uptime_delta = now - temp.UPTIME  # Calculate the difference
+            formatted_uptime = format_uptime(uptime_delta)  # Format the difference
             buttonz = await get_buttons(user_id)
-            await client.send_message(BONUS_CHANNEL, script.BONUSLOG_TEXT.format(user=user_id, coins=coins_added, bot=temp.B_NAME))
+            await bot.send_message(BONUS_CHANNEL, script.BONUSLOG_TEXT.format(user=user_id, coins=coins_added, bot=temp.B_NAME))
             await message.reply_text(
                 text=script.BONUS_TEXT.format(user=user, coins=coins_added),
                 reply_markup=buttonz,
@@ -122,7 +131,7 @@ async def start(client, message):
             )
             await message.reply_photo(
                 photo=random.choice(PICS),
-                caption=script.START_TEXT.format(user=message.from_user.mention, now=temp.UPTIME),
+                caption=script.START_TEXT.format(user=message.from_user.mention, now=formatted_uptime),
                 reply_markup=buttonz,
                 parse_mode=enums.ParseMode.HTML,
                 quote=True
@@ -158,6 +167,9 @@ async def start(client, message):
                     coinz = random.randint(5, 20)
                     await verify_user(client, userid, token, coinz)
                     buttonz = await get_buttons(message.from_user.id)
+                    now = datetime.now(pytz.timezone('Asia/Kolkata'))
+                    uptime_delta = now - temp.UPTIME  # Calculate the difference
+                    formatted_uptime = format_uptime(uptime_delta)  # Format the difference
                     await db.add_coins(ref_id, 20)
                     await db.update_referrer_status(userid, True)
                     await client.send_message(ref_id, text="Congratulations! 🎉\nYou have earned 20 coins from refer.\n\nGenerate a new ad link: /earn_coins")
@@ -175,6 +187,9 @@ async def start(client, message):
                 coinz = random.randint(5, 20)
                 await verify_user(client, userid, token, coinz)
                 buttonz = await get_buttons(message.from_user.id)
+                now = datetime.now(pytz.timezone('Asia/Kolkata'))
+                uptime_delta = now - temp.UPTIME  # Calculate the difference
+                formatted_uptime = format_uptime(uptime_delta)  # Format the difference
                 if not await check_verification(client, message.from_user.id):
                     await message.reply_text(
                         text=script.EARNED_TEXT.format(coinz=coinz),
@@ -200,6 +215,9 @@ async def start(client, message):
                 await db.add_referrer(message.from_user.id, user_id)
                 await client.send_message(user_id, "Congratulations! You have successfully referred one user using your link.")
                 buttonz = await get_buttons(message.from_user.id)
+                now = datetime.now(pytz.timezone('Asia/Kolkata'))
+                uptime_delta = now - temp.UPTIME  # Calculate the difference
+                formatted_uptime = format_uptime(uptime_delta)  # Format the difference
                 await message.reply_photo(
                     photo=random.choice(PICS),
                     caption=script.START_TEXT.format(user=message.from_user.mention, now=UPTIME),
