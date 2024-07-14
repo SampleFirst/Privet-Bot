@@ -8,7 +8,7 @@ from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
 from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, BONUS_CHANNEL, PICS, REFER_ON, DAILY_BONUS, MYSTORE
-from utils import is_subscribed, format_uptime, get_verify_status, temp, get_size, check_verification, get_token, verify_user, check_token
+from utils import is_subscribed, format_uptime, get_verify_status, temp, get_size, check_verification, get_verification_datetime, get_token, verify_user, check_token
 from Script import script
 import time
 from datetime import datetime
@@ -310,9 +310,10 @@ async def earn_coins(client, message):
         )
         return
     else:
+        total_time_left, exact_date_time = await get_verification_datetime(client, message.from_user.id):
         await client.send_message(
             chat_id=message.from_user.id,
-            text=script.EARNCOIN_TEXT.format(user=user)
+            text=script.EARNCOIN_TEXT.format(user=user, total_time_left=total_time_left, exact_date_time=exact_date_time)
         )
         
 @Client.on_message((filters.command("mystore") | filters.regex('My Store 🛒')) & filters.private)
