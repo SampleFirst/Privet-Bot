@@ -310,7 +310,7 @@ async def earn_coins(client, message):
         )
         return
     else:
-        total_time_left, exact_date_time = await get_verification_datetime(client, message.from_user.id):
+        total_time_left, exact_date_time = await get_verification_datetime(client, message.from_user.id)
         await client.send_message(
             chat_id=message.from_user.id,
             text=script.EARNCOIN_TEXT.format(user=user, total_time_left=total_time_left, exact_date_time=exact_date_time)
