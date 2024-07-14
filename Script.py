@@ -57,8 +57,8 @@ Share your referral link below:"""
     ADS_TEXT = """Hey {user} 💕\n\nComplete This Task And Earn Random Coins."""
     
     EARNCOIN_TEXT = """Congratulations! You've complete the daily coins limit\n
-Next Task: <code>{total_time_left}</code>
-Left time: <code>{exact_date_time}</code>"""
+Next Task: <code>{exact_date_time}</code>\n
+Left time: <code>{total_time_left}</code>"""
 
     EARNED_TEXT = """Congratulations! 🎉\nYou have earned {coinz} coins.\n\nGenerate a new ad link: /earn_coins"""
     
