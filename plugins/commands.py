@@ -11,7 +11,7 @@ from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, BONUS_CHANNEL, PICS, REFER_O
 from utils import is_subscribed, format_uptime, get_verify_status, temp, get_size, check_verification, get_token, verify_user, check_token
 from Script import script
 import time
-import datetime
+from datetime import datetime
 import pytz
 
 logger = logging.getLogger(__name__)
