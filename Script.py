@@ -7,7 +7,7 @@ class script(object):
 /about - View available items in my store
 /bonus - send Command and get bonus
 
-Bot Uptime: {now}"""
+Bot Uptime: <code>{now}</code>"""
     
     HELP_TEXT = """Hello {user}!\nHere's a step-by-step guide to using the bot:\n
 ⭐ Send the /start command to the bot.
