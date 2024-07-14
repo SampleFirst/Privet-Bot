@@ -114,7 +114,7 @@ async def start(client, message):
             await db.add_coins(user_id, coins_added)
             await db.got_bonus_status(user_id)
             buttonz = await get_buttons(user_id)
-            await bot.send_message(BONUS_CHANNEL, script.BONUSLOG_TEXT.format(user=user_id, coins=coins_added, bot=temp.B_NAME))
+            await client.send_message(BONUS_CHANNEL, script.BONUSLOG_TEXT.format(user=user_id, coins=coins_added, bot=temp.B_NAME))
             await message.reply_text(
                 text=script.BONUS_TEXT.format(user=user, coins=coins_added),
                 reply_markup=buttonz,
