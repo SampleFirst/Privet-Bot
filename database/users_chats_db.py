@@ -214,4 +214,4 @@ class Database:
     async def update_referrer_status(self, id, status):
         await self.col.update_one({'id': int(id)}, {'$set': {'referrer_info.status': status}})
 
-db = Database(DATABASE_URl, DATABASE_NAME)
+db = Database(DATABASE_URI, DATABASE_NAME)
