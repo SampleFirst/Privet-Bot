@@ -11,3 +11,4 @@ aiohttp
 urllib3
 tldextract
 Pillow
+pip
