@@ -1,5 +1,5 @@
 import motor.motor_asyncio
-from info import DATABASE_NAME, DATABASE_URl, REFER_ON, DAILY_BONUS, MYSTORE
+from info import DATABASE_NAME, DATABASE_URI, REFER_ON, DAILY_BONUS, MYSTORE
 
 class Database:
     def __init__(self, uri, database_name):
