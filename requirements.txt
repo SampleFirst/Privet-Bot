@@ -1,6 +1,7 @@
 git+https://github.com/MrMKN/pyrogram                          
 tgcrypto
 requests
+pymongo
 imdbpy
 pymongo[srv]
 motor
