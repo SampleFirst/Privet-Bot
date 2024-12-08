@@ -3,7 +3,6 @@ tgcrypto
 requests
 pymongo
 imdbpy
-pymongo[srv]
 motor
 marshmallow
 umongo
