@@ -52,7 +52,7 @@ async def movie_result(client, callback_query):
 def search_movies(query):
     movies_list = []
     movies_details = {}
-    website = requests.get(f"https://mkvcinemas.dev/?s={query.replace(' ', '+')}")
+    website = requests.get(f"https://mkvcinemas.soy/?s={query.replace(' ', '+')}")
     if website.status_code == 200:
         website = website.text
         website = BeautifulSoup(website, "html.parser")
