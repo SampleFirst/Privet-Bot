@@ -31,16 +31,22 @@ async def movie_result(client, callback_query):
     query = callback_query
     movie_id = query.data
     s = get_movie(cine_list[movie_id])
-    link_buttons = []
+
+    # Prepare a list of links
     links = s["links"]
-    for link in links:
-        button = InlineKeyboardButton(link["name"], url=link["url"])
-        link_buttons.append([button])
+    links_list = "\n".join(
+        [f"{idx + 1}. [{link['name']}]({link['url']})" for idx, link in enumerate(links)]
+    )
 
-    caption = f"🎥 {s['title']}\n\n⚡ Download Links:"
-    reply_markup = InlineKeyboardMarkup(link_buttons)
+    # Prepare the caption with the list of links
+    caption = f"🎥 **{s['title']}**\n\n⚡ **Download Links:**\n{links_list}"
 
-    await query.message.reply_text(caption, reply_markup=reply_markup)
+    # Send the formatted message
+    await query.message.reply_text(
+        caption, 
+        parse_mode="Markdown", 
+        disable_web_page_preview=True
+    )
     await query.answer("Sent movie links")
 
 def search_movies(query):
