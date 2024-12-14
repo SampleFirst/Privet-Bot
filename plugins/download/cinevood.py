@@ -61,20 +61,31 @@ def search_movies(query):
     return movies_list
 
 def get_movie(movie_page_url):
+    # Initialize an empty dictionary to store movie details
     movie_details = {}
-    movie_page_link = requests.get(movie_page_url)
-    if movie_page_link.status_code == 200:
-        movie_page_link = movie_page_link.text
-        movie_page_link = BeautifulSoup(movie_page_link, "html.parser")
-        title = movie_page_link.find("div", {'class': 'title single-title entry-title'})
-        movie_details["title"] = title
-        download_links = movie_page_link.find_all("div", {'class': 'download-btns'})
+
+    # Fetch the HTML content of the movie page
+    response = requests.get(movie_page_url)
+    if response.status_code == 200:  # Ensure the request was successful
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # Extract the movie title
+        title = soup.find("div", {'class': 'title single-title entry-title'})
+        movie_details["title"] = title.text.strip() if title else "No title found"
+
+        # Extract download buttons and links
+        download_buttons = soup.find_all("div", {'class': 'download-btns'})
         final_links = []
-        for download_link in download_links:
-            link_text = download_link.find("h6").text.strip()
-            links = download_link.find_all("a")
-            for link in links:
-                final_links.append({"name": link_text, "url": link["href"]})
-        movie_details["links"] = final_links
+
+        for button in download_buttons:
+            button_links = button.find_all("a")  # Find all <a> tags inside the button
+            for link in button_links:
+                # Extract button name and URL
+                button_name = link.text.strip()
+                button_url = link["href"]
+                final_links.append({"name": button_name, "url": button_url})
+
+        movie_details["links"] = final_links  # Store all button links
+
     return movie_details
-    
+
