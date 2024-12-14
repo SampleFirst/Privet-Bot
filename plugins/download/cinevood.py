@@ -43,8 +43,7 @@ async def movie_result(client, callback_query):
 
     # Send the formatted message
     await query.message.reply_text(
-        caption, 
-        parse_mode="Markdown", 
+        caption,
         disable_web_page_preview=True
     )
     await query.answer("Sent movie links")
