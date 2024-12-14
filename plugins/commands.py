@@ -7,7 +7,7 @@ from pyrogram.errors import ChatAdminRequired
 from pyrogram.errors.exceptions.bad_request_400 import MessageTooLong
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ReplyKeyboardMarkup
 from database.users_chats_db import db
-from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS, REFERRAL_ON
+from info import ADMINS, AUTH_CHANNEL, LOG_CHANNEL, PICS
 from utils import is_subscribed, temp, get_size, check_verification, get_token, check_token
 from Script import script
 import time
@@ -16,35 +16,6 @@ import pytz
 
 logger = logging.getLogger(__name__)
 
-async def get_buttons(user_id):
-    buttons = []
-    row = ["Balance 💰", "🗣 Referral"] if REFERRAL_ON else ["Balance 💰"]
-    buttons.append(row)
-    
-    bonus = await db.get_bonus_status(user_id)
-    if bonus["got_bonus"]:
-        buttons.append(["Earn Credits 💵"])
-    else:
-        buttons.append(["Bonus 🎁"])
-    
-    user_credits = await db.get_credits(user_id)
-    if user_credits >= 100:
-        buttons[-1].append("📤 Withdraw")
-
-    # Flatten the buttons list
-    flat_buttons = [btn for row in buttons for btn in row]
-
-    # Arrange buttons according to the new format
-    if len(flat_buttons) == 1:
-        arranged_buttons = [[flat_buttons[0]]]
-    elif len(flat_buttons) == 2:
-        arranged_buttons = [[flat_buttons[0], flat_buttons[1]]]
-    elif len(flat_buttons) == 3:
-        arranged_buttons = [[flat_buttons[0], flat_buttons[1]], [flat_buttons[2]]]
-    elif len(flat_buttons) >= 4:
-        arranged_buttons = [[flat_buttons[0], flat_buttons[1]], [flat_buttons[2], flat_buttons[3]]]
-    
-    return ReplyKeyboardMarkup(arranged_buttons, resize_keyboard=True)
 
 
 @Client.on_message(filters.command("start") & filters.incoming)
@@ -52,12 +23,10 @@ async def start(client, message):
     if not await db.is_user_exist(message.from_user.id):
         await db.add_user(message.from_user.id, message.from_user.first_name)
         await client.send_message(LOG_CHANNEL, script.LOG_TEXT_P.format(a=message.from_user.id, b=message.from_user.username, c=message.from_user.mention))
-    buttonz = await get_buttons(message.from_user.id)
     if len(message.command) != 2:
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=script.START_TXT.format(user=message.from_user.mention),
-            reply_markup=buttonz,
             parse_mode=enums.ParseMode.HTML,
             quote=True
         )
@@ -113,75 +82,6 @@ async def start(client, message):
             else:
                 await client.send_message(id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
                 
-
-@Client.on_message(filters.regex('Balance 💰') & filters.private)
-async def balance(bot, message):
-    user_id = message.from_user.id
-    username = message.from_user.username or "N/A"
-    balance = await db.get_credits(user_id)
-    await message.reply(
-        f"🆔 User: {username}\n\n💳 Credits: {balance} ",
-        quote=True
-    )
-
-@Client.on_message(filters.regex('🗣 Referral') & filters.private)
-async def referral(bot, message):
-    user_id = message.from_user.id
-    total_referrals = await db.get_referral(user_id)
-    referral_link = f"https://t.me/{temp.U_NAME}?start={user_id}"
-    await message.reply(
-        f"💰 Per Refer: Upto 50 Coins\n\n📝 Total Referrals: {total_referrals}\n\n🔍 Your Referral Link: {referral_link}",
-        disable_web_page_preview=True,
-        quote=True
-    )
-    
-@Client.on_message(filters.regex('Bonus 🎁') & filters.private)
-async def bonus(bot, message):
-    user_id = message.from_user.id
-    username = message.from_user.username or "N/A"
-    bonus = await db.get_bonus_status(user_id)
-    if bonus["got_bonus"] == True:
-        buttonz = await get_buttons(user_id)
-        await message.reply(
-            "🎁 Your already Received 20 Credits", 
-            reply_markup=buttonz,
-            quote=True
-        )
-        await bot.send_message(LOG_CHANNEL, f"Hey Admin {user_id} Name: {username} Try Again For Bonus")
-    else:
-        await db.got_bonus_status(user_id)
-        await db.add_credits(user_id, 20)
-        buttonz = await get_buttons(user_id)
-        await message.reply(
-            "🎁 Congratulation, you Received 20 Credits", 
-            reply_markup=buttonz,
-            quote=True
-        )
-
-@Client.on_message(filters.regex('Earn Credits 💵') & filters.private)
-async def earn_credits(client, message):
-    if not await check_verification(client, message.from_user.id):
-        btn = [[
-            InlineKeyboardButton(f"Verify", url=await get_token(client, message.from_user.id, f"https://telegram.me/{temp.U_NAME}?start=")),
-            InlineKeyboardButton("How To Verify", url="https://t.me/+IvrcMfPKCMxkNjVl")
-        ]]
-        await client.send_message(
-            chat_id=message.from_user.id,
-            text=f"Hey {message.from_user.mention} 💕\n\nComplete This Ad And Earn 20 Credits.",
-            disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup(btn)
-        )
-        return
-    else:
-        await client.send_message(
-            chat_id=message.from_user.id,
-            text="Congratulations! You've reached the daily credits limit set by our credits management system, Please try again after 24 hours."
-        )
-
-@Client.on_message(filters.regex('📤 Withdraw') & filters.private)
-async def withdraw(bot, message):
-    await message.reply("📤 You can withdraw your balance once you reach the minimum threshold. Please contact support for more details.", quote=True)
-
 @Client.on_message(filters.command('logs') & filters.user(ADMINS))
 async def log_file(bot, message):
     """Send log file"""
