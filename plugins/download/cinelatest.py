@@ -8,7 +8,7 @@ from info import ADMINS, LOG_CHANNEL
 async def cine_trending(client, message):
     try:
         msg = await message.reply_text("Fetching trending movies...", quote=True)
-        url = "https://1cinevood.site/"
+        url = "https://1cinevood.digital/"
         response = requests.get(url)
         soup = BeautifulSoup(response.content, 'html.parser')
 
@@ -33,7 +33,7 @@ async def cine_trending(client, message):
 async def cine_latest(client, message):
     try:
         msg = await message.reply_text("Fetching latest movies...", quote=True)
-        url = f"https://1cinevood.site/"
+        url = f"https://1cinevood.digital/"
         response = requests.get(url)
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
