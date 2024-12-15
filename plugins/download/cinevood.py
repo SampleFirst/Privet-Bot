@@ -7,7 +7,7 @@ from info import ADMINS, IS_VERIFY, HOW_TO_VERIFY
 
 cine_list = {}
 
-@Client.on_message(filters.command("cinevood") & filters.user(ADMINS))
+@Client.on_message(filters.command("cinevood"))
 async def cinevood(client, message):
     query = message.text.split(maxsplit=1)
     if len(query) == 1:
