@@ -81,6 +81,16 @@ def search_movies(query):
                 movies_list.append(movie_details)
     return movies_list
 
+def extract_resolution(text):
+    """Extract resolution (e.g., 480p, 720p, 1080p) from text."""
+    match = re.search(r"(\d{3,4}p)", text)
+    return match.group(0) if match else "Unknown Resolution"
+
+def extract_file_size(text):
+    """Extract file size (e.g., 5.33 GB, 456 MB) from text."""
+    match = re.search(r"(\d+(\.\d+)?\s?(GB|MB))", text, re.IGNORECASE)
+    return match.group(0) if match else "Unknown Size"
+
 def get_movie(movie_page_url):
     movie_details = {}
     response = requests.get(movie_page_url)
@@ -96,7 +106,7 @@ def get_movie(movie_page_url):
         poster_tag = soup.find("div", {"class": "poster_parent"})
         if poster_tag and "style" in poster_tag.attrs:
             style = poster_tag["style"]
-            # Extract all URLs within the `style` attribute
+            # Extract URLs within the `style` attribute
             urls = [url.strip() for url in style.split("url(") if ")" in url]
             if len(urls) > 1:  # Assuming the second URL is the poster
                 poster_url = urls[1].split(")")[0]
@@ -106,17 +116,28 @@ def get_movie(movie_page_url):
         else:
             movie_details["poster"] = None
 
-        # Extract download links
+        # Extract download links and associated details
         download_links = soup.find_all("a", {"class": "maxbutton-2 maxbutton maxbutton-filepress"})
         final_links = []
 
         for download_link in download_links:
-            link_text_tag = download_link.find("span", {"class": "mb-text"})
-            link_text = download_link.find("h6", {"class": "mb-text"})
-            
+            # Find the closest preceding <h6><span> for movie details
+            details_tag = download_link.find_previous("h6").find("span")
+            link_text = details_tag.text.strip() if details_tag else "Unnamed Link"
+
+            # Extract resolution and file size from the link text
+            resolution = extract_resolution(link_text)
+            file_size = extract_file_size(link_text)
+
+            # Extract the href (URL) from the link
             href = download_link.get("href")
             if href:
-                final_links.append({"name": link_text, "url": href})
+                final_links.append({
+                    "name": link_text,
+                    "resolution": resolution,
+                    "size": file_size,
+                    "url": href
+                })
 
         movie_details["links"] = final_links
 
