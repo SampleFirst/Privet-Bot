@@ -2,7 +2,6 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import requests
 from bs4 import BeautifulSoup
-import re
 from info import ADMINS  # Assuming ADMINS is defined in the `info` module.
 
 cine_list = {}
@@ -125,4 +124,3 @@ def get_movie(movie_page_url):
         movie_details["error"] = f"Failed to fetch the page. Status code: {response.status_code}"
 
     return movie_details
-
