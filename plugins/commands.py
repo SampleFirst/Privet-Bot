@@ -50,7 +50,6 @@ async def start(client, message):
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=script.START_TXT.format(user=message.from_user.mention),
-            reply_markup=buttonz,
             parse_mode=enums.ParseMode.HTML,
             quote=True
         )
@@ -59,7 +58,6 @@ async def start(client, message):
         await message.reply_photo(
             photo=random.choice(PICS),
             caption=script.START_TXT.format(user=message.from_user.mention),
-            reply_markup=buttonz,
             parse_mode=enums.ParseMode.HTML,
             quote=True
         )
