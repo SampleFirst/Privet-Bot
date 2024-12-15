@@ -97,31 +97,27 @@ def get_movie(movie_page_url):
         poster_tag = soup.find("div", {"class": "poster_parent"})
         if poster_tag and "style" in poster_tag.attrs:
             style = poster_tag["style"]
+            # Extract all URLs within the `style` attribute
             urls = [url.strip() for url in style.split("url(") if ")" in url]
-            movie_details["poster"] = urls[1].split(")")[0] if len(urls) > 1 else None
+            if len(urls) > 1:  # Assuming the second URL is the poster
+                poster_url = urls[1].split(")")[0]
+                movie_details["poster"] = poster_url
+            else:
+                movie_details["poster"] = None
         else:
             movie_details["poster"] = None
 
         # Extract download links
-        download_sections = soup.find_all("a", {"class": "maxbutton-2 maxbutton maxbutton-filepress"})
+        download_links = soup.find_all("a", {"class": "maxbutton-2 maxbutton maxbutton-filepress"})
         final_links = []
 
-        for download_section in download_sections:
-            # Extract link URL
-            href = download_section.get("href")
-            if not href:
-                continue
+        for download_link in download_links:
+            link_text_tag = download_link.find("span", {"class": "mb-text"})
+            link_text = link_text_tag.text.strip("h6") if link_text_tag else "Unnamed Link"
 
-            # Extract size and resolution from parent text
-            parent_text = download_section.find_parent("div").get_text(strip=True)
-            resolution = extract_resolution(parent_text)
-            file_size = extract_file_size(parent_text)
-
-            # Create a meaningful button text with ✅
-            button_text = f"✅ {resolution} ({file_size})" if resolution and file_size else "✅ FilePress"
-            button_text = truncate_text(button_text)  # Truncate if too long
-
-            final_links.append({"name": button_text, "url": href})
+            href = download_link.get("href")
+            if href:
+                final_links.append({"name": link_text, "url": href})
 
         movie_details["links"] = final_links
 
@@ -130,16 +126,3 @@ def get_movie(movie_page_url):
 
     return movie_details
 
-def extract_file_size(text):
-    """Extract file size (e.g., 5.33 GB, 456 MB) from text."""
-    match = re.search(r"(\d+(\.\d+)?\s?(GB|MB))", text, re.IGNORECASE)
-    return match.group(0) if match else "Unknown Size"
-
-def extract_resolution(text):
-    """Extract resolution (e.g., 480p, 720p, 1080p) from text."""
-    match = re.search(r"(\d{3,4}p)", text)
-    return match.group(0) if match else "Unknown Resolution"
-
-def truncate_text(text, max_length=64):
-    """Truncate text to fit Telegram button limits."""
-    return text if len(text) <= max_length else text[:61] + "..."
