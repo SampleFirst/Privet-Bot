@@ -60,27 +60,21 @@ async def start(client, message):
         token = data.split("-", 3)[2]
         if str(message.from_user.id) != str(userid):
             return await message.reply_text(
-                text="<b>Invalid or Expired Link!</b>"
+                text="<b>Invalid link or Expired link !</b>",
+                protect_content=True
             )
         is_valid = await check_token(client, userid, token)
-        if is_valid:
-            await db.add_credits(userid, 20)
+        if is_valid == True:
             await message.reply_text(
-                text="Hey user You are successful verification"
+                text=f"<b>Hey {message.from_user.mention}, You are successfully verified !\nNow you have unlimited access for all movies till today midnight.</b>",
+                protect_content=True
             )
-            return
+            await verify_user(client, userid, token)
         else:
             return await message.reply_text(
-                text="<b>Invalid or Expired Link!</b>"
+                text="<b>Invalid link or Expired link !</b>",
+                protect_content=True
             )
-    else:
-        id = message.text.split(' ')[1]
-        if id:
-            if not await db.is_user_exist(message.from_user.id):
-                await db.add_user(message.from_user.id, message.from_user.first_name, id)
-                await client.send_message(id, "Congrats! You Won 10GB Upload limit")
-            else:
-                await client.send_message(id, "ʏᴏᴜʀ ꜰʀɪᴇɴᴅ ɪꜱ ᴀʟʀᴇᴀᴅʏ ᴜꜱɪɴɢ ᴏᴜʀ ʙᴏᴛ")
                 
 @Client.on_message(filters.command('logs') & filters.user(ADMINS))
 async def log_file(bot, message):
