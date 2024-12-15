@@ -38,7 +38,7 @@ async def cinevood(client, message):
                 text=(
                     "<b>You are not verified!\n"
                     "Kindly verify to continue so you can get access to unlimited movies "
-                    "for the next 6 hours!</b>"
+                    "for the next 12 hours!</b>"
                 ),
                 disable_web_page_preview=True,
                 parse_mode=enums.ParseMode.HTML,
