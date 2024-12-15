@@ -1,10 +1,9 @@
-from pyrogram import Client, filters
+from pyrogram import Client, filters, enums
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import requests
-from utils import temp, verify_user, check_token, check_verification
 from bs4 import BeautifulSoup
-from info import ADMINS
-import re
+from utils import temp, check_verification, get_token
+from info import ADMINS, IS_VERIFY, HOW_TO_VERIFY
 
 cine_list = {}
 
@@ -15,46 +14,59 @@ async def cinevood(client, message):
         await message.reply_text("Please provide a name to search.")
         return
 
-    query = query[1]
+    search_query = query[1]
     search_results = await message.reply_text("Processing...")
-    
-    try:
-        pre, file_id = data.split('_', 1)
-    except:
-        file_id = data
-        pre = ""
-    if data.split("-", 1)[0] == "verify":
-        userid = data.split("-", 2)[1]
-        token = data.split("-", 3)[2]
-        if str(message.from_user.id) != str(userid):
-            return await message.reply_text(
-                text="<b>Invalid link or Expired link !</b>",
-                protect_content=True
-            )
-        is_valid = await check_token(client, userid, token)
-        if is_valid == True:
-            await message.reply_text(
-                text=f"<b>Hey {message.from_user.mention}, You are successfully verified !\nNow you have unlimited access for all movies till today midnight.</b>",
-                protect_content=True
-            )
-            await verify_user(client, userid, token)
-        else:
-            return await message.reply_text(
-                text="<b>Invalid link or Expired link !</b>",
-                protect_content=True
-            )
-    else:
-        movies_list = search_movies(query)
-        if movies_list:
-            keyboards = []
-            for movie in movies_list:
-                keyboard = [InlineKeyboardButton(movie["title"], callback_data=movie["id"])]
-                keyboards.append(keyboard)
-            reply_markup = InlineKeyboardMarkup(keyboards)
-            await search_results.edit_text("Search Results:", reply_markup=reply_markup)
-        else:
-            await search_results.edit_text("Sorry 🙏, No Result Found!\nCheck If You Have Misspelled The Movie Name.")
 
+    if IS_VERIFY:
+        user_id = message.from_user.id
+        if not await check_verification(client, user_id):
+            btn = [
+                [
+                    InlineKeyboardButton(
+                        "Verify",
+                        url=await get_token(
+                            client,
+                            user_id,
+                            f"https://telegram.me/{temp.U_NAME}?start=",
+                            file_id=None
+                        )
+                    ),
+                    InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
+                ]
+            ]
+            await client.send_message(
+                chat_id=user_id,
+                text=(
+                    "<b>You are not verified!\n"
+                    "Kindly verify to continue so you can get access to unlimited movies "
+                    "for the next 12 hours!</b>"
+                ),
+                disable_web_page_preview=True,
+                parse_mode=enums.ParseMode.HTML,
+                reply_markup=InlineKeyboardMarkup(btn),
+                protect_content=False
+            )
+            await search_results.edit_text(
+                "Hey, you are not verified today. Please check your PM to verify and get files!",
+                parse_mode=enums.ParseMode.HTML
+            )
+            return
+
+    # Search movies and generate response
+    movies_list = search_movies(search_query)
+    if movies_list:
+        keyboards = [
+            [InlineKeyboardButton(movie["title"], callback_data=movie["id"])]
+            for movie in movies_list
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboards)
+        await search_results.edit_text("Search Results:", reply_markup=reply_markup)
+    else:
+        await search_results.edit_text(
+            "Sorry 🙏, no results found!\n"
+            "Check if you have misspelled the movie name."
+        )
+        
 @Client.on_callback_query(filters.regex("^cine"))
 async def movie_result(client, callback_query):
     movie_id = callback_query.data
