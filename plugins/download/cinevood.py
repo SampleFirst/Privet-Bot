@@ -96,11 +96,13 @@ def get_movie(movie_page_url):
         poster_tag = soup.find("div", {"class": "poster_parent"})
         if poster_tag and "style" in poster_tag.attrs:
             style = poster_tag["style"]
-            # Extract the URL using string slicing
-            poster_url_start = style.find("url(") + 4
-            poster_url_end = style.find(")", poster_url_start)
-            poster_url = style[poster_url_start:poster_url_end].strip()
-            movie_details["poster"] = poster_url
+            # Extract all URLs within the `style` attribute
+            urls = [url.strip() for url in style.split("url(") if ")" in url]
+            if len(urls) > 1:  # Assuming the second URL is the poster
+                poster_url = urls[1].split(")")[0]
+                movie_details["poster"] = poster_url
+            else:
+                movie_details["poster"] = None
         else:
             movie_details["poster"] = None
 
