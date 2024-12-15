@@ -33,18 +33,25 @@ async def cinevood(client, message):
                     InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
                 ]
             ]
-            await search_results.edit_text(
+            await client.send_message(
                 chat_id=user_id,
                 text=(
                     "<b>You are not verified!\n"
                     "Kindly verify to continue so you can get access to unlimited movies "
-                    "for the next 12 hours!</b>"
+                    "for the next 6 hours!</b>"
                 ),
                 disable_web_page_preview=True,
                 parse_mode=enums.ParseMode.HTML,
                 reply_markup=InlineKeyboardMarkup(btn),
                 protect_content=False
             )
+
+            # Delete the "Processing..." message
+            try:
+                await search_results.delete()
+            except Exception as e:
+                print(f"Error deleting search_results: {e}")
+            
             return
     # Search movies and generate response
     movies_list = search_movies(search_query)
