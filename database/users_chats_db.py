@@ -17,14 +17,6 @@ class Database:
                 is_banned=False,
                 ban_reason="",
             ),
-            referral=dict(
-                referred_by=referred_by,
-                referral_count=0,
-            ),
-            bonus=dict(
-                got_bonus=False,
-            ),
-            credits=0,
         )
 
     async def update_verification(self, id, date, time):
@@ -44,16 +36,14 @@ class Database:
             return user.get("verification_status", default)
         return default
         
-    async def add_user(self, id, name, referred_by=None):
-        user = self.new_user(id, name, referred_by)
+    async def add_user(self, id, name):
+        user = self.new_user(id, name)
         await self.col.insert_one(user)
-        if referred_by:
-            await self.add_referral(referred_by)
-
+    
     async def is_user_exist(self, id):
-        user = await self.col.find_one({'id': int(id)})
+        user = await self.col.find_one({'id':int(id)})
         return bool(user)
-
+    
     async def total_users_count(self):
         count = await self.col.count_documents({})
         return count
@@ -98,53 +88,6 @@ class Database:
 
     async def get_db_size(self):
         return (await self.db.command("dbstats"))['dataSize']
-
-    # New functions for referral and credits management
-
-    async def got_bonus_status(self, user_id):
-        bonus = dict(
-            got_bonus=True
-        )
-        await self.col.update_one({'id': user_id}, {'$set': {'bonus': bonus}})
-        
-    async def get_bonus_status(self, id):
-        default = dict(
-            got_bonus=False
-        )
-        user = await self.col.find_one({'id': int(id)})
-        if not user:
-            return default
-        return user.get('bonus', default)
-        
-    async def add_referral(self, id):
-        await self.col.update_one({'id': int(id)}, {'$inc': {'referral.referral_count': 1}})
-
-    async def get_referral(self, id):
-        user = await self.col.find_one({'id': int(id)}, {'referral.referral_count': 1})
-        if not user:
-            return 0
-        return user.get('referral', {}).get('referral_count', 0)
-
-    async def add_credits(self, id, credits):
-        await self.col.update_one({'id': int(id)}, {'$inc': {'credits': credits}})
-
-    async def get_credits(self, id):
-        user = await self.col.find_one({'id': int(id)}, {'credits': 1})
-        if not user:
-            return 0
-        return user.get('credits', 0)
-
-    async def use_credits(self, id, credits):
-        await self.col.update_one({'id': int(id)}, {'$inc': {'credits': -credits}})
-
-    async def get_total_credits(self):
-        pipeline = [
-            {"$group": {"id": None, "totalCredits": {"$sum": "$credits"}}}
-        ]
-        result = await self.col.aggregate(pipeline).to_list(length=None)
-        if result:
-            return result[0].get('totalCredits', 0)
-        return 0
 
 
 db = Database(DATABASE_URI, DATABASE_NAME)
