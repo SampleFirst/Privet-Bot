@@ -31,21 +31,16 @@ async def movie_result(client, callback_query):
     query = callback_query
     movie_id = query.data
     s = get_movie(cine_list[movie_id])
-
-    # Prepare a list of links
+    link_buttons = []
     links = s["links"]
-    links_list = "\n".join(
-        [f"{idx + 1}. [{link['name']}]({link['url']})" for idx, link in enumerate(links)]
-    )
+    for link in links:
+        button = InlineKeyboardButton(link["name"], url=link["url"])
+        link_buttons.append([button])
 
-    # Prepare the caption with the list of links
-    caption = f"🎥 **{s['title']}**\n\n⚡ **Download Links:**\n{links_list}"
+    caption = f"🎥 {s['title']}\n\n⚡ Download Links:"
+    reply_markup = InlineKeyboardMarkup(link_buttons)
 
-    # Send the formatted message
-    await query.message.reply_text(
-        caption,
-        disable_web_page_preview=True
-    )
+    await query.message.reply_text(caption, reply_markup=reply_markup)
     await query.answer("Sent movie links")
 
 def search_movies(query):
@@ -65,32 +60,34 @@ def search_movies(query):
                 movies_details = {}
     return movies_list
 
+
 def get_movie(movie_page_url):
-    # Initialize an empty dictionary to store movie details
     movie_details = {}
-
-    # Fetch the HTML content of the movie page
     response = requests.get(movie_page_url)
-    if response.status_code == 200:  # Ensure the request was successful
-        soup = BeautifulSoup(response.text, "html.parser")
 
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, "html.parser")
+        
         # Extract the movie title
         title = soup.find("div", {'class': 'title single-title entry-title'})
-        movie_details["title"] = title.text.strip() if title else "No title found"
-
-        # Extract download buttons and links
-        download_buttons = soup.find_all("div", {'class': 'download-btns'})
+        movie_details["title"] = title.text.strip() if title else "Title not found"
+        
+        # Extract download links
+        download_links = soup.find_all("a", {'class': 'maxbutton-2 maxbutton maxbutton-filepress'})
         final_links = []
-
-        for button in download_buttons:
-            button_links = button.find_all("a")  # Find all <a> tags inside the button
-            for link in button_links:
-                # Extract button name and URL
-                button_name = link.text.strip()
-                button_url = link["href"]
-                final_links.append({"name": button_name, "url": button_url})
-
-        movie_details["links"] = final_links  # Store all button links
-
+        
+        for download_link in download_links:
+            link_text = download_link.find("span", {'class': 'mb-text'})
+            link_text = link_text.text.strip() if link_text else "Unnamed Link"
+            
+            href = download_link.get("href")
+            if href:
+                final_links.append({"name": link_text, "url": href})
+        
+        movie_details["links"] = final_links
+    
+    else:
+        movie_details["error"] = f"Failed to fetch the page. Status code: {response.status_code}"
+    
     return movie_details
-
+    
