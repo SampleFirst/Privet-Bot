@@ -92,9 +92,17 @@ def get_movie(movie_page_url):
         title_tag = soup.find("title")
         movie_details["title"] = title_tag.text.strip() if title_tag else "Title not found"
 
-        # Extract the poster
+        # Extract the poster URL from the `style` attribute
         poster_tag = soup.find("div", {"class": "poster_parent"})
-        movie_details["poster"] = poster_tag if poster_tag else None
+        if poster_tag and "style" in poster_tag.attrs:
+            style = poster_tag["style"]
+            # Extract the URL using string slicing
+            poster_url_start = style.find("url(") + 4
+            poster_url_end = style.find(")", poster_url_start)
+            poster_url = style[poster_url_start:poster_url_end].strip()
+            movie_details["poster"] = poster_url
+        else:
+            movie_details["poster"] = None
 
         # Extract download links
         download_links = soup.find_all("a", {"class": "maxbutton-2 maxbutton maxbutton-filepress"})
