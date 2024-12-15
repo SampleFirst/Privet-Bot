@@ -112,8 +112,8 @@ def get_movie(movie_page_url):
 
         for download_link in download_links:
             link_text_tag = download_link.find("span", {"class": "mb-text"})
-            link_text = link_text_tag.text.strip("h6") if link_text_tag else "Unnamed Link"
-
+            link_text = download_link.find("h6", {"class": "mb-text"})
+            
             href = download_link.get("href")
             if href:
                 final_links.append({"name": link_text, "url": href})
