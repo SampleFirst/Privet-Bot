@@ -54,8 +54,16 @@ async def start(client, message):
             parse_mode=enums.ParseMode.HTML,
             quote=True
         )
-    data = message.command[1]    
-    if data.split("-", 1)[0] == "verify":
+    data = message.command[1]
+    if data == "start":
+        await message.reply_photo(
+            photo=random.choice(PICS),
+            caption=script.START_TXT.format(user=message.from_user.mention),
+            reply_markup=buttonz,
+            parse_mode=enums.ParseMode.HTML,
+            quote=True
+        )
+    elif data.split("-", 1)[0] == "verify":
         userid = data.split("-", 2)[1]
         token = data.split("-", 3)[2]
         if str(message.from_user.id) != str(userid):
