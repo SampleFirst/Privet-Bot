@@ -45,28 +45,25 @@ async def cinevood(client, message):
                 reply_markup=InlineKeyboardMarkup(btn),
                 protect_content=False
             )
-
-            # Delete the "Processing..." message
             try:
                 await search_results.delete()
             except Exception as e:
                 print(f"Error deleting search_results: {e}")
-            
             return
-    # Search movies and generate response
-    movies_list = search_movies(search_query)
-    if movies_list:
-        keyboards = [
-            [InlineKeyboardButton(movie["title"], callback_data=movie["id"])]
-            for movie in movies_list
-        ]
-        reply_markup = InlineKeyboardMarkup(keyboards)
-        await search_results.edit_text("Search Results:", reply_markup=reply_markup)
-    else:
-        await search_results.edit_text(
-            "Sorry 🙏, no results found!\n"
-            "Check if you have misspelled the movie name."
-        )
+        else:
+            movies_list = search_movies(search_query)
+            if movies_list:
+                keyboards = [
+                    [InlineKeyboardButton(movie["title"], callback_data=movie["id"])]
+                    for movie in movies_list
+                ]
+                reply_markup = InlineKeyboardMarkup(keyboards)
+                await search_results.edit_text("Search Results:", reply_markup=reply_markup)
+            else:
+                await search_results.edit_text(
+                    "Sorry 🙏, no results found!\n"
+                    "Check if you have misspelled the movie name."
+                )
         
 @Client.on_callback_query(filters.regex("^cine"))
 async def movie_result(client, callback_query):
