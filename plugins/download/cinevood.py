@@ -27,8 +27,7 @@ async def cinevood(client, message):
                         url=await get_token(
                             client,
                             user_id,
-                            f"https://telegram.me/{temp.U_NAME}?start=",
-                            file_id=None
+                            f"https://telegram.me/{temp.U_NAME}?start="
                         )
                     ),
                     InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
