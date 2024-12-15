@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 import requests
 from bs4 import BeautifulSoup
-from info import ADMINS  # Assuming ADMINS is defined in the `info` module.
+from info import ADMINS
 import re
 
 cine_list = {}
@@ -82,15 +82,6 @@ def search_movies(query):
                 movies_list.append(movie_details)
     return movies_list
 
-def extract_resolution(text):
-    """Extract resolution (e.g., 480p, 720p, 1080p) from text."""
-    match = re.search(r"(\d{3,4}p)", text)
-    return match.group(0) if match else "Unknown Resolution"
-
-def extract_file_size(text):
-    """Extract file size (e.g., 5.33 GB, 456 MB) from text."""
-    match = re.search(r"(\d+(\.\d+)?\s?(GB|MB))", text, re.IGNORECASE)
-    return match.group(0) if match else "Unknown Size"
 
 def get_movie(movie_page_url):
     movie_details = {}
@@ -126,17 +117,11 @@ def get_movie(movie_page_url):
             details_tag = download_link.find_previous("h6").find("span")
             link_text = details_tag.text.strip() if details_tag else "Unnamed Link"
 
-            # Extract resolution and file size from the link text
-            resolution = extract_resolution(link_text)
-            file_size = extract_file_size(link_text)
-
             # Extract the href (URL) from the link
             href = download_link.get("href")
             if href:
                 final_links.append({
                     "name": link_text,
-                    "resolution": resolution,
-                    "size": file_size,
                     "url": href
                 })
 
