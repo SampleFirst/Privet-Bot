@@ -33,7 +33,7 @@ async def cinevood(client, message):
                     InlineKeyboardButton("How To Verify", url=HOW_TO_VERIFY)
                 ]
             ]
-            await client.send_message(
+            await search_results.edit_text(
                 chat_id=user_id,
                 text=(
                     "<b>You are not verified!\n"
@@ -45,12 +45,7 @@ async def cinevood(client, message):
                 reply_markup=InlineKeyboardMarkup(btn),
                 protect_content=False
             )
-            await search_results.edit_text(
-                "Hey, you are not verified today. Please check your PM to verify and get files!",
-                parse_mode=enums.ParseMode.HTML
-            )
             return
-
     # Search movies and generate response
     movies_list = search_movies(search_query)
     if movies_list:
