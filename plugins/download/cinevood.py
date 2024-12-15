@@ -93,8 +93,8 @@ def get_movie(movie_page_url):
         movie_details["title"] = title_tag.text.strip() if title_tag else "Title not found"
 
         # Extract the poster
-        poster_tag = soup.find("div", {"class": "poster_parent"}).find("img")
-        movie_details["poster"] = poster_tag["src"] if poster_tag else None
+        poster_tag = soup.find("div", {"class": "poster_parent"})
+        movie_details["poster"] = poster_tag if poster_tag else None
 
         # Extract download links
         download_links = soup.find_all("a", {"class": "maxbutton-2 maxbutton maxbutton-filepress"})
