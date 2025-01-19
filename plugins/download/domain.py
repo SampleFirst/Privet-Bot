@@ -43,6 +43,7 @@ async def fetch_new_suffix():
 async def get_domain(client, message):
     msg = await message.reply_text("Fetching the new current domain...", quote=True)
 
+    website = "https://skybap.com/"
     domain = await fetch_new_domain()
     suffix = await fetch_new_suffix()
     new_domain = domain + "." + suffix
