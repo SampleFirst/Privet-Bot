@@ -98,8 +98,8 @@ async def get_domain(client, message):
 async def update_domain(client, callback_query):
     try:
         msg = await callback_query.message.reply_text("Updating...")
-    website = "https://skybap.com/"
-    domain = await fetch_new_domain()
+        website = "https://skybap.com/"
+        domain = await fetch_new_domain()
         suffix = await fetch_new_suffix()
         new_domain = domain + "." + suffix
 
